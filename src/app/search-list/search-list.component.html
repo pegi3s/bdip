@@ -1,0 +1,7 @@
+@for (container of containers; track $index) {
+  <div>
+    <p>{{ container.name }}</p>
+    <p>{{ container.description }}</p>
+    <p><a [href]="container.docs">📄</a></p>
+  </div>
+}
