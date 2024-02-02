@@ -1,0 +1,13 @@
+:host {
+  background-color: lightgray;
+  padding-right: var(--horizontal-main-margin);
+  padding-left: var(--horizontal-main-margin);
+}
+
+footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
