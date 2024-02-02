@@ -1,0 +1,22 @@
+/*TODO: Find a better way*/
+:host {
+  flex-grow: 1;
+}
+
+:host > * {
+  padding-right: var(--horizontal-main-margin);
+  padding-left: var(--horizontal-main-margin);
+}
+
+.supporters {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+  align-items: center;
+  gap: 16px;
+
+  img {
+    max-width: 150px;
+    max-height: 100px;
+  }
+}
