@@ -1,0 +1,35 @@
+:host {
+  background-color: #0082c4;
+  padding-right: var(--horizontal-main-margin);
+  padding-left: var(--horizontal-main-margin);
+  color: white;
+}
+
+header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+header > div {
+  display: flex;
+  align-items: center;
+}
+
+.header-logo > span {
+  margin-left: 6px;
+  font-weight: bold;
+}
+
+.social-links a {
+  margin-left: 12px;
+  line-height: 0;
+}
+
+.social {
+  width: 20px;
+  height: 20px;
+  color: inherit;
+}
