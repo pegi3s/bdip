@@ -1,0 +1,8 @@
+@for (feature of features; track $index) {
+  <app-reason-card
+    [icon]="feature.icon"
+    [title]="feature.title"
+    [description]="feature.description"
+    [style.--color]="feature.color"
+  />
+}
