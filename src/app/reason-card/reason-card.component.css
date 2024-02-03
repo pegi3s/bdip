@@ -1,4 +1,20 @@
 :host {
+  --card-bg-color: rgb(255, 255, 255);
+  --card-border-color: rgb(229, 231, 235);
+  --icon-outer-box-color: hsl(var(--color), 90%, 75%);
+  --icon-inner-box-color: hsl(var(--color), 60%, 45%);
+}
+
+@media (prefers-color-scheme: dark) {
+  :host {
+    --card-bg-color: rgb(43, 43, 43);
+    --card-border-color: rgb(58, 58, 60);
+    --icon-outer-box-color: hsl(var(--color), 90%, 65%);
+    --icon-inner-box-color: hsl(var(--color), 55%, 40%);
+  }
+}
+
+:host {
   display: block;
 
   transition-duration: 0.2s;
@@ -6,9 +22,9 @@
   transition-timing-function: cubic-bezier(0, 0, 0.2, 1);
 
   box-shadow: rgba(0, 0, 0, 0.1) 0 10px 32px 0;
-  border: 2px solid rgb(229 231 235);
+  border: 2px solid var(--card-border-color);
   border-radius: 14px;
-  background-color: rgb(255, 255, 255);
+  background-color: var(--card-bg-color);
   padding: 20px;
 
   --color: 0;
@@ -41,14 +57,14 @@
   .outer-box {
     transform: rotate(6deg);
     border-radius: 24px;
-    background-color: hsl(var(--color), 90%, 75%);
+    background-color: var(--icon-outer-box-color);
   }
 
   .inner-box {
     transform: rotate(-6deg);
     margin: 9px;
     border-radius: 16px;
-    background-color: hsl(var(--color), 60%, 45%);
+    background-color: var(--icon-inner-box-color);
   }
 }
 

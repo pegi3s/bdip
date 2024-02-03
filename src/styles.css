@@ -5,11 +5,21 @@
     Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
 
   --horizontal-main-margin: 20px;
+  --main-bg-color: rgb(243, 244, 246);
+  --main-font-color: black;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --main-bg-color: rgb(28, 28, 30);
+    --main-font-color: white;
+  }
 }
 
 body {
   margin: 0;
-  background-color: rgb(243, 244, 246);
+  background-color: var(--main-bg-color);
+  color: var(--main-font-color);
 }
 
 a {
