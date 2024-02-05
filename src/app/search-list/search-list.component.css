@@ -1,11 +1,39 @@
 :host {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(175px, 1fr));
-  column-gap: 8px;
-  row-gap: 8px;
+  padding-right: var(--horizontal-main-margin);
+  padding-left: var(--horizontal-main-margin);
 }
 
-div {
+.categories {
+  background-color: white;
+  display: flex;
+  gap: 8px;
+  padding: 8px;
+  border-radius: 8px;
+
+  position: sticky;
+  top: 10px;
+
+  a {
+    padding: 4px;
+
+    &.active {
+      background-color: lightsalmon;
+    }
+
+    &:hover {
+      background-color: aliceblue;
+    }
+  }
+}
+
+h2 ~ div {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(175px, 1fr));
+  column-gap: 12px;
+  row-gap: 12px;
+}
+
+div > div > div {
   display: grid;
   grid-template-rows: min-content 1fr min-content;
   row-gap: 12px;
@@ -22,5 +50,11 @@ div {
 
   p:first-child {
     font-weight: bold;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .categories, div > div > div {
+    background-color: rgb(43, 43, 43);
   }
 }

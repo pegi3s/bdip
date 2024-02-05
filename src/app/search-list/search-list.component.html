@@ -1,7 +1,19 @@
-@for (container of containers; track $index) {
-  <div>
-    <p>{{ container.name }}</p>
-    <p>{{ container.description }}</p>
-    <p><a [href]="container.docs">📄</a></p>
-  </div>
-}
+<div class="categories">
+  @for (category of containers.keys(); track $index) {
+    <a [href]="'/containers/#' + category">{{ category }}</a>
+  }
+</div>
+<div>
+  @for (category of containers.keys(); track $index) {
+    <h2 [id]="category">{{ category }}</h2>
+    <div>
+      @for (container of containers.get(category); track $index) {
+        <div>
+          <p>{{ container.name }}</p>
+          <p>{{ container.description }}</p>
+          <p><a [href]="container.docs"><span class="material-symbols-rounded">description</span></a></p>
+        </div>
+      }
+    </div>
+  }
+</div>
