@@ -8,6 +8,82 @@
   padding-left: var(--horizontal-main-margin);
 }
 
+.about-project {
+  display: grid;
+  grid-template-areas:
+    "header"
+    "text"
+    "img";
+
+  h2 {
+    grid-area: header;
+  }
+
+  div {
+    grid-area: text;
+  }
+
+  img {
+    grid-area: img;
+    align-self: center;
+    justify-self: center;
+  }
+}
+
+@media (min-width: 768px) {
+  .about-project {
+    grid-template-areas:
+    "header header"
+    "text img";
+    
+  }
+}
+
+.docker-img {
+  border-radius: 12px;
+  width: 300px;
+}
+
+.how-to-start div {
+  display: flex;
+  gap: 16px;
+
+  a {
+    display: grid;
+    grid-template-columns: min-content 1fr;
+    grid-template-areas:
+      "icon header"
+      "icon text";
+    column-gap: 16px;
+    row-gap: 8px;
+    align-items: center;
+
+    box-shadow: rgba(0, 0, 0, 0.1) 0 10px 32px 0;
+    border-radius: 14px;
+    background-color: #ffffff;
+    padding: 16px;
+    min-width: 75px;
+    max-width: 300px;
+
+    span {
+      grid-area: icon;
+      font-size: 75px;
+    }
+
+    p {
+      margin: 0;
+    }
+
+    p:first-child {
+      grid-area: header;
+    }
+
+    p:last-child {
+      grid-area: text;
+    }
+  }
+}
+
 .supporters {
   display: flex;
   flex-wrap: wrap;
@@ -18,5 +94,15 @@
   img {
     max-width: 150px;
     max-height: 100px;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .supporters img {
+    filter: grayscale(1) invert(1);
+  }
+
+  .how-to-start div a {
+      background-color: rgb(43, 43, 43);
   }
 }
