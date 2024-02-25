@@ -1,16 +1,101 @@
 :host {
+  --blur-color: rgba(255, 255, 255, 0.4);
+}
+
+@media (prefers-color-scheme: dark) {
+  :host {
+    --blur-color: rgba(0, 0, 0, 0.4);
+  }
+}
+
+:host {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+
+:host::before {
+  /*TODO: Limit blur to .scrolled*/
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: calc(100% - var(--horizontal-main-margin));
+  z-index: -1;
+  backdrop-filter: blur(8px);
+  background: linear-gradient(to bottom, var(--blur-color), rgba(0,0,0,0));
+  mask: linear-gradient(to top, transparent, black 25%);
+  pointer-events: none;
+}
+
+.outer {
+  /*
+  radial-gradient(at 21% 13%, hsla(240,87%,67%,1) 0px, transparent 50%),
+  radial-gradient(at 97% 43%, hsla(250,88%,74%,1) 0px, transparent 50%),
+  radial-gradient(at 85% 67%, hsla(260,84%,69%,1) 0px, transparent 50%),
+  radial-gradient(at 34% 27%, hsla(220,81%,78%,1) 0px, transparent 50%),
+  radial-gradient(at 28% 76%, hsla(230,61%,77%,1) 0px, transparent 50%),
+  radial-gradient(at 93% 19%, hsla(240,93%,76%,1) 0px, transparent 50%),
+  radial-gradient(at 71% 94%, hsla(250,99%,60%,1) 0px, transparent 50%);
+  */
+  animation: gradient 30s linear infinite;
+  background-image:
+    radial-gradient(at 21% 13%, hsla(240, 87%, 50%, 1) 0px, transparent 50%),
+    radial-gradient(at 97% 43%, hsla(250, 88%, 55%, 1) 0px, transparent 50%),
+    radial-gradient(at 85% 67%, hsla(260, 84%, 45%, 1) 0px, transparent 50%),
+    radial-gradient(at 34% 27%, hsla(220, 81%, 60%, 1) 0px, transparent 50%),
+    radial-gradient(at 28% 76%, hsla(230, 61%, 50%, 1) 0px, transparent 50%),
+    radial-gradient(at 93% 19%, hsla(240, 93%, 55%, 1) 0px, transparent 50%),
+    radial-gradient(at 71% 94%, hsla(250, 99%, 40%, 1) 0px, transparent 50%);
+  background-size: 200% 200%;
   background-color: #0082c4;
-  padding-right: var(--horizontal-main-margin);
-  padding-left: var(--horizontal-main-margin);
+}
+
+@keyframes gradient {
+  0%,
+  100% {
+    background-position: 0% 20%;
+  }
+  25% {
+    background-position: 100% 50%;
+  }
+  50% {
+    background-position: 50% 70%;
+  }
+}
+
+.outer {
+  display: flex;
+  flex-direction: column;
+  transition: all cubic-bezier(0.57, -0.2, 0, 1.13) 400ms;
+  height: 100dvh;
   color: white;
+}
+
+.outer:has(.scrolled) {
+  top: var(--horizontal-main-margin);
+  margin: var(--horizontal-main-margin);
+  border-radius: 24px;
+  height: 75px;
+
+  > *:not(header) {
+    display: none;
+  }
 }
 
 header {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  padding-top: 10px;
-  padding-bottom: 10px;
+  transition: all cubic-bezier(0.57, -0.2, 0, 1.13) 400ms;
+  padding: 10px var(--horizontal-main-margin);
+  width: -webkit-fill-available;
+}
+
+header.scrolled {
+  flex-grow: 1;
+  align-self: center;
 }
 
 header > div {
@@ -21,6 +106,26 @@ header > div {
 .header-logo > span {
   margin-left: 6px;
   font-weight: bold;
+}
+
+.title {
+  max-width: 180px;
+}
+
+nav {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  a {
+    padding: 8px 12px;
+    border-radius: 24px;
+    transition: background-color 200ms;
+  }
+
+  a:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+  }
 }
 
 .social-links a {
