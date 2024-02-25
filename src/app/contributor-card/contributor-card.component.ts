@@ -6,8 +6,8 @@ import { ContactType } from '../models/contact-type';
   selector: 'app-contributor-card',
   standalone: true,
   imports: [],
-  templateUrl: './contributor-card.component2.html',
-  styleUrl: './contributor-card.component2.css'
+  templateUrl: './contributor-card.component.html',
+  styleUrl: './contributor-card.component.css'
 })
 export class ContributorCardComponent implements OnInit {
   @Input() contributor!: Contributor;
