@@ -1,5 +1,6 @@
 :host {
   --card-bg-color: rgb(255, 255, 255);
+  --card-bg-color-hover: hsla(var(--color), 100%, 97.5%);
   --card-border-color: rgb(229, 231, 235);
   --icon-outer-box-color: hsl(var(--color), 90%, 75%);
   --icon-inner-box-color: hsl(var(--color), 60%, 45%);
@@ -8,6 +9,7 @@
 @media (prefers-color-scheme: dark) {
   :host {
     --card-bg-color: rgb(43, 43, 43);
+    --card-bg-color-hover: hsla(var(--color), 10%, 20%);
     --card-border-color: rgb(58, 58, 60);
     --icon-outer-box-color: hsl(var(--color), 90%, 65%);
     --icon-inner-box-color: hsl(var(--color), 55%, 40%);
@@ -71,6 +73,7 @@
 :host:hover {
   box-shadow: hsla(var(--color), 100%, 75%, 0.2) 0 10px 32px 0;
   border-color: hsl(var(--color), 100%, 75%);
+  background-color: var(--card-bg-color-hover);
 
   .icon-container {
     transform: scale(1.05);
