@@ -1,6 +1,12 @@
 :host {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  grid-template-columns: 1fr;
   column-gap: 16px;
   row-gap: 16px;
+}
+
+@media (min-width: 576px) { 
+  :host {
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  }
 }
