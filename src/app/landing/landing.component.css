@@ -3,17 +3,109 @@
   flex-grow: 1;
 }
 
-:host > * {
-  padding-right: var(--horizontal-main-margin);
-  padding-left: var(--horizontal-main-margin);
+section > div {
+  margin-inline: auto;
+  padding: 35px var(--horizontal-main-margin);
+  max-inline-size: 2048px;
+}
+
+.intro {
+  position: relative;
+  top: -115px;
+
+  background-image:
+    radial-gradient(18% 28% at 24% 50%, #b3d1f933 7%, #ffffff00 100%),
+    radial-gradient(18% 28% at 18% 71%, #a2c6f422 6%, #ffffff00 100%),
+    radial-gradient(70% 53% at 36% 76%, #91b9ef22 0%, #ffffff00 100%),
+    radial-gradient(42% 53% at 15% 94%, #a2c6f422 7%, #ffffff00 100%),
+    radial-gradient(42% 53% at 34% 72%, #a2c6f422 7%, #ffffff00 100%),
+    radial-gradient(18% 28% at 35% 87%, #a2c6f422 7%, #ffffff00 100%),
+    radial-gradient(31% 43% at 7% 98%, #b3d1f933 24%, #ffffff00 100%),
+    radial-gradient(35% 56% at 91% 74%, #91b9ef33 9%, #ffffff00 100%),
+    radial-gradient(74% 86% at 67% 38%, #80adf533 24%, #ffffff00 100%);
+  background-color: #f5f5ff;
+
+  padding-top: 115px;
+  height: 100dvh;
+
+  @media (prefers-color-scheme: dark) {
+    background-image:
+      radial-gradient(18% 28% at 24% 50%, #3070bf22 7%, #073bff00 100%),
+      radial-gradient(18% 28% at 18% 71%, #2a659f11 6%, #073bff00 100%),
+      radial-gradient(70% 53% at 36% 76%, #204a8f11 0%, #073bff00 100%),
+      radial-gradient(42% 53% at 15% 94%, #2a659f11 7%, #073bff00 100%),
+      radial-gradient(42% 53% at 34% 72%, #2a659f11 7%, #073bff00 100%),
+      radial-gradient(18% 28% at 35% 87%, #2a659f11 7%, #073bff00 100%),
+      radial-gradient(31% 43% at 7% 98%, #2a659f22 24%, #073bff00 100%),
+      radial-gradient(35% 56% at 91% 74%, #204a8f22 9%, #073bff00 100%),
+      radial-gradient(74% 86% at 67% 38%, #16338022 24%, #073bff00 100%);
+    background-color: #01020c;
+  }
+}
+
+.intro > div {
+  display: grid;
+  grid-template-rows: 30% 30% 1fr minmax(150px, 200px);
+  grid-template-areas:
+    "header"
+    "carousel"
+    "text"
+    "whale";
+  align-content: center;
+  align-items: center;
+  justify-items: center;
+  height: 100%;
+
+  > img {
+    grid-area: whale;
+    width: 150px;
+    height: 150px;
+  }
+
+  > .foreground {
+    z-index: 1;
+    backdrop-filter: blur(3px);
+    filter: drop-shadow(3px 3px 7px rgba(0, 0, 0, 0.125));
+
+    @media (prefers-color-scheme: dark) {
+      filter: drop-shadow(4px 4px 10px rgba(0, 0, 0, 0.65));
+    }
+  }
+
+  > h2 {
+    grid-area: header;
+    margin: 0;
+    font-size: 72px;
+    text-align: center;
+  }
+
+  > div:has(app-carousel) {
+    grid-area: carousel;
+    width: clamp(100px, 80%, 662px);
+  }
+
+  p {
+    margin: 0;
+    font-size: 42px;
+    text-align: center;
+  }
 }
 
 .about-project {
+  background-color: rgb(0, 45, 56);
+}
+
+.about-project > div {
   display: grid;
   grid-template-areas:
     "header"
     "text"
     "img";
+  @media (min-width: 768px) {
+    grid-template-areas:
+      "header header"
+      "text img";
+  }
 
   h2 {
     grid-area: header;
@@ -30,21 +122,12 @@
   }
 }
 
-@media (min-width: 768px) {
-  .about-project {
-    grid-template-areas:
-    "header header"
-    "text img";
-    
-  }
-}
-
 .docker-img {
   border-radius: 12px;
   width: 300px;
 }
 
-.how-to-start div {
+.how-to-start > div div {
   display: flex;
   gap: 16px;
 
@@ -84,6 +167,16 @@
   }
 }
 
+.authors {
+  display: grid;
+  grid-template-columns: 1fr;
+  @media (min-width: 576px) {
+    grid-template-columns: repeat(auto-fill, minmax(540px, 1fr));
+  }
+  column-gap: 16px;
+  row-gap: 16px;
+}
+
 .supporters {
   display: flex;
   flex-wrap: wrap;
@@ -91,18 +184,23 @@
   align-items: center;
   gap: 16px;
 
+  > div {
+    position: relative;
+    width: 150px;
+    height: 100px;
+  }
+
   img {
-    max-width: 150px;
-    max-height: 100px;
+    object-fit: contain;
+
+    @media (prefers-color-scheme: dark) {
+      filter: grayscale(1) invert(1);
+    }
   }
 }
 
 @media (prefers-color-scheme: dark) {
-  .supporters img {
-    filter: grayscale(1) invert(1);
-  }
-
-  .how-to-start div a {
-      background-color: rgb(43, 43, 43);
+  .how-to-start div div a {
+    background-color: rgb(43, 43, 43);
   }
 }

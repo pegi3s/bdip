@@ -1,52 +1,85 @@
-<!-- <app-search-guided /> -->
-<section class="about-project">
-  <h2>About this project</h2>
+<section class="intro">
   <div>
-    <p>
-      This website contains information about the Docker images maintained by the
-      Phenotypic Evolution Group (pegi3s) at the Instituto de Biologia Molecular e
-      Celular (IBMC) / Instituto de Investigação e Inovação em Saúde da Universidade
-      do Porto (i3S). All images are available through our Docker Hub repository,
-      and the respective Docker files at our GitHub repository.
-    </p>
-    <p>
-      In addition, this repository also contains tutorials to serve as guidance on
-      the usage of existing Docker images (e.g. Trinity for RNA-Seq).
-    </p>
+    <h2>Bioinformatics Docker<br />Images Project</h2>
+    <div>
+      <app-carousel />
+    </div>
+    <div>
+      <p>
+        Unlock the power of containerized bioinformatics tools with our
+        comprehensive Docker repository
+      </p>
+    </div>
+    <img src="assets/Whale.png" alt="" class="foreground" />
+    <img src="assets/Whale.png" alt="" class="background" />
   </div>
-  <img src="assets/images/docker-volume-mapping-header.gif" alt="" class="docker-img">
+</section>
+<section class="about-project">
+  <div>
+    <h2>About this project</h2>
+    <div>
+      <p>
+        This website contains information about the Docker images maintained by
+        the Phenotypic Evolution Group (pegi3s) at the Instituto de Biologia
+        Molecular e Celular (IBMC) / Instituto de Investigação e Inovação em
+        Saúde da Universidade do Porto (i3S). All images are available through
+        our Docker Hub repository, and the respective Docker files at our GitHub
+        repository.
+      </p>
+      <p>
+        In addition, this repository also contains tutorials to serve as
+        guidance on the usage of existing Docker images (e.g. Trinity for
+        RNA-Seq).
+      </p>
+    </div>
+    <img
+      src="assets/images/docker-volume-mapping-header.gif"
+      alt=""
+      class="docker-img"
+    />
+  </div>
 </section>
 <section>
-  <h2>Why Docker Images?</h2>
-  <app-reason-list />
+  <div>
+    <h2>Why Docker Images?</h2>
+    <app-reason-list />
+  </div>
 </section>
 <section class="how-to-start">
-  <h2>How can I start using it?</h2>
   <div>
-    <a>
-      <span class="material-symbols-rounded">description</span>
-      <p>Tutorials</p>
-      <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit.</p>
-    </a>
-    <a>
-      <p>Tutorials</p>
-      <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit.</p>
-    </a>
+    <h2>How can I start using it?</h2>
+    <div>
+      <a>
+        <span class="material-symbols-rounded">description</span>
+        <p>Tutorials</p>
+        <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit.</p>
+      </a>
+      <a>
+        <p>Tutorials</p>
+        <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit.</p>
+      </a>
+    </div>
   </div>
 </section>
 <section>
-  <h2>Authors</h2>
-  <app-contributor-list />
-</section>
-<section>
-  <h2>Co-funded by</h2>
-  <div class="supporters">
-    <img src="assets/images/logo-cresc_algarve_2020.png"/>
-    <img src="assets/images/logo-lisboa_2020.webp"/>
-    <img src="assets/images/logo-norte_2020.png"/>
-    <img src="assets/images/logo-portugal_2020.png"/>
-    <img src="assets/images/logo-uniao_europeia_fundos_europeus.png"/>
-    <img src="assets/images/logo-fct.png"/>
+  <div>
+    <h2>Authors</h2>
+    <div class="authors">
+      @for (contributor of contributors; track $index) {
+        <app-contributor-card [contributor]="contributor" />
+      }
+    </div>
   </div>
 </section>
-
+<section>
+  <div>
+    <h2>Co-funded by</h2>
+    <div class="supporters">
+      @for (img of supporters; track $index) {
+        <div>
+          <img ngSrc="{{ img }}" fill />
+        </div>
+      }
+    </div>
+  </div>
+</section>
