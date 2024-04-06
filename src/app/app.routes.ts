@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { LandingComponent } from './landing/landing.component';
 import { SearchListComponent } from './search-list/search-list.component';
 import { EmptyComponent } from './empty/empty.component';
+import { OntologyEditorComponent } from './ontology-editor/ontology-editor.component';
 
 export const routes: Routes = [
     {
@@ -17,5 +18,9 @@ export const routes: Routes = [
     {
         path: 'containers',
         component: SearchListComponent,
+    },
+    {
+        path: 'edit-ontology',
+        component: OntologyEditorComponent,
     },
 ];

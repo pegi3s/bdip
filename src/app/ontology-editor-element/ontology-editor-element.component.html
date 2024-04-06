@@ -1,0 +1,28 @@
+<!-- <div (click)="loadChildren(category)"> -->
+
+<div class="name">
+  <span class="material-symbols-rounded expand">expand_more</span>
+  <p>
+    {{ category?.name?.replaceAll("_", " ") }}
+  </p>
+  <div class="dummy"></div>
+</div>
+<div class="actions">
+  <button class="material-symbols-rounded">edit</button>
+  <button class="material-symbols-rounded">delete</button>
+</div>
+
+<div class="children">
+  @for (category of category?.getChildren(); track $index) {
+    <app-ontology-editor-element
+      [category]="category"
+      [containers]="containers"
+    />
+  }
+  @for (container of containers?.get(category?.id || ""); track $index) {
+    <div>{{ container }}</div>
+  }
+  <button class="material-symbols-rounded add" (click)="addStanza()">
+    add
+  </button>
+</div>
