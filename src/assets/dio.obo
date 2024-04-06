@@ -1,0 +1,294 @@
+format-version: 1.2
+ontology: http://www.semanticweb.org/root/ontologies/2024/1/pegi3s
+
+[Term]
+id: DIO:0000001
+name: Sequences
+
+[Term]
+id: DIO:0000002
+name: DNA
+is_a: DIO:0000001
+
+[Term]
+id: DIO:0000003
+name: Pipelines
+is_a: DIO:0000002
+
+[Term]
+id: DIO:0000004 
+name: Alignment
+is_a: DIO:0000002
+
+[Term]
+id: DIO:0000005
+name: Detection_of_PSS
+is_a: DIO:0000002
+
+[Term]
+id: DIO:0000006
+name: Divergence
+is_a: DIO:0000002
+
+[Term]
+id: DIO:0000007
+name: Gene_annotation
+is_a: DIO:0000002
+
+[Term]
+id: DIO:0000008
+name: Genome
+is_a: DIO:0000002
+
+[Term]
+id: DIO:0000009
+name: Alignment
+is_a: DIO:0000008
+
+[Term]
+id: DIO:0000010
+name: Detection_of_PSS
+is_a: DIO:0000008
+
+[Term]
+id: DIO:0000011
+name: Visualization
+is_a: DIO:0000008
+
+[Term]
+id: DIO:0000012
+name: Phylogenetics
+is_a: DIO:0000002
+
+[Term]
+id: DIO:0000013
+name: Annotation
+is_a: DIO:0000008
+
+[Term]
+id: DIO:0000014
+name: Metagenome
+is_a: DIO:0000002
+
+[Term]
+id: DIO:0000015
+name: Patterns
+is_a: DIO:0000002
+
+[Term]
+id: DIO:0000016
+name: Inversion_breakpoint_detection
+is_a: DIO:0000002
+
+[Term]
+id: DIO:0000017
+name: Ortholog_retrieval
+is_a: DIO:0000002
+
+[Term]
+id: DIO:0000018
+name: Plasmid_prediction
+is_a: DIO:0000002
+
+[Term]
+id: DIO:0000019
+name: Polymorphism
+is_a: DIO:0000002
+
+[Term]
+id: DIO:0000020
+name: Recombination
+is_a: DIO:0000002
+
+[Term]
+id: DIO:0000021
+name: Sequence_homology_search
+is_a: DIO:0000002
+
+[Term]
+id: DIO:0000022
+name: Tools
+is_a: DIO:0000002
+
+[Term]
+id: DIO:0000023
+name: Protein
+is_a: DIO:0000001
+
+[Term]
+id: DIO:0000024
+name: Alignment
+is_a: DIO:0000023
+
+[Term]
+id: DIO:0000025
+name: Patterns
+is_a: DIO:0000023
+
+[Term]
+id: DIO:0000026
+name: Phylogenetics
+is_a: DIO:0000023
+
+[Term]
+id: DIO:0000027
+name: Polymorphism
+is_a: DIO:0000023
+
+[Term]
+id: DIO:0000028
+name: Sequence_homology_search
+is_a: DIO:0000023
+
+[Term]
+id: DIO:0000029
+name: Tools
+is_a: DIO:0000023
+
+[Term]
+id: DIO:0000030
+name: Sequencing_reads
+is_a: DIO:0000001
+
+[Term]
+id: DIO:0000031
+name: Alignment
+is_a: DIO:0000030
+
+[Term]
+id: DIO:0000032
+name: Assembly
+is_a: DIO:0000030
+
+[Term]
+id: DIO:0000033
+name: Genome
+is_a: DIO:0000032
+
+[Term]
+id: DIO:0000034
+name: Transcriptome
+is_a: DIO:0000032
+
+[Term]
+id: DIO:0000035
+name: Data_simulation
+is_a: DIO:0000030
+
+[Term]
+id: DIO:0000036
+name: Quality
+is_a: DIO:0000030
+
+[Term]
+id: DIO:0000037
+name: RNA-seq
+is_a: DIO:0000030
+
+[Term]
+id: DIO:0000038
+name: Structures
+
+[Term]
+id: DIO:0000039
+name: Pipelines
+is_a: DIO:0000038
+
+[Term]
+id: DIO:0000040
+name: Active_site_prediction
+is_a: DIO:0000038
+
+[Term]
+id: DIO:0000041
+name: Alignment
+is_a: DIO:0000038
+
+[Term]
+id: DIO:0000042
+name: Docking
+is_a: DIO:0000038
+
+[Term]
+id: DIO:0000043
+name: Prediction
+is_a: DIO:0000038
+
+[Term]
+id: DIO:0000044
+name: Retrieval
+is_a: DIO:0000038
+
+[Term]
+id: DIO:0000045
+name: Visualization
+is_a: DIO:0000038
+
+[Term]
+id: DIO:0000046
+name: Tools
+is_a: DIO:0000038
+
+[Term]
+id: DIO:0000047
+name: Databases
+
+[Term]
+id: DIO:0000048
+name: Species
+
+[Term]
+id: DIO:0000049
+name: Images
+
+[Term]
+id: DIO:0000050
+name: Values
+
+[Term]
+id: DIO:0000051
+name: Image_building_tools
+
+[Term]
+id: DIO:0000052
+name: General_tools
+
+[Term]
+id: DIO:0000053
+name: Detection_of_PSS
+is_a: DIO:0000003
+
+[Term]
+id: DIO:0000054
+name: Inversion_breakpoint_detection
+is_a: DIO:0000003
+
+[Term]
+id: DIO:0000055
+name: Phylogenetics
+is_a: DIO:0000003
+
+[Term]
+id: DIO:0000056
+name: Binning
+is_a: DIO:0000014
+
+[Term]
+id: DIO:0000057
+name: Distribution
+is_a: DIO:0000048
+
+[Term]
+id: DIO:0000058
+name: Pathways
+is_a: DIO:0000049
+
+[Term]
+id: DIO:0000059
+name: Phylogenetics
+is_a: DIO:0000050
+
+[Term]
+id: DIO:0000060
+name: Statistics
+is_a: DIO:0000050
