@@ -1,7 +1,6 @@
 import { Component, HostListener, ElementRef, Renderer2 } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { NavigationEnd, RouterLink, Router } from '@angular/router';
 import { SearchGuidedComponent } from "../../search-guided/search-guided.component";
-import { Router } from '@angular/router';
 import { Location } from '@angular/common';
 
 @Component({
@@ -14,6 +13,8 @@ import { Location } from '@angular/common';
 export class HeaderComponent {
   private firstScrollHandled = false;
   private touchStartY = 0;
+  protected scrolled = true;
+  protected isOverflowing = false;
 
   constructor(
     private el: ElementRef,
@@ -23,13 +24,22 @@ export class HeaderComponent {
   ) {
   }
 
+  ngOnInit() {
+    this.router.events.subscribe(event => {
+      if (event instanceof NavigationEnd) {
+        this.scrolled = this.router.url !== '/';
+        this.firstScrollHandled = this.router.url !== '/';
+      }
+    });
+  }
+
   ngAfterViewInit() {
     const header = this.el.nativeElement.querySelector('header');
 
     /*TODO: Fix*/
     console.log(this.location.path());
     if (this.location.path() !== '') {
-      this.renderer.addClass(header, 'scrolled');
+      this.scrolled = true;
       this.firstScrollHandled = true;
     }
 
@@ -41,24 +51,25 @@ export class HeaderComponent {
 
       if (this.firstScrollHandled) {
         window.scrollTo(0, 0);
-        this.renderer.removeClass(header, 'scrolled');
+        this.scrolled = false;
         this.firstScrollHandled = false;
       }
     });
+
+    this.checkOverflow();
   }
 
   @HostListener('wheel', ['$event'])
   onWheel(event: WheelEvent) {
     if (!this.firstScrollHandled && event.deltaY > 0) {
-      const header = this.el.nativeElement.querySelector('header');
       if (this.router.url === '/')
         this.router.navigate(['/about']);
-      this.renderer.addClass(header, 'scrolled');
+      this.scrolled = true;
       this.firstScrollHandled = true;
     }
   }
 
-  @HostListener('touchstart', ['$event'])
+  /*@HostListener('touchstart', ['$event'])
   onTouchStart(event: TouchEvent) {
     this.touchStartY = event.touches[0].clientY;
   }
@@ -67,11 +78,20 @@ export class HeaderComponent {
   onTouchEnd(event: TouchEvent) {
     const touchEndY = event.changedTouches[0].clientY;
     if (this.touchStartY > touchEndY && !this.firstScrollHandled) {
-      const header = this.el.nativeElement.querySelector('header');
       if (this.router.url === '/')
         this.router.navigate(['/about']);
-      this.renderer.addClass(header, 'scrolled');
+      this.scrolled = true;
       this.firstScrollHandled = true;
     }
+  }*/
+
+  @HostListener('window:resize', ['$event'])
+  onResize() {
+    this.checkOverflow();
+  }
+
+  checkOverflow() {
+    const nav = this.el.nativeElement.querySelector('.nav-links-bottom');
+    this.isOverflowing = nav.scrollWidth > nav.clientWidth;
   }
 }

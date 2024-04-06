@@ -1,12 +1,12 @@
 <div class="outer">
-  <header>
+  <header [class.scrolled]="scrolled">
     <div class="header-logo">
       <a routerLink="/">
         <img src="assets/pegi3s.png" alt="logo">
       </a>
       <span class="title">Bioinformatics Docker Images Project</span>
     </div>
-    <nav>
+    <nav class="nav-links-top">
       <a routerLink="/about">About</a>
       <a routerLink="/containers">Containers</a>
       <a routerLink="/tutorials">Tutorials</a>
@@ -35,4 +35,10 @@
     </div>
   </header>
   <app-search-guided />
+  <nav class="nav-links-bottom" [class.overflowing]="isOverflowing">
+    <a routerLink="/about">About</a>
+    <a routerLink="/containers">Containers</a>
+    <a routerLink="/tutorials">Tutorials</a>
+    <a routerLink="/tutorials">Tutorials</a>
+  </nav>
 </div>

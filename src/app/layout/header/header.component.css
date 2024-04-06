@@ -1,5 +1,6 @@
 :host {
   --blur-color: rgba(255, 255, 255, 0.4);
+  --vertical-main-margin: 20px;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -21,7 +22,7 @@
   top: 0;
   left: 0;
   width: 100%;
-  height: calc(100% - var(--horizontal-main-margin));
+  height: calc(100% - var(--vertical-main-margin));
   z-index: -1;
   backdrop-filter: blur(8px);
   background: linear-gradient(to bottom, var(--blur-color), rgba(0,0,0,0));
@@ -74,8 +75,8 @@
 }
 
 .outer:has(.scrolled) {
-  top: var(--horizontal-main-margin);
-  margin: var(--horizontal-main-margin);
+  top: var(--vertical-main-margin);
+  margin: var(--vertical-main-margin) var(--horizontal-main-margin);
   border-radius: 24px;
   height: 75px;
 
@@ -89,7 +90,7 @@ header {
   flex-direction: row;
   justify-content: space-between;
   transition: all cubic-bezier(0.57, -0.2, 0, 1.13) 400ms;
-  padding: 10px var(--horizontal-main-margin);
+  padding: 10px var(--vertical-main-margin);
   width: -webkit-fill-available;
 }
 
@@ -115,10 +116,12 @@ header > div {
 nav {
   display: flex;
   flex-direction: row;
+  justify-content: center;
   align-items: center;
+  gap:10px;
 
   a {
-    padding: 8px 12px;
+    padding: 8px 16px;
     border-radius: 24px;
     transition: background-color 200ms;
   }
@@ -137,4 +140,41 @@ nav {
   width: 20px;
   height: 20px;
   color: inherit;
+}
+
+
+app-search-guided {
+  flex-grow: 1;
+}
+
+.nav-links-top {
+  display: none;
+}
+
+.nav-links-bottom {
+  margin-inline: 25px;
+  margin-bottom: 30px;
+
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: space-evenly;
+  overflow-x: auto;
+  scrollbar-width: none;
+
+  a {
+    background-color: rgba(0, 0, 0, 0.1);
+    padding: 12px 24px;
+  }
+}
+.nav-links-bottom.overflowing {
+  justify-content: flex-start;
+}
+
+@media (min-width: 576px) {
+  .nav-links-top {
+      display: flex;
+  }
+  .nav-links-bottom {
+      display: none;
+  }
 }
