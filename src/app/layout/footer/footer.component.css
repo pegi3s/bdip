@@ -1,15 +1,11 @@
 :host {
-  --footer-bg-color: lightgray;
-
-  background-color: var(--footer-bg-color);
-  padding-right: var(--horizontal-main-margin);
-  padding-left: var(--horizontal-main-margin);
-}
-
-@media (prefers-color-scheme: dark) {
-  :host {
-    --footer-bg-color: dimgray;
+  --border-top-color: rgba(0, 0, 0, 0.1);
+  @media (prefers-color-scheme: dark) {
+    --border-top-color: rgba(255, 255, 255, 0.1);
   }
+
+  border-top: 1px solid var(--border-top-color);
+  padding-inline: var(--horizontal-main-margin);
 }
 
 footer {
