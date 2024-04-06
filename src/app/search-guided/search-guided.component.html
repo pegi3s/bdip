@@ -1,7 +1,8 @@
+<p class="material-symbols-rounded" (click)="goUpLevel()">arrow_back</p>
 <p>What are you looking for?</p>
 
 <div class="container">
     @for (category of categories; track $index) {
-        <div>{{ category }}</div>
+        <div (click)="loadChildren(category)">{{ category.name?.replaceAll('_', ' ') }}</div>
     }
 </div>
