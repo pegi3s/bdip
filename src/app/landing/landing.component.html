@@ -74,12 +74,6 @@
 <section>
   <div>
     <h2>Co-funded by</h2>
-    <div class="supporters">
-      @for (img of supporters; track $index) {
-        <div>
-          <img ngSrc="{{ img }}" fill />
-        </div>
-      }
-    </div>
+    <app-logo-marquee />
   </div>
 </section>

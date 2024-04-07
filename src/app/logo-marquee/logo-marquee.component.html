@@ -1,0 +1,10 @@
+<div class="container">
+  <ul>
+    @for (img of supporters; track $index) {
+      <li [style.--index]="$index">
+          <img src="{{ img }}" />
+      </li>
+    }
+  </ul>
+</div>
+

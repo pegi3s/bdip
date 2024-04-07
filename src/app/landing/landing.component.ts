@@ -8,13 +8,14 @@ import { CarouselComponent } from '../carousel/carousel.component';
 import { ContributorCardComponent } from "../contributor-card/contributor-card.component";
 import { ContributorService } from '../services/contributor.service';
 import { Contributor } from '../models/contributor.model';
+import { LogoMarqueeComponent } from "../logo-marquee/logo-marquee.component";
 
 @Component({
     selector: 'app-landing',
     standalone: true,
     templateUrl: './landing.component.html',
     styleUrl: './landing.component.css',
-    imports: [CarouselComponent, ReasonListComponent, SearchComponent, SearchGuidedComponent, SearchListComponent, NgOptimizedImage, ContributorCardComponent]
+    imports: [CarouselComponent, ReasonListComponent, SearchComponent, SearchGuidedComponent, SearchListComponent, NgOptimizedImage, ContributorCardComponent, LogoMarqueeComponent]
 })
 export class LandingComponent {
   contributorService: ContributorService = inject(ContributorService);
