@@ -13,21 +13,22 @@
   position: sticky;
   top: 0;
   z-index: 20;
+  overflow-y: hidden;
 }
 
 :host::before {
   /*TODO: Limit blur to .scrolled*/
-  content: '';
   position: absolute;
   top: 0;
   left: 0;
-  width: 100%;
-  height: calc(100% - var(--vertical-main-margin));
   z-index: -1;
   backdrop-filter: blur(8px);
-  background: linear-gradient(to bottom, var(--blur-color), rgba(0,0,0,0));
   mask: linear-gradient(to top, transparent, black 25%);
+  background: linear-gradient(to bottom, var(--blur-color), rgba(0, 0, 0, 0));
+  width: 100%;
+  height: calc(100% - var(--vertical-main-margin));
   pointer-events: none;
+  content: "";
 }
 
 .outer {
@@ -69,9 +70,12 @@
 .outer {
   display: flex;
   flex-direction: column;
-  transition: all cubic-bezier(0.57, -0.2, 0, 1.13) 400ms;
   height: 100dvh;
   color: white;
+}
+
+.outer:has(.transitions-enabled) {
+  transition: all cubic-bezier(0.57, -0.2, 0, 1.13) 400ms;
 }
 
 .outer:has(.scrolled) {
@@ -89,9 +93,13 @@ header {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  transition: all cubic-bezier(0.57, -0.2, 0, 1.13) 400ms;
   padding: 10px var(--vertical-main-margin);
   width: -webkit-fill-available;
+  max-height: 75px;
+}
+
+header.transitions-enabled {
+  transition: all cubic-bezier(0.57, -0.2, 0, 1.13) 400ms;
 }
 
 header.scrolled {
@@ -101,7 +109,16 @@ header.scrolled {
 
 header > div {
   display: flex;
+  flex: 1;
   align-items: center;
+}
+
+header > div:first-child {
+  justify-content: flex-start;
+}
+
+header > div:last-child {
+  justify-content: flex-end;
 }
 
 .header-logo > span {
@@ -118,12 +135,12 @@ nav {
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  gap:10px;
+  gap: 10px;
 
   a {
-    padding: 8px 16px;
-    border-radius: 24px;
     transition: background-color 200ms;
+    border-radius: 24px;
+    padding: 8px 16px;
   }
 
   a:hover {
@@ -142,7 +159,6 @@ nav {
   color: inherit;
 }
 
-
 app-search-guided {
   flex-grow: 1;
 }
@@ -152,12 +168,11 @@ app-search-guided {
 }
 
 .nav-links-bottom {
-  margin-inline: 25px;
-  margin-bottom: 30px;
-
   display: flex;
   flex-wrap: nowrap;
   justify-content: space-evenly;
+  margin-inline: 25px;
+  margin-bottom: 30px;
   overflow-x: auto;
   scrollbar-width: none;
 
@@ -172,9 +187,9 @@ app-search-guided {
 
 @media (min-width: 576px) {
   .nav-links-top {
-      display: flex;
+    display: flex;
   }
   .nav-links-bottom {
-      display: none;
+    display: none;
   }
 }

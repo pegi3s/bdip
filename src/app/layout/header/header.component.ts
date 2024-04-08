@@ -11,6 +11,9 @@ import { Location } from '@angular/common';
     imports: [RouterLink, SearchGuidedComponent]
 })
 export class HeaderComponent {
+  /* Disable transitions on first load to prevent the header from sliding in */
+  protected enableTransitions = false;
+
   private firstScrollHandled = false;
   private touchStartY = 0;
   protected scrolled = true;
@@ -57,6 +60,9 @@ export class HeaderComponent {
     });
 
     this.checkOverflow();
+    setTimeout(() => {
+      this.enableTransitions = true;
+    }, 1000);
   }
 
   @HostListener('wheel', ['$event'])
