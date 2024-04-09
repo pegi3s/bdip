@@ -2,6 +2,7 @@ import { Component, inject } from '@angular/core';
 import { ContainerService } from '../services/container.service';
 import { TermStanza } from '../obo/TermStanza';
 import { OntologyEditorElementComponent } from '../ontology-editor-element/ontology-editor-element.component';
+import { Ontology } from '../obo/Ontology';
 
 @Component({
   selector: 'app-ontology-editor',
@@ -12,6 +13,7 @@ import { OntologyEditorElementComponent } from '../ontology-editor-element/ontol
 })
 export class OntologyEditorComponent {
   containerService: ContainerService = inject(ContainerService);
+  ontology?: Ontology;
   rootCategories: TermStanza[] = [];
   categories: TermStanza[] = [];
   containers: Map<string, Set<string>> = new Map<string, Set<string>>();
@@ -19,6 +21,9 @@ export class OntologyEditorComponent {
   ngOnInit() {
     console.log('Loading categories...');
     this.containerService.getOntology().subscribe((ontology) => {
+      this.ontology = ontology;
+      // TODO: Check if the ontology returned is shared between subscribers. If so, do the following
+      // this.ontology = structuredClone(ontology);
       const roots = ontology
         .getOntology()
         ?.filter((term) => term.hasParents() === false);
@@ -36,7 +41,18 @@ export class OntologyEditorComponent {
     });
   }
 
-  save() {
-    console.log('Save');
+  save(): void {
+    if (this.ontology != null) {
+      const file = this.ontology.toOBOFile();
+      const url = URL.createObjectURL(file);
+
+      // Create an anchor element with the generated URL and programmatically click it to force the download
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'dio.obo';
+      a.click();
+
+      URL.revokeObjectURL(url);
+    }
   }
 }

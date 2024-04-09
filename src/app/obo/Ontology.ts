@@ -203,4 +203,8 @@ export class Ontology {
     });
     return oboString.join('\n');
   }
+
+  public toOBOFile() {
+    return new File([this.toString()], 'dio.obo', {type: 'text/plain'});
+  }
 }
