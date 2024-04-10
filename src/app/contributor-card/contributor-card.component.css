@@ -41,44 +41,69 @@
 }
 
 .name {
-    display: flex;
-    gap: 8px;
-    align-items: center;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 
-    span:first-child {
-        margin-right: 8px;
-        font-size: 1.2rem;
-        font-weight: 600;
-    }
-
-    span:not(:first-child) {
-        font-size: 0.75rem;
-        padding: 6px 10px;
-        border-radius: 16px;
-        color: white;
-        background-color: var(--bg-color);
-        box-shadow: rgb(from var(--bg-color) r g b / 0.3) 0 2px 8px -1px;
-    }
+  > p {
+    margin-right: 8px;
+    font-weight: 600;
+    font-size: 1.2rem;
+  }
 }
 
-.i3S {
-    --bg-color: #0082c4;
+.organization {
+  display: flex;
+  position: relative;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+
+  p {
+    z-index: 1;
+    box-shadow: rgb(from var(--bg-color) r g b / 0.3) 0 2px 8px -1px;
+    border-radius: 16px;
+    background-color: var(--bg-color);
+    padding: 6px 10px;
+    color: white;
+    font-size: 0.75rem;
+  }
 }
 
-.IBMC {
-    --bg-color: #41c4dc;
+.tooltip {
+  display: block;
+  position: absolute;
+  top: 0;
+  opacity: 0;
+  transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  box-shadow: 0 10px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 16px;
+  background-color: var(--bg-color);
+  padding: 6px 10px;
+  pointer-events: none;
+  color: white;
+  font-size: 0.75rem;
+  white-space: nowrap;
 }
 
-.SING {
-    --bg-color: #000000;
+.tooltip::before {
+  position: absolute;
+  bottom: -3px;
+  left: 50%;
+  transform: translate(-50%) rotate(45deg);
+  transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  border-radius: 2px;
+  background-color: var(--bg-color);
+  width: 10px;
+  height: 10px;
+  content: "";
 }
 
-.CINBIO {
-    --bg-color: #00379f;
-}
-
-.IISGS {
-    --bg-color: #0084ce;
+.organization:hover .tooltip {
+  top: -35px;
+  visibility: visible;
+  opacity: 1;
+  pointer-events: auto;
 }
 
 p {

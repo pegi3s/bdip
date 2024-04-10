@@ -6,9 +6,12 @@
     <img [src]="contributor.photo" alt="" />
     <div>
       <div class="name">
-        <span>{{ contributor.name }}</span>
+        <p>{{ contributor.name }}</p>
         @for (organization of contributor.organizations; track $index) {
-          <span [class]="organization">{{ organization }}</span>
+          <div class="organization" [style.--bg-color]="organization.color">
+            <span class="tooltip">{{ organization.fullName }}</span>
+            <p>{{ organization.acronym }}</p>
+          </div>
         }
       </div>
       <hr />

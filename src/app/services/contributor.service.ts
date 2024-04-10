@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ContactType } from '../models/contact-type';
 import { Contributor } from '../models/contributor.model';
-import { Organization } from '../models/organization';
+import * as Organization from '../models/organization';
 
 @Injectable({
   providedIn: 'root'
