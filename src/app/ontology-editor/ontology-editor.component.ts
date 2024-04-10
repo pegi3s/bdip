@@ -14,31 +14,24 @@ import { Ontology } from '../obo/Ontology';
 export class OntologyEditorComponent {
   containerService: ContainerService = inject(ContainerService);
   ontology?: Ontology;
-  rootCategories: TermStanza[] = [];
-  categories: TermStanza[] = [];
   containers: Map<string, Set<string>> = new Map<string, Set<string>>();
 
   ngOnInit() {
     console.log('Loading categories...');
-    this.containerService.getOntology().subscribe((ontology) => {
+    this.containerService.getOntology(false).subscribe((ontology) => {
       this.ontology = ontology;
-      // TODO: Check if the ontology returned is shared between subscribers. If so, do the following
-      // this.ontology = structuredClone(ontology);
-      const roots = ontology
-        .getOntology()
-        ?.filter((term) => term.hasParents() === false);
-      console.log(roots);
-      roots?.forEach((root) => {
-        this.rootCategories.push(root);
-        this.categories.push(root);
-      });
     });
-    console.log('Categories loaded.');
-    console.log(this.categories);
     this.containerService.getContainersMap().subscribe((containers) => {
-      console.log('Containers loaded.');
       this.containers = containers;
     });
+  }
+
+  getRootCategories(): TermStanza[] {
+    if (this.ontology != null) {
+      return this.ontology.getOntology().filter((term) => !term.hasParents());
+    } else {
+      return [];
+    }
   }
 
   save(): void {

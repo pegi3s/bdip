@@ -9,12 +9,13 @@
 </div>
 <div class="actions">
   <button class="material-symbols-rounded">edit</button>
-  <button class="material-symbols-rounded">delete</button>
+  <button class="material-symbols-rounded" (click)="removeStanza()">delete</button>
 </div>
 
 <div class="children">
   @for (category of category?.getChildren(); track $index) {
     <app-ontology-editor-element
+      [ontology]="ontology"
       [category]="category"
       [containers]="containers"
     />

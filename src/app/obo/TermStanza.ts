@@ -16,6 +16,14 @@ export class TermStanza {
     this.children.add(child);
   }
 
+  public removeParent(parent: TermStanza): boolean {
+    return this.parents.delete(parent);
+  }
+
+  public removeChild(child: TermStanza): boolean {
+    return this.children.delete(child);
+  }
+
   // Return an array instead of a set for inmutability
   public getParents(): TermStanza[] {
     return Array.from(this.parents);

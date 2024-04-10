@@ -86,7 +86,24 @@ export class ContainerService {
     );
   }
 
-  getOntology(): Observable<Ontology> {
+  /**
+   * Retrieves the ontology. If the ontology is cached and the `cached` parameter is `true`,
+   * it returns the cached version. Otherwise, it fetches the raw ontology, transforms it
+   * into an Ontology instance, caches it (if `cached` is `true`), and then returns it.
+   *
+   * The returned Observable is shared among multiple subscribers to avoid redundant
+   * network requests. The last emitted value is replayed to new subscribers.
+   *
+   * Note: The cached Ontology instance that the subscribers receive always points to the same instance.
+   *
+   * @param {boolean} cached - If `true`, use the cached ontology if available. If `false`, fetch a new ontology.
+   * @returns {Observable<Ontology>} An Observable that emits the ontology.
+   */
+  getOntology(cached: boolean = true): Observable<Ontology> {
+    if (!cached) {
+      return this.getRawOntology().pipe(map((data) => new Ontology(data)));
+    }
+
     if (this.ontologyCache) {
       return this.ontologyCache;
     }

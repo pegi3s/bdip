@@ -1,6 +1,6 @@
 import { Component, HostBinding, HostListener, Input, inject } from '@angular/core';
 import { TermStanza } from '../obo/TermStanza';
-import { ContainerService } from '../services/container.service';
+import { Ontology } from '../obo/Ontology';
 
 @Component({
   selector: 'app-ontology-editor-element',
@@ -10,6 +10,7 @@ import { ContainerService } from '../services/container.service';
   styleUrl: './ontology-editor-element.component.css',
 })
 export class OntologyEditorElementComponent {
+  @Input() ontology?: Ontology;
   @Input() category?: TermStanza;
   @Input() containers?: Map<string, Set<string>>;
 
@@ -28,5 +29,11 @@ export class OntologyEditorElementComponent {
 
   addStanza() {
     console.log('Adding stanza...');
+  }
+
+  removeStanza() {
+    if (this.category) {
+      this.ontology?.removeTerm(this.category);
+    }
   }
 }
