@@ -4,6 +4,7 @@
   align-items: center;
   padding-bottom: 50px;
   color: white;
+  overflow-y: auto;
 }
 
 p {
