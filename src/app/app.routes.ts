@@ -4,6 +4,8 @@ import { SearchListComponent } from './search-list/search-list.component';
 import { EmptyComponent } from './empty/empty.component';
 import { OntologyEditorComponent } from './ontology-editor/ontology-editor.component';
 import { ContainerComponent } from './container/container.component';
+import { TutorialComponent } from './tutorial/tutorial.component';
+import { TutorialsLandingComponent } from './tutorials-landing/tutorials-landing.component';
 
 export const routes: Routes = [
     {
@@ -23,6 +25,14 @@ export const routes: Routes = [
     {
         path: 'container/:name',
         component: ContainerComponent,
+    },
+    {
+        path: 'tutorials',
+        component: TutorialsLandingComponent,
+    },
+    {
+        path: 'tutorials/:name',
+        component: TutorialComponent,
     },
     {
         path: 'edit-ontology',

@@ -1,0 +1,35 @@
+:host {
+  display: grid;
+  grid-template-columns: 1fr 3fr 1fr;
+  column-gap: 80px;
+
+  margin-inline: auto;
+  padding: 35px var(--horizontal-main-margin);
+  max-inline-size: 2048px;
+}
+
+ul {
+  position: sticky;
+  top: 150px;
+  align-self: start;
+}
+
+ul {
+  padding: 0;
+  margin: 0;
+}
+
+.current {
+  font-weight: 600;
+  background-color: rgb(var(--main-font-color), 0.08);
+}
+
+li {
+  padding: 4px 0 4px 16px;
+  list-style: none;
+  border-radius: 6px;
+  
+  &:not(.active) {
+    border-color: transparent;
+  }
+}

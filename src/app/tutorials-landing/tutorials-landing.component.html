@@ -1,0 +1,19 @@
+<section class="how-to-start">
+  <h2>Tutorials</h2>
+  <p>
+    Welcome to our tutorials section! Here, you'll find a collection of
+    step-by-step guides designed to help you master our software. Whether you're
+    a beginner just getting started or an experienced user looking for advanced
+    tips, we've got you covered. Click on any tutorial below to begin your
+    learning journey.
+  </p>
+  <div class="tutorials">
+    @for (tutorial of tutorials; track $index) {
+      <a routerLink="{{ tutorial.url }}" [style.--url]="'url(' + tutorial.image + ')'">
+        <img src="{{ tutorial.image }}" alt="" />
+        <h3>{{ tutorial.name }}</h3>
+        <p>{{ tutorial.description }}</p>
+      </a>
+    }
+  </div>
+</section>
