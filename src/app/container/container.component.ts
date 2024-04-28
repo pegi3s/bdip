@@ -11,10 +11,10 @@ import { DatePipe, SlicePipe } from '@angular/common';
   standalone: true,
   imports: [DatePipe, SlicePipe, MarkdownModule],
   templateUrl: './container.component.html',
-  styleUrl: './container.component.css'
+  styleUrls: ['./container.component.css', '../markdown-body.css']
 })
 export class ContainerComponent {
-  route: ActivatedRoute = inject(ActivatedRoute);
+  activatedRoute: ActivatedRoute = inject(ActivatedRoute);
   containerService: ContainerService = inject(ContainerService);
 
   container?: DockerHubImage;
@@ -23,16 +23,14 @@ export class ContainerComponent {
   showReadme = true;
 
   constructor() {
-    const containerName = this.route.snapshot.params['name'];
-    this.containerService.getContainerInfo(containerName).subscribe(
-      container => this.container = container,
-    );
-    this.containerService.getContainerTags(containerName).subscribe(
-      containerTags => this.containerTags = containerTags,
-    );
-  }
-  onReadmeChange() {
-    console.log('Readme changed');
-    this.showReadme = true;
+    this.activatedRoute.params.subscribe(params => {
+      const containerName = this.activatedRoute.snapshot.params['name'];
+      this.containerService.getContainerInfo(containerName).subscribe(
+        container => this.container = container,
+      );
+      this.containerService.getContainerTags(containerName).subscribe(
+        containerTags => this.containerTags = containerTags,
+      );
+    });
   }
 }

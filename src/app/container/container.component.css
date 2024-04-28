@@ -131,10 +131,7 @@ code {
 }
 
 markdown {
-  display: block;
   grid-area: readme;
-  min-width: 0;
-  word-break: break-word;
 }
 
 /*  */
