@@ -5,7 +5,7 @@
   position: relative;
 }
 
-/* TODO: Fix */
-router-outlet + * {
+/* TODO: Not optimal */
+:host router-outlet ::ng-deep + * {
   flex-grow: 1;
 }
