@@ -1,13 +1,13 @@
 <ul class="tutorials">
   @for (tutorial of tutorials; track $index) {
-    <li [class.current]="tutorial.url.endsWith(tutorialName+'')">
+    <li [class.current]="tutorial.url.endsWith(tutorialName)">
       <a routerLink="{{ tutorial.url }}">{{ tutorial.name }}</a>
     </li>
   }
 </ul>
 <markdown
   class="markdown-body"
-  [src]="getTutorialUrl()"
+  [src]="tutorialService.getTutorialUrl(this.tutorialName)"
   (ready)="this.getHeadings()"
 />
 <!-- There shouldn't be any risk of XSS as the headers are being obtained from the rendered Markdown that already has been sanitized. -->

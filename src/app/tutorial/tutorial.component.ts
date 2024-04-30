@@ -1,4 +1,4 @@
-import { Component, ElementRef, inject } from '@angular/core';
+import { Component, ElementRef, ViewEncapsulation, inject } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { MarkdownModule } from 'ngx-markdown';
 import { TutorialService } from '../services/tutorial.service';
@@ -14,9 +14,8 @@ import { Tutorial } from '../models/tutorial';
 export class TutorialComponent {
   activatedRoute: ActivatedRoute = inject(ActivatedRoute);
   tutorialService: TutorialService = inject(TutorialService);
-  baseTutorialUrl = 'https://raw.githubusercontent.com/pegi3s/dockerfiles/master/tutorials/';
   
-  tutorialName?: string;
+  tutorialName: string = '';
   headings?: Element[];
   tutorials: Tutorial[];
 
@@ -25,10 +24,6 @@ export class TutorialComponent {
       this.tutorialName = this.activatedRoute.snapshot.params['name'];
     });
     this.tutorials = this.tutorialService.getTutorials();
-  }
-
-  getTutorialUrl(): string {
-    return `${this.baseTutorialUrl}${this.tutorialName}.md`;
   }
 
   getHeadings() {

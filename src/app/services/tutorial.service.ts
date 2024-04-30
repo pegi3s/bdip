@@ -5,6 +5,8 @@ import { Tutorial } from '../models/tutorial';
   providedIn: 'root'
 })
 export class TutorialService {
+  baseTutorialUrl = 'https://raw.githubusercontent.com/pegi3s/dockerfiles/master/tutorials/';
+
   tutorials: Tutorial[] = [
     {
       name: 'Docker in Docker',
@@ -36,5 +38,9 @@ export class TutorialService {
 
   getTutorials(): Tutorial[] {
     return this.tutorials;
+  }
+
+  getTutorialUrl(name: string): string {
+    return `${this.baseTutorialUrl}${name}.md`;
   }
 }
