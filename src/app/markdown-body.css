@@ -52,6 +52,12 @@
     --color-danger-emphasis: #da3633;
     --color-done-fg: #a371f7;
     --color-done-emphasis: #8957e5;
+    /* Custom CSS */
+    --custom-bg-accordion: rgba(10, 10, 10, 0.6);
+    --custom-outline: 1px solid rgba(37, 41, 40, 0.5);
+    --custom-hover-color: rgb(37, 41, 40);
+    --custom-bg-codeblock: hsla(0, 0%, 4%, 0.6);
+    --custom-color-link: rgb(131, 214, 241);
   }
 }
 
@@ -109,6 +115,12 @@
     --color-danger-emphasis: #cf222e;
     --color-done-fg: #8250df;
     --color-done-emphasis: #8250df;
+    /* Custom CSS */
+    --custom-bg-accordion: rgba(255, 255, 255);
+    --custom-outline: 1px solid rgb(222, 226, 226);
+    --custom-hover-color: rgb(238 242 241);
+    --custom-bg-codeblock: hsla(0, 0%, 94%, 0.6);
+    --custom-color-link: #0969da; /* --color-accent-fg */
   }
 }
 
@@ -867,7 +879,7 @@
   border: 0;
   background: transparent;
   padding: 0;
-  white-space: pre;
+  /* white-space: pre; */
   word-break: normal;
 }
 
@@ -883,12 +895,17 @@
 .markdown-body ::ng-deep .highlight pre,
 .markdown-body ::ng-deep pre {
   border-radius: 6px;
-  background-color: var(--color-canvas-subtle);
-  padding: 16px;
+  /* background-color: var(--color-canvas-subtle); */
+  background-color: var(--custom-bg-codeblock);
+  /* padding: 16px; */
+  padding: 20px;
   overflow: auto;
   color: var(--color-fg-default);
   font-size: 85%;
-  line-height: 1.45;
+  /* line-height: 1.45; */
+  line-height: 24px;
+  outline: var(--custom-outline);
+  border-radius: 12px;
 }
 
 .markdown-body ::ng-deep pre code,
@@ -1250,4 +1267,35 @@
 
 .markdown-body ::ng-deep img {
   max-width: 100%;
+}
+
+/* Custom CSS */
+
+.markdown-body ::ng-deep details {
+  background-color: var(--custom-bg-accordion);
+  outline: var(--custom-outline);
+}
+
+.markdown-body ::ng-deep details,
+.markdown-body ::ng-deep details summary {
+  padding: 16px 20px;
+  border-radius: 12px;
+}
+
+.markdown-body ::ng-deep details summary {
+  margin: -16px -20px;
+}
+
+.markdown-body ::ng-deep details[open] summary {
+  margin-bottom: 8px;
+  border-bottom-left-radius: 0px;
+  border-bottom-right-radius: 0px;
+}
+
+.markdown-body ::ng-deep details summary:hover {
+  background-color: var(--custom-hover-color);
+}
+
+.markdown-body ::ng-deep a {
+  color: var(--custom-color-link);
 }
