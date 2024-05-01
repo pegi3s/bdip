@@ -35,11 +35,11 @@ export class HeaderComponent {
       }
     });
   }
-
+/*
   ngAfterViewInit() {
     const header = this.el.nativeElement.querySelector('header');
 
-    /*TODO: Fix*/
+    // TODO: Fix
     console.log(this.location.path());
     if (this.location.path() !== '') {
       this.scrolled = true;
@@ -64,7 +64,7 @@ export class HeaderComponent {
       this.enableTransitions = true;
     }, 1000);
   }
-
+*/
   @HostListener('wheel', ['$event'])
   onWheel(event: WheelEvent) {
     if (!this.firstScrollHandled && event.deltaY > 0) {

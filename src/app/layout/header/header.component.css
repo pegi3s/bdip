@@ -42,16 +42,19 @@
   radial-gradient(at 71% 94%, hsla(250,99%,60%,1) 0px, transparent 50%);
   */
   animation: gradient 30s linear infinite;
-  background-image:
+  /* background-image:
     radial-gradient(at 21% 13%, hsla(240, 87%, 50%, 1) 0px, transparent 50%),
     radial-gradient(at 97% 43%, hsla(250, 88%, 55%, 1) 0px, transparent 50%),
     radial-gradient(at 85% 67%, hsla(260, 84%, 45%, 1) 0px, transparent 50%),
     radial-gradient(at 34% 27%, hsla(220, 81%, 60%, 1) 0px, transparent 50%),
     radial-gradient(at 28% 76%, hsla(230, 61%, 50%, 1) 0px, transparent 50%),
     radial-gradient(at 93% 19%, hsla(240, 93%, 55%, 1) 0px, transparent 50%),
-    radial-gradient(at 71% 94%, hsla(250, 99%, 40%, 1) 0px, transparent 50%);
+    radial-gradient(at 71% 94%, hsla(250, 99%, 40%, 1) 0px, transparent 50%); */
   background-size: 200% 200%;
   background-color: #0082c4;
+
+  background-color: rgba(127, 127, 127, .1);
+  border: 1px solid rgba(127, 127, 127, .1);
 }
 
 @keyframes gradient {
@@ -95,6 +98,7 @@ header {
   justify-content: space-between;
   padding: 10px var(--vertical-main-margin);
   width: -webkit-fill-available;
+  width: -moz-available;
   max-height: 75px;
 }
 
@@ -124,6 +128,7 @@ header > div:last-child {
 .header-logo > span {
   margin-left: 6px;
   font-weight: bold;
+  display: none;
 }
 
 .title {
@@ -146,17 +151,6 @@ nav {
   a:hover {
     background-color: rgba(255, 255, 255, 0.2);
   }
-}
-
-.social-links a {
-  margin-left: 12px;
-  line-height: 0;
-}
-
-.social {
-  width: 20px;
-  height: 20px;
-  color: inherit;
 }
 
 app-search-guided {
@@ -191,5 +185,9 @@ app-search-guided {
   }
   .nav-links-bottom {
     display: none;
+  }
+
+  .header-logo > span {
+    display: block;
   }
 }
