@@ -139,7 +139,7 @@ section > div {
     pointer-events: none;
     opacity: 1;
   }
-  
+
   .halo-container.clicked > .search {
     width: 0px;
     opacity: 0;
