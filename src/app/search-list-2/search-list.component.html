@@ -1,0 +1,19 @@
+<div class="category-container">
+  @for (container of matchedContainers; track $index) {
+      <!-- @for (container of containers.get(category); track $index) { -->
+        <div class="container-item">
+          <p>{{ container }}</p>
+          <!-- <p>{{ container.name }}</p>
+          <p>{{ container.description }}</p> -->
+          <div>
+            <a routerLink="/container/{{ container }}"><span class="material-symbols-rounded">description</span></a>
+            <!-- <a routerLink="/container/{{ container.name }}"><span class="material-symbols-rounded">description</span></a> -->
+            <!-- @if (!container.docs.startsWith('https://github.com/pegi3s/dockerfiles')) {
+              <a [href]="container.docs"><span class="material-symbols-rounded">link</span></a>
+            } -->
+          </div>
+        </div>
+      <!-- } -->
+    }
+  </div>
+

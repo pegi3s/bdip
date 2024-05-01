@@ -1,10 +1,19 @@
-<p>
+<section class="search-container" #searchContainer [class.active]="categorySelectionStack.length !== 0">
+  <p @fadeIn>
     <span class="material-symbols-rounded" (click)="goUpLevel()">arrow_back</span>
     What are you looking for?
-</p>
+  </p>
 
-<div class="container">
+  <div class="container" @fadeIn>
     @for (category of categories; track $index) {
-        <div (click)="loadChildren(category)">{{ category.name?.replaceAll('_', ' ') }}</div>
+      <div (click)="loadChildren(category)">
+        {{ category.name?.replaceAll("_", " ") }}
+      </div>
     }
-</div>
+  </div>
+
+  @if (this.categorySelectionStack.length === 0) {
+    <input placeholder="Search" type="text" maxlength="200" @fadeIn/>
+  }
+</section>
+<app-search-list-2 [category]="this.categorySelectionStack.length === 0 ? undefined : this.categorySelectionStack[this.categorySelectionStack.length - 1]"></app-search-list-2>
