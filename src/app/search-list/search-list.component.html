@@ -1,17 +1,30 @@
 <div class="categories">
-  @for (category of containers.keys(); track $index) {
-    <a [href]="'/containers/#' + category">{{ category }}</a>
+  <div class="category-list">
+    @for (category of containers.keys(); track $index) {
+      <a routerLink="." [fragment]="category">{{ category }}</a>
+    }
+  </div>
+  @if (!isLeftEnd) {
+    <button class="button-scroll-left material-symbols-rounded" (click)="scrollLeft()">navigate_before</button>
+  }
+  @if (!isRightEnd) {
+    <button class="button-scroll-right material-symbols-rounded" (click)="scrollRight()">navigate_next</button>
   }
 </div>
-<div>
+<div class="container-list">
   @for (category of containers.keys(); track $index) {
-    <h2 [id]="category">{{ category }}</h2>
-    <div>
+    <h2 class="category-title" [id]="category">{{ category }}</h2>
+    <div class="category-container">
       @for (container of containers.get(category); track $index) {
-        <div>
+        <div class="container-item">
           <p>{{ container.name }}</p>
           <p>{{ container.description }}</p>
-          <p><a [href]="container.docs"><span class="material-symbols-rounded">description</span></a></p>
+          <div>
+            <a routerLink="/container/{{ container.name }}"><span class="material-symbols-rounded">description</span></a>
+            @if (!container.docs.startsWith('https://github.com/pegi3s/dockerfiles')) {
+              <a [href]="container.docs"><span class="material-symbols-rounded">link</span></a>
+            }
+          </div>
         </div>
       }
     </div>

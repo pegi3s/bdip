@@ -1,23 +1,21 @@
-import { AfterViewInit, Component } from "@angular/core";
+import { AfterViewInit, Component, inject } from "@angular/core";
+import { ActivatedRoute, RouterLink } from "@angular/router";
+import { ViewportScroller } from "@angular/common";
 import dockerfiles from '../../assets/contents.json';
 
 @Component({
   selector: 'app-search-list',
   standalone: true,
-  imports: [],
+  imports: [RouterLink],
   templateUrl: './search-list.component.html',
   styleUrl: './search-list.component.css'
 })
 export class SearchListComponent implements AfterViewInit {
-  //containers = dockerfiles;
+  private activatedRoute: ActivatedRoute = inject(ActivatedRoute);
+  private viewportScroller: ViewportScroller = inject(ViewportScroller);
 
-  /*constructor() {
-    dockerfiles.forEach((element) => {
-      if (element.type === 'dir') {
-        this.containers.push(element.name);
-      }
-    });
-  }*/
+  isLeftEnd = true;
+  isRightEnd = false;
 
   containers = new Map<string, Dockerfile[]>();
   constructor() {
@@ -28,11 +26,17 @@ export class SearchListComponent implements AfterViewInit {
         this.containers.get(element.category)?.push(element);
       }
     });
+    this.activatedRoute.fragment.subscribe(fragment => {
+      if (fragment) {
+        this.viewportScroller.setOffset([0, 180]);
+        this.viewportScroller.scrollToAnchor(fragment);
+      }
+    });
   }
 
   ngAfterViewInit() {
     const headings = Array.from(document.querySelectorAll('.categories + div > h2'));
-    const tocAnchors = Array.from(document.querySelectorAll('.categories > a'));
+    const tocAnchors = Array.from(document.querySelectorAll('.category-list > a'));
 
     const observer = new IntersectionObserver(
       (entries) => {
@@ -51,6 +55,26 @@ export class SearchListComponent implements AfterViewInit {
 
     headings.forEach((hTwo) => observer.observe(hTwo));
   }
+
+  scrollLeft() {
+    document.getElementsByClassName('category-list')[0]?.scrollBy({ left: -200, behavior: 'smooth' });
+    setTimeout(() => {
+      this.checkScrollPosition();
+    }, 300);
+  }
+
+  scrollRight() {
+    document.getElementsByClassName('category-list')[0]?.scrollBy({ left: 200, behavior: 'smooth' });
+    setTimeout(() => {
+      this.checkScrollPosition();
+    }, 400);
+  }
+
+  checkScrollPosition() {
+    const element = document.getElementsByClassName('category-list')[0];
+    this.isLeftEnd = element.scrollLeft === 0;
+    this.isRightEnd = element.scrollLeft + element.clientWidth === element.scrollWidth;
+  }
 }
 
 interface Dockerfile {
@@ -58,5 +82,4 @@ interface Dockerfile {
   name: string;
   description: string;
   docs: string;
-  // include other properties as needed
 }

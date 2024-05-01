@@ -5,35 +5,72 @@
 
 .categories {
   background-color: white;
-  display: flex;
-  gap: 8px;
   padding: 8px;
-  border-radius: 8px;
+  border-radius: 24px;
+  box-shadow: rgba(0, 0, 0, 0.1) 0 10px 32px 0;
 
   position: sticky;
-  top: 10px;
+  top: 115px;
+}
+
+.category-list {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 8px;
+  border-radius: inherit;
+  overflow-x: scroll;
+  scrollbar-width: none;
 
   a {
     padding: 4px;
+    border-radius: 24px;
+    padding: 8px 12px;
+    white-space: nowrap;
+    transition: background-color 200ms;
 
     &.active {
-      background-color: lightsalmon;
+      background-color: rgba(0, 129, 194, 0.5);
     }
 
     &:hover {
-      background-color: aliceblue;
+      background-color: rgba(255, 255, 255, 0.2);
     }
   }
 }
 
-h2 ~ div {
+.button-scroll-left, .button-scroll-right {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  margin: 6px;
+  border: none;
+  background-color: rgba(255, 255, 255, 0.15);
+  border-radius: 50%;
+  padding: 8px;
+  aspect-ratio: 1/1;
+  transition: background-color 200ms;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.4);
+  }
+}
+
+.button-scroll-left {
+  left: 0;
+}
+
+.button-scroll-right {
+  right: 0;
+}
+
+.category-container {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(175px, 1fr));
   column-gap: 12px;
   row-gap: 12px;
 }
 
-div > div > div {
+.container-item {
   display: grid;
   grid-template-rows: min-content 1fr min-content;
   row-gap: 12px;
@@ -51,10 +88,16 @@ div > div > div {
   p:first-child {
     font-weight: bold;
   }
+
+  div {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
 }
 
 @media (prefers-color-scheme: dark) {
-  .categories, div > div > div {
+  .categories, .container-item {
     background-color: rgb(43, 43, 43);
   }
 }
