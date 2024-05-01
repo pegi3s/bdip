@@ -37,6 +37,12 @@ export class SearchListComponent2 implements OnChanges {
         this.getContainersByCategory(this.category);
       }
     }
+    if (changes["name"] && !changes["name"].firstChange) {
+      this.matchedContainers.clear();
+      if (this.name.length > 0) {
+        this.getContainersByName(this.name);
+      }
+    }
   }
 
   getContainersByCategory(category: TermStanza) {
@@ -51,7 +57,13 @@ export class SearchListComponent2 implements OnChanges {
     }
   }
 
-  /* getContainersByName(name: string) {
-
-  } */
+  getContainersByName(name: string) {
+    this.containers.forEach((containerSet) => {
+      containerSet.forEach((container) => {
+        if (container.includes(name)) {
+          this.matchedContainers.add(container);
+        }
+      });
+    });
+  }
 }

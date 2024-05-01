@@ -1,19 +1,21 @@
-<section class="search-container" #searchContainer [class.active]="categorySelectionStack.length !== 0">
-  <p @fadeIn>
-    <span class="material-symbols-rounded" (click)="goUpLevel()">arrow_back</span>
-    What are you looking for?
-  </p>
-
-  <div class="container" @fadeIn>
-    @for (category of categories; track $index) {
-      <div (click)="loadChildren(category)">
-        {{ category.name?.replaceAll("_", " ") }}
-      </div>
-    }
-  </div>
+<section class="search-container" #searchContainer [class.active]="categorySelectionStack.length !== 0 || this.searchTerm.length !== 0">
+  @if (this.searchTerm.length === 0) {
+    <p @fadeIn>
+      <span class="material-symbols-rounded" (click)="goUpLevel()">arrow_back</span>
+      What are you looking for?
+    </p>
+    
+    <div class="container" @fadeIn>
+      @for (category of categories; track $index) {
+        <div (click)="loadChildren(category)">
+          {{ category.name?.replaceAll("_", " ") }}
+        </div>
+      }
+    </div>
+  }
 
   @if (this.categorySelectionStack.length === 0) {
-    <input placeholder="Search" type="text" maxlength="200" @fadeIn/>
+    <input placeholder="Search" type="text" maxlength="200" [(ngModel)]="searchTerm" @fadeIn/>
   }
 </section>
-<app-search-list-2 [category]="this.categorySelectionStack.length === 0 ? undefined : this.categorySelectionStack[this.categorySelectionStack.length - 1]"></app-search-list-2>
+<app-search-list-2 [name]="searchTerm" [category]="this.categorySelectionStack.length === 0 ? undefined : this.categorySelectionStack[this.categorySelectionStack.length - 1]"></app-search-list-2>

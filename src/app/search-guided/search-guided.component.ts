@@ -4,11 +4,12 @@ import { ContainerService } from '../services/container.service';
 import { TermStanza } from '../obo/TermStanza';
 import { SearchListComponent2 } from "../search-list-2/search-list.component";
 import { fromEvent, map, startWith } from 'rxjs';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-search-guided',
   standalone: true,
-  imports: [SearchListComponent2],
+  imports: [FormsModule, SearchListComponent2],
   templateUrl: './search-guided.component.html',
   styleUrl: './search-guided.component.css',
   animations: [
@@ -27,6 +28,7 @@ export class SearchGuidedComponent {
   rootCategories: TermStanza[] = [];
   categories: TermStanza[] = [];
   categorySelectionStack: TermStanza[] = [];
+  searchTerm: string = '';
 
   ngOnInit() {
     this.containerService.getOntology().subscribe((ontology) => {
