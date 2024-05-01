@@ -9,13 +9,14 @@ import { ContributorCardComponent } from "../contributor-card/contributor-card.c
 import { ContributorService } from '../services/contributor.service';
 import { Contributor } from '../models/contributor.model';
 import { LogoMarqueeComponent } from "../logo-marquee/logo-marquee.component";
+import { Router } from '@angular/router';
 
 @Component({
-    selector: 'app-landing',
-    standalone: true,
-    templateUrl: './landing.component.html',
-    styleUrl: './landing.component.css',
-    imports: [CarouselComponent, ReasonListComponent, SearchComponent, SearchGuidedComponent, SearchListComponent, NgOptimizedImage, ContributorCardComponent, LogoMarqueeComponent]
+  selector: 'app-landing',
+  standalone: true,
+  templateUrl: './landing.component.html',
+  styleUrl: './landing.component.css',
+  imports: [CarouselComponent, ReasonListComponent, SearchComponent, SearchGuidedComponent, SearchListComponent, NgOptimizedImage, ContributorCardComponent, LogoMarqueeComponent]
 })
 export class LandingComponent {
   contributorService: ContributorService = inject(ContributorService);
@@ -30,7 +31,16 @@ export class LandingComponent {
     'assets/images/logo-fct.png',
   ];
 
-  constructor() {
+  searchClicked: boolean = false;
+
+  constructor(private router: Router) {
     this.contributors = this.contributorService.getContributors();
+  }
+
+  onSearchClick() {
+    this.searchClicked = true;
+    setTimeout(() => {
+      this.router.navigate(['/search']);
+    }, 600);
   }
 }

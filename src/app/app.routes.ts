@@ -6,6 +6,7 @@ import { OntologyEditorComponent } from './ontology-editor/ontology-editor.compo
 import { ContainerComponent } from './container/container.component';
 import { TutorialComponent } from './tutorial/tutorial.component';
 import { TutorialsLandingComponent } from './tutorials-landing/tutorials-landing.component';
+import { SearchGuidedComponent } from './search-guided/search-guided.component';
 
 export const routes: Routes = [
     {
@@ -17,6 +18,10 @@ export const routes: Routes = [
         path: 'about',
         title: 'Bioinformatics Docker Images Project',
         component: LandingComponent,
+    },
+    {
+        path: 'search',
+        component: SearchGuidedComponent,
     },
     {
         path: 'containers',
