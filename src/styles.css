@@ -7,6 +7,7 @@
   font-optical-sizing: auto;
   font-variation-settings: "slnt" 0;
 
+  scrollbar-gutter: stable;
   --horizontal-main-margin: 36px;
   @media (min-width: 640px) {
     --horizontal-main-margin: 72px;
