@@ -13,7 +13,9 @@ import { DockerHubTag } from '../models/docker-hub-tag';
 export class ContainerService {
   private urlDiaf = './assets/dio.diaf';
   private urlObo = './assets/dio.obo';
-  private baseURLDockerHub = 'https://hub.docker.com/v2/namespaces/pegi3s/repositories';
+  //private baseURLDockerHub = 'https://hub.docker.com/v2/namespaces/pegi3s/repositories';
+  private proxyServerURL = 'http://localhost:8080/';
+  private baseDockerHubEndpoint = '/v2/namespaces/pegi3s/repositories';
 
   private containersCache?: Observable<Map<string, Set<string>>>;
   private ontologyCache?: Observable<Ontology>;
@@ -145,7 +147,7 @@ export class ContainerService {
    */
   getContainerInfo(name: string): Observable<DockerHubImage> {
     return this.http.get<DockerHubImage>(
-      `http://localhost:8080/${this.baseURLDockerHub}/${name}`,
+      new URL(`${this.baseDockerHubEndpoint}/${name}`, this.proxyServerURL).toString(),
     );
   }
 
@@ -157,7 +159,7 @@ export class ContainerService {
    */
   getContainerTags(name: string, page: number = 1): Observable<DockerHubTag[]> {
     return this.http.get<{ results: DockerHubTag[]; }>(
-      `http://localhost:8080/${this.baseURLDockerHub}/${name}/tags?page=${page}`
+      new URL(`${this.baseDockerHubEndpoint}/${name}/tags?page=${page}`, this.proxyServerURL).toString(),
     )
     .pipe(map((response) => response.results));
   }
