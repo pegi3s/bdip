@@ -1,6 +1,7 @@
-@media (prefers-color-scheme: dark) {
+/* @media (prefers-color-scheme: dark) {
   .markdown-body,
-  [data-theme="dark"] {
+  [data-theme="dark"] */
+  :host-context(.dark) .markdown-body {
     /*dark*/
     color-scheme: dark;
     --color-prettylights-syntax-comment: #8b949e;
@@ -61,9 +62,10 @@
   }
 }
 
-@media (prefers-color-scheme: light) {
+/* @media (prefers-color-scheme: light) {
   .markdown-body,
-  [data-theme="light"] {
+  [data-theme="light"] */
+  .markdown-body {
     /*light*/
     color-scheme: light;
     --color-prettylights-syntax-comment: #57606a;

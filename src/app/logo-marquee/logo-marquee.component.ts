@@ -1,12 +1,14 @@
 import { NgOptimizedImage } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { ThemeService } from '../services/theme.service';
 
 @Component({
   selector: 'app-logo-marquee',
   standalone: true,
   imports: [NgOptimizedImage],
   templateUrl: './logo-marquee.component.html',
-  styleUrl: './logo-marquee.component.css'
+  styleUrl: './logo-marquee.component.css',
+  host: {'[class.dark]':'isDarkTheme'}
 })
 export class LogoMarqueeComponent {
   supporters: string[] = [
@@ -17,4 +19,11 @@ export class LogoMarqueeComponent {
     'assets/images/logo-uniao_europeia_fundos_europeus.png',
     'assets/images/logo-fct.png',
   ];
+
+  themeService: ThemeService = inject(ThemeService);
+  isDarkTheme: boolean = false;
+
+  constructor() {
+    this.themeService.isDarkTheme().subscribe(isDark => this.isDarkTheme = isDark);
+  }
 }

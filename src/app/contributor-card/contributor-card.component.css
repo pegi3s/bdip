@@ -9,14 +9,12 @@
   --contact-info-item-bg: rgba(255,255,255, 0.6);
 }
 
-@media (prefers-color-scheme: dark) {
-  :host {
-    --card-border-color: rgb(58, 58, 60);
-    --img-backdrop-tint: rgba(43, 43, 43, 0.7);
-    --hr-gradient: linear-gradient(to right, #FFFFFF55, #00000033);
-    --img-border-color: rgba(255, 255, 255, 0.1);
-    --contact-info-item-bg: rgba(10, 10, 10, 0.5);
-  }
+:host-context(.dark) {
+  --card-border-color: rgb(58, 58, 60);
+  --img-backdrop-tint: rgba(43, 43, 43, 0.7);
+  --hr-gradient: linear-gradient(to right, #FFFFFF55, #00000033);
+  --img-border-color: rgba(255, 255, 255, 0.1);
+  --contact-info-item-bg: rgba(10, 10, 10, 0.5);
 }
 
 .outer-container {

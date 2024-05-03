@@ -10,16 +10,20 @@ import { ContributorService } from '../services/contributor.service';
 import { Contributor } from '../models/contributor.model';
 import { LogoMarqueeComponent } from "../logo-marquee/logo-marquee.component";
 import { Router } from '@angular/router';
+import { ThemeService } from '../services/theme.service';
 
 @Component({
   selector: 'app-landing',
   standalone: true,
   templateUrl: './landing.component.html',
   styleUrl: './landing.component.css',
-  imports: [CarouselComponent, ReasonListComponent, SearchComponent, SearchGuidedComponent, SearchListComponent, NgOptimizedImage, ContributorCardComponent, LogoMarqueeComponent]
+  imports: [CarouselComponent, ReasonListComponent, SearchComponent, SearchGuidedComponent, SearchListComponent, NgOptimizedImage, ContributorCardComponent, LogoMarqueeComponent],
+  host: {'[class.dark]':'isDarkTheme'}
 })
 export class LandingComponent {
+  themeService: ThemeService = inject(ThemeService);
   contributorService: ContributorService = inject(ContributorService);
+  isDarkTheme: boolean = false;
 
   contributors: Contributor[];
   supporters: string[] = [
@@ -35,6 +39,9 @@ export class LandingComponent {
 
   constructor(private router: Router) {
     this.contributors = this.contributorService.getContributors();
+    this.themeService.isDarkTheme().subscribe(isDark => {
+      this.isDarkTheme = isDark;
+    });
   }
 
   onSearchClick() {

@@ -12,13 +12,26 @@
   @media (min-width: 640px) {
     --horizontal-main-margin: 72px;
   }
+}
 
-  --main-bg-color: rgb(246, 246, 246);
+[data-theme="light"] {
+  color-scheme: light;
+  /* --main-bg-color: rgb(246, 246, 246); */
+  --color-surface-container-lowest: 255, 255, 255;
+  --color-surface-container: 255, 255, 255;
+  --color-surface-container-high: 255, 255, 255;
+
   --main-font-color: 0, 0, 0;
-  @media (prefers-color-scheme: dark) {
-    --main-bg-color: rgb(28, 28, 28);
-    --main-font-color: 255, 255, 255;
-  }
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+  /* --main-bg-color: rgb(11 15 18); */
+  --color-surface-container-lowest: 11, 13, 20;
+  --color-surface-container: 28, 34, 46;
+  --color-surface-container-high: 36, 44, 54;
+
+  --main-font-color: 255, 255, 255;
 }
 
 *,
@@ -29,7 +42,7 @@
 
 body {
   margin: 0;
-  background-color: var(--main-bg-color);
+  background-color: rgb(var(--color-surface-container-lowest));
   color: rgb(var(--main-font-color));
 }
 

@@ -41,13 +41,13 @@ ul {
   --color-hover: rgb(19, 27, 46);
   --color-selected: 71, 121, 255;
   --bg-color-hover: rgba(75, 86, 104, 0.05);
+}
 
-  @media (prefers-color-scheme: dark) {
-    --color: rgb(153, 162, 177);
-    --color-selected: 160, 191, 255;
-    --color-hover: rgb(205, 210, 220);
-    --bg-color-hover: rgba(224, 228, 236, 0.05);
-  }
+:host-context(.dark) ul {
+  --color: rgb(153, 162, 177);
+  --color-selected: 160, 191, 255;
+  --color-hover: rgb(205, 210, 220);
+  --bg-color-hover: rgba(224, 228, 236, 0.05);
 }
 
 ul {

@@ -77,13 +77,11 @@ li {
 img {
   max-height: 50px;
   max-width: 186px;
-
-  @media (prefers-color-scheme: dark) {
-    filter: grayscale(1) invert(1) brightness(150%);
-  }
 }
 
-
+:host-context(.dark) img {
+  filter: grayscale(1) invert(1) brightness(150%);
+}
 
 /* Blur component */
 .blur {

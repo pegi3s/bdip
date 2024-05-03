@@ -3,17 +3,21 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { MarkdownModule } from 'ngx-markdown';
 import { TutorialService } from '../services/tutorial.service';
 import { Tutorial } from '../models/tutorial';
+import { ThemeService } from '../services/theme.service';
 
 @Component({
   selector: 'app-tutorial',
   standalone: true,
   imports: [RouterLink, MarkdownModule],
   templateUrl: './tutorial.component.html',
-  styleUrls: ['./tutorial.component.css', '../markdown-body.css']
+  styleUrls: ['./tutorial.component.css', '../markdown-body.css'],
+  host: {'[class.dark]':'isDarkTheme'}
 })
 export class TutorialComponent {
   activatedRoute: ActivatedRoute = inject(ActivatedRoute);
   tutorialService: TutorialService = inject(TutorialService);
+  themeService: ThemeService = inject(ThemeService);
+  isDarkTheme: boolean = false;
   
   tutorialName: string = '';
   headings?: Element[];
@@ -24,6 +28,9 @@ export class TutorialComponent {
       this.tutorialName = this.activatedRoute.snapshot.params['name'];
     });
     this.tutorials = this.tutorialService.getTutorials();
+    this.themeService.isDarkTheme().subscribe(isDark => {
+      this.isDarkTheme = isDark;
+    });
   }
 
   getHeadings() {

@@ -3,11 +3,10 @@
   --vertical-main-margin: 20px;
 }
 
-@media (prefers-color-scheme: dark) {
-  :host {
-    --blur-color: rgba(0, 0, 0, 0.4);
-  }
+:host-context(.dark) {
+  --blur-color: rgba(0, 0, 0, 0.4);
 }
+
 
 :host {
   position: sticky;

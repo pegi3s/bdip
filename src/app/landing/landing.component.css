@@ -28,9 +28,10 @@ section > div {
   padding-top: 115px;
   height: 100dvh;
   overflow: hidden; /* Due to SVG animation */
+}
 
-  @media (prefers-color-scheme: dark) {
-    background-image:
+:host-context(.dark) .intro {
+  background-image:
       radial-gradient(18% 28% at 24% 50%, #3070bf22 7%, #073bff00 100%),
       radial-gradient(18% 28% at 18% 71%, #2a659f11 6%, #073bff00 100%),
       radial-gradient(70% 53% at 36% 76%, #204a8f11 0%, #073bff00 100%),
@@ -41,7 +42,6 @@ section > div {
       radial-gradient(35% 56% at 91% 74%, #204a8f22 9%, #073bff00 100%),
       radial-gradient(74% 86% at 67% 38%, #16338022 24%, #073bff00 100%);
     background-color: #01020c;
-  }
 }
 
 .intro > div {

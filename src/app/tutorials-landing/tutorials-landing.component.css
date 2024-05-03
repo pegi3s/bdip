@@ -20,11 +20,21 @@ section {
 
     box-shadow: rgba(0, 0, 0, 0.1) 0 10px 32px 0;
     border-radius: 14px;
-    background-color: white;
+    --bg-color: white;
+    background-color: var(--bg-color);
     padding: 16px;
+    transition: background-color 0.2s ease-in-out, transform 0.2s ease-in-out;
+
+    &:hover {
+      transform: translateY(-4px);
+    }
 
     @media (prefers-color-scheme: dark) {
-      background-color: rgb(43, 43, 43);
+      --bg-color: rgba(var(--color-surface-container), 0.7);
+
+      &:hover {
+        --bg-color: rgba(var(--color-surface-container-high), 0.7);
+      }
     }
 
     * {

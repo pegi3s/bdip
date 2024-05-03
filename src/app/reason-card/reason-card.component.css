@@ -6,15 +6,14 @@
   --icon-inner-box-color: hsl(var(--color), 60%, 45%);
 }
 
-@media (prefers-color-scheme: dark) {
-  :host {
-    --card-bg-color: rgb(43, 43, 43);
-    --card-bg-color-hover: hsla(var(--color), 10%, 20%);
-    --card-border-color: rgb(58, 58, 60);
-    --icon-outer-box-color: hsl(var(--color), 90%, 65%);
-    --icon-inner-box-color: hsl(var(--color), 55%, 40%);
-  }
+:host-context(.dark) {
+  --card-bg-color: rgb(43, 43, 43, 0.6);
+  --card-bg-color-hover: hsla(var(--color), 10%, 20%);
+  --card-border-color: rgb(58, 58, 60);
+  --icon-outer-box-color: hsl(var(--color), 90%, 65%);
+  --icon-inner-box-color: hsl(var(--color), 55%, 40%);
 }
+
 
 :host {
   display: block;

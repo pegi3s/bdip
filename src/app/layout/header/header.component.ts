@@ -2,13 +2,15 @@ import { Component, HostListener, ElementRef, Renderer2 } from '@angular/core';
 import { NavigationEnd, RouterLink, Router } from '@angular/router';
 import { SearchGuidedComponent } from "../../search-guided/search-guided.component";
 import { Location } from '@angular/common';
+import { ThemeService } from '../../services/theme.service';
 
 @Component({
     selector: 'app-header',
     standalone: true,
     templateUrl: './header.component.html',
     styleUrl: './header.component.css',
-    imports: [RouterLink, SearchGuidedComponent]
+    imports: [RouterLink, SearchGuidedComponent],
+    host: {'[class.dark]':'isDarkTheme'}
 })
 export class HeaderComponent {
   /* Disable transitions on first load to prevent the header from sliding in */
@@ -19,12 +21,16 @@ export class HeaderComponent {
   protected scrolled = true;
   protected isOverflowing = false;
 
+  isDarkTheme: boolean = false;
+
   constructor(
+    private themeService: ThemeService,
     private el: ElementRef,
     private renderer: Renderer2,
     private router: Router,
     private location: Location
   ) {
+    this.themeService.isDarkTheme().subscribe(isDark => this.isDarkTheme = isDark);
   }
 
   ngOnInit() {
