@@ -75,7 +75,8 @@ section > div {
   > h2 {
     grid-area: header;
     margin: 0;
-    font-size: 72px;
+    font-size: 4.5rem;
+    line-height: 1;
     text-align: center;
   }
 
@@ -146,7 +147,8 @@ section > div {
 
   p {
     margin: 0;
-    font-size: 42px;
+    font-size: 2.25rem;
+    line-height: 2.5rem;
     text-align: center;
   }
 
@@ -164,7 +166,8 @@ section > div {
       }
 
     > h2 {
-      font-size: 42px;
+      font-size: 2.25rem;
+      line-height: 2.5rem;
     }
 
     > div:has(app-carousel) {
@@ -172,9 +175,18 @@ section > div {
     }
 
     p {
-      font-size: 24px;
+      font-size: 1.5rem;
+      line-height: 2rem;
     }
   }
+}
+
+:host-context(.dark) .intro > div .foreground {
+  filter: drop-shadow(4px 4px 10px rgba(0, 0, 0, 0.65));
+}
+
+:host-context(.dark) .intro > div .halo {
+  fill: rgba(255, 255, 255, 0.1);
 }
 
 @keyframes spin {
