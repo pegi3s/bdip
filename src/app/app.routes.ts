@@ -12,7 +12,7 @@ export const routes: Routes = [
     {
         path: '',
         title: 'Bioinformatics Docker Images Project',
-        component: EmptyComponent,
+        component: LandingComponent,
     },
     {
         path: 'about',
