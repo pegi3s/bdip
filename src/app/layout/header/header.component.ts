@@ -1,5 +1,5 @@
 import { Component, HostListener, ElementRef, Renderer2 } from '@angular/core';
-import { NavigationEnd, RouterLink, Router } from '@angular/router';
+import { NavigationEnd, RouterLink, Router, ActivatedRoute } from '@angular/router';
 import { SearchGuidedComponent } from "../../search-guided/search-guided.component";
 import { Location } from '@angular/common';
 import { ThemeService } from '../../services/theme.service';
@@ -21,6 +21,9 @@ export class HeaderComponent {
   protected scrolled = true;
   protected isOverflowing = false;
 
+  protected showMenu = false;
+  protected showSearch = true;
+
   isDarkTheme: boolean = false;
 
   constructor(
@@ -36,8 +39,7 @@ export class HeaderComponent {
   ngOnInit() {
     this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
-        this.scrolled = this.router.url !== '/';
-        this.firstScrollHandled = this.router.url !== '/';
+        this.showSearch = this.router.url !== '/search';
       }
     });
   }
@@ -105,5 +107,16 @@ export class HeaderComponent {
   checkOverflow() {
     const nav = this.el.nativeElement.querySelector('.nav-links-bottom');
     this.isOverflowing = nav.scrollWidth > nav.clientWidth;
+  }
+
+  toggleMenu() {
+    this.showMenu = !this.showMenu;
+  }
+
+  onSearchClick() {
+    //this.searchClicked = true;
+    setTimeout(() => {
+      this.router.navigate(['/search']);
+    }, 0);
   }
 }

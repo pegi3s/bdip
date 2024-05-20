@@ -5,7 +5,7 @@
 
 :host {
   margin-inline: auto;
-  padding: 35px var(--horizontal-main-margin);
+  padding: 150px var(--horizontal-main-margin) 35px;
   max-inline-size: 2048px;
 }
 
