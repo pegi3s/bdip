@@ -25,7 +25,7 @@ section > div {
   background-color: #f5f5ff;
 
   padding-top: 115px;
-  height: 100dvh;
+  height: 100svh;
   overflow: hidden; /* Due to SVG animation */
 }
 
