@@ -60,7 +60,7 @@
     --custom-bg-codeblock: hsla(0, 0%, 4%, 0.6);
     --custom-color-link: rgb(131, 214, 241);
   }
-}
+
 
 /* @media (prefers-color-scheme: light) {
   .markdown-body,
@@ -124,7 +124,7 @@
     --custom-bg-codeblock: hsla(0, 0%, 94%, 0.6);
     --custom-color-link: #0969da; /* --color-accent-fg */
   }
-}
+
 
 .markdown-body {
   display: block;
