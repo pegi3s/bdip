@@ -26,6 +26,18 @@
   --slate-800: 30, 41, 59;
   --slate-900: 15, 23, 42;
   --slate-950: 2, 6, 23;
+  /*#42a7f0*/
+  --picton-blue-50: 241, 248, 254;
+  --picton-blue-100: 225, 239, 253;
+  --picton-blue-200: 189, 222, 250;
+  --picton-blue-300: 130, 196, 247;
+  --picton-blue-400: 66, 167, 240;
+  --picton-blue-500: 23, 138, 224;
+  --picton-blue-600: 10, 109, 191;
+  --picton-blue-700: 10, 87, 154;
+  --picton-blue-800: 12, 74, 128;
+  --picton-blue-900: 16, 63, 106;
+  --picton-blue-950: 11, 39, 70;
 }
 
 [data-theme="light"] {
