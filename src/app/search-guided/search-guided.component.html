@@ -1,14 +1,26 @@
 <section class="search-container" #searchContainer [class.active]="categorySelectionStack.length !== 0 || this.searchTerm.length !== 0">
   @if (this.searchTerm.length === 0) {
-    <p @fadeIn>
-      <span class="material-symbols-rounded" (click)="goUpLevel()">arrow_back</span>
-      What are you looking for?
-    </p>
-    
-    <div class="container" @fadeIn>
-      @for (category of categories; track $index) {
-        <div (click)="loadChildren(category)">
-          {{ category.name?.replaceAll("_", " ") }}
+    <div class="search-by-category" @fadeIn>
+      <p>
+        <span class="material-symbols-rounded" (click)="goUpLevel()">arrow_back</span>
+        What are you looking for?
+      </p>
+      @if (categorySelectionStack.length > 0) {
+        <div class="selected-container">
+          @for (category of categorySelectionStack; track $index) {
+            <div>
+              {{ category.name?.replaceAll("_", " ") }}
+            </div>
+          }
+        </div>
+      }
+      @if (getSelectedCategory() === undefined || getSelectedCategory()?.hasChildren()) {
+        <div class="container">
+          @for (category of categories; track $index) {
+            <div (click)="loadChildren(category)">
+              {{ category.name?.replaceAll("_", " ") }}
+            </div>
+          }
         </div>
       }
     </div>
