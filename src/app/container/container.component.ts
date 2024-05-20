@@ -5,13 +5,15 @@ import { ActivatedRoute } from '@angular/router';
 import { ContainerService } from '../services/container.service';
 import { MarkdownModule } from 'ngx-markdown';
 import { DatePipe, SlicePipe } from '@angular/common';
+import { ThemeService } from '../services/theme.service';
 
 @Component({
   selector: 'app-container',
   standalone: true,
   imports: [DatePipe, SlicePipe, MarkdownModule],
   templateUrl: './container.component.html',
-  styleUrls: ['./container.component.css', '../markdown-body.css']
+  styleUrls: ['./container.component.css', '../markdown-body.css'],
+  host: {'[class.dark]':'isDarkTheme'}
 })
 export class ContainerComponent {
   activatedRoute: ActivatedRoute = inject(ActivatedRoute);
@@ -21,6 +23,9 @@ export class ContainerComponent {
   containerTags?: DockerHubTag[];
 
   showReadme = true;
+
+  themeService: ThemeService = inject(ThemeService);
+  isDarkTheme: boolean = false;
 
   constructor() {
     this.activatedRoute.params.subscribe(params => {
@@ -32,5 +37,6 @@ export class ContainerComponent {
         containerTags => this.containerTags = containerTags,
       );
     });
+    this.themeService.isDarkTheme().subscribe(isDark => this.isDarkTheme = isDark);
   }
 }
