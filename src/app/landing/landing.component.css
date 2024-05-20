@@ -66,10 +66,6 @@ section > div {
     z-index: 1;
     backdrop-filter: blur(3px);
     filter: drop-shadow(3px 3px 7px rgba(0, 0, 0, 0.125));
-
-    @media (prefers-color-scheme: dark) {
-      filter: drop-shadow(4px 4px 10px rgba(0, 0, 0, 0.65));
-    }
   }
 
   > h2 {
@@ -87,7 +83,6 @@ section > div {
 
   .search-container-landing {
     grid-area: carousel;
-    width: clamp(100px, 80%, 662px);
     height: 100%;
     display: flex;
     justify-content: center;
@@ -96,15 +91,51 @@ section > div {
     z-index: 2;
   }
 
-  .cube-pattern {
+  .svg1, .svg2, .svg3, .svg4, .svg5, .svg6 {
     position: absolute;
-    width: 100%;
-    height: 100%;
-    background-image: url("/assets/cube-pattern.svg");
-    background-size: 100%;
-    background-repeat: repeat;
-    background-position: center;
-    mask: linear-gradient(90deg, transparent, black 15% 85%, transparent);
+    fill: #91b9ef;
+  }
+  
+  .svg1 {
+    scale: 3;
+    top: 40px;
+    left: -70px;
+    transform: rotate(94deg);
+  }
+  
+  .svg2 {
+    scale: 2.5;
+    top: 80px;
+    right: -60px;
+    transform: rotate(264deg);
+  }
+  
+  .svg3 {
+    scale: 3;
+    bottom: 25px;
+    left: -30px;
+    transform: rotate(38deg);
+  }
+
+  .svg4 {
+    scale: 4.5;
+    bottom: 150px;
+    left: -200px;
+    transform: rotate(351deg);
+  }
+
+  .svg5 {
+    scale: 4;
+    bottom: 60px;
+    left: 260px;
+    transform: rotate(20deg);
+  }
+
+  .svg6 {
+    scale: 4.5;
+    bottom: 200px;
+    left: 365px;
+    transform: rotate(54deg);
   }
 
   .halo-container {
@@ -118,7 +149,7 @@ section > div {
   }
 
   .halo {
-    fill: rgba(255, 255, 255, 0.1);
+    fill: rgba(158, 198, 250, 0.5);
     animation: spin 40s linear infinite reverse;
     width: var(--size);
     position: absolute;
@@ -199,7 +230,7 @@ section > div {
 }
 
 .about-project {
-  background-color: rgb(0, 45, 56);
+  
 }
 
 .about-project > div {
@@ -210,7 +241,7 @@ section > div {
     "img";
   @media (min-width: 768px) {
     grid-template-areas:
-      "header header"
+      "header img"
       "text img";
   }
 
@@ -284,8 +315,85 @@ section > div {
   row-gap: 16px;
 }
 
-@media (prefers-color-scheme: dark) {
-  .how-to-start div div a {
-    background-color: rgb(43, 43, 43);
+:host-context(.dark) .how-to-start div div a {
+    background-color: rgb(var(--slate-700), 0.65);
+}
+
+.citing > div {
+  display: grid;
+  grid-template-columns: 1fr;
+  row-gap: 16px;
+}
+
+.citing img {
+  display: none;
+}
+
+@media (width > 1024px) {
+  .citing > div {
+    display: grid;
+    grid-template-columns: 375px 1fr;
+    column-gap:72px;
+    align-items: center;
   }
+
+  .citing img {
+    display: block;
+  }
+}
+
+blockquote {
+  position: relative;
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+  font-style: italic;
+  margin: 36px 10px;
+  padding: 20px;
+  border-radius: 12px;
+  background-color: rgb(var(--slate-100));
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+}
+
+blockquote::before, blockquote::after {
+  font-size: 4.5rem;
+  position: absolute;
+  color: rgba(var(--slate-800), 0.8);
+}
+
+:host-context(.dark) blockquote {
+  background-color: rgba(var(--slate-800), 0.8);
+}
+
+:host-context(.dark) blockquote::before, :host-context(.dark) blockquote::after {
+  color: rgba(var(--slate-200), 0.8);
+}
+
+blockquote::before {
+  content: "“";
+  top: 6px;
+  left: -22px;
+}
+
+blockquote::after {
+  content: "”";
+  bottom: -31px;
+  right: 0px;
+}
+
+h2 {
+  font-size: 2.25rem;
+  line-height: 2.5rem;
+}
+
+.why-docker h2 span {
+  background: linear-gradient(315deg, #00aaff 0%, #6633ff 60%, #bb33ff 80%);
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+:host-context(.dark) .why-docker h2 span {
+  background: linear-gradient(315deg, #00dbde 0%, #9875ff 60%, #cc66ff 80%);
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: 725;
 }
