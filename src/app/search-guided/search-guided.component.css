@@ -2,10 +2,10 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  color: white;
 }
 
 .search-container {
+  color: white;
   display: flex;
   position: relative;
   flex-direction: column;
