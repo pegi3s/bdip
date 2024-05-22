@@ -40,10 +40,17 @@
           <code>docker pull {{ container.namespace }}/{{ container.name }}</code>
       </div>
     }
-    <a href="https://hub.docker.com/r/{{ container.namespace }}/{{ container.name }}">DockerHub</a>
+    <div class="links">
+      <a href="https://hub.docker.com/r/{{ container.namespace }}/{{ container.name }}" target="_blank">
+        <img src="assets/docker-mark-blue.svg" alt="DockerHub" />
+        DockerHub
+        <span class="material-symbols-rounded">north_east</span>
+      </a>
+    </div>
   </div>
   <div class="details-container">
     <div class="tabs">
+      <div class="indicator"></div>
       <input type="radio" id="readme" name="tabs" checked (change)="showReadme = true" />
       <label class="tab" for="readme">Overview</label>
       <input type="radio" id="tags" name="tabs" (change)="showReadme = false" />
