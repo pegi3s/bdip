@@ -7,19 +7,24 @@
     <div>
       <div class="name">
         <p>{{ contributor.name }}</p>
-        @for (organization of contributor.organizations; track $index) {
-          <div class="organization" [style.--bg-color]="organization.color">
-            <span class="tooltip">{{ organization.fullName }}</span>
-            <p>{{ organization.acronym }}</p>
-          </div>
-        }
+        <div class="organizations">
+          @for (organization of contributor.organizations; track $index) {
+            <div class="organization" [style.--bg-color]="organization.color">
+              <span class="tooltip">{{ organization.fullName }}</span>
+              <p>{{ organization.acronym }}</p>
+            </div>
+          }
+        </div>
       </div>
       <hr />
       <div class="contact-info">
+        @if (email) {
         <a [href]="'mailto:' + email">
           <span class="material-symbols-rounded">email</span>
           <span>{{ email }}</span>
         </a>
+        }
+        @if (orcid) {
         <a
           [href]="'https://orcid.org/' + orcid"
           target="_blank"
@@ -27,6 +32,7 @@
         >
           <img src="assets/ORCIDiD.svg" alt="orcid logo" />
         </a>
+        }
         @if (github) {
         <a
           [href]="'https://github.com/' + github"

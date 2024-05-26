@@ -29,7 +29,10 @@
 
 .inner-container {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
+    @media (width > 576px) {
+      flex-direction: row;
+    }
     gap: 26px;
     align-items: center;
 
@@ -40,15 +43,26 @@
 
 .name {
   display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 12px;
+  @media (width > 576px) {
+    flex-direction: row;
+    gap: 16px;
+    margin-bottom: 0;
+  }
   align-items: center;
-  gap: 8px;
 
   > p {
-    margin-right: 8px;
     font-weight: 600;
     font-size: 1.1875rem;
     line-height: 1.75rem;
   }
+}
+
+.organizations {
+  display: flex;
+  gap: 8px;
 }
 
 .organization {
@@ -111,6 +125,10 @@ p {
 }
 
 hr {
+    display: none;
+    @media (width > 576px) {
+      display: block;
+    }
     border: none;
     height: 2px;
     background: var(--hr-gradient);
@@ -138,6 +156,10 @@ img ~ div {
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
+    justify-content: center;
+    @media (width > 576px) {
+      justify-content: flex-start;
+    }
     --icon-size: 18px;
 
     a {
@@ -155,23 +177,6 @@ img ~ div {
         width: var(--icon-size);
         height: var(--icon-size);
       }
-
-      /*span {
-        max-width: 0;
-        opacity: 0;
-        white-space: nowrap;
-        transition: max-width 0.2s ease-in-out, opacity 0.2s ease-in-out;
-        pointer-events: none;
-      }
-
-      &:hover {
-        span {
-          max-width: 200px;
-          opacity: 1;
-          transition: max-width 0.5s ease-in-out 0.2s, opacity 0.5s ease-in-out 0.2s;
-          pointer-events: auto;
-        }
-      }*/
     }
 }
 
@@ -179,8 +184,17 @@ a:has(> span:nth-child(2)) {
     display: flex;
     align-items: center;
     gap: 6px;
-    padding: 0 12px;
+    @media (width > 576px) {
+      padding: 0 12px;
+    }
     font-size: 0.8125rem;
     line-height: 1.125rem;
     border-radius: 24px;
+
+    span:nth-child(2) {
+      display: none;
+      @media (width > 576px) {
+        display: block;
+      }
+    }
 }
