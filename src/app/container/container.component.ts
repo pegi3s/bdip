@@ -7,14 +7,15 @@ import { MarkdownModule } from 'ngx-markdown';
 import { DatePipe, SlicePipe } from '@angular/common';
 import { ThemeService } from '../services/theme.service';
 import { ClipboardButtonComponent } from '../clipboard-button/clipboard-button.component';
+import { TabsComponent } from "../tabs/tabs.component";
 
 @Component({
   selector: 'app-container',
   standalone: true,
-  imports: [DatePipe, SlicePipe, MarkdownModule],
   templateUrl: './container.component.html',
   styleUrls: ['./container.component.css', '../markdown-body.css'],
-  host: {'[class.dark]':'isDarkTheme'}
+  host: { '[class.dark]': 'isDarkTheme' },
+  imports: [DatePipe, SlicePipe, MarkdownModule, TabsComponent]
 })
 export class ContainerComponent {
   activatedRoute: ActivatedRoute = inject(ActivatedRoute);
@@ -41,5 +42,9 @@ export class ContainerComponent {
       );
     });
     this.themeService.isDarkTheme().subscribe(isDark => this.isDarkTheme = isDark);
+  }
+
+  onTabSelectedGettingStarted(tab: string) {
+    this.showReadme = tab === 'readme';
   }
 }

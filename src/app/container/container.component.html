@@ -49,13 +49,9 @@
     </div>
   </div>
   <div class="details-container">
-    <div class="tabs">
-      <div class="indicator"></div>
-      <input type="radio" id="readme" name="tabs" checked (change)="showReadme = true" />
-      <label class="tab" for="readme">Overview</label>
-      <input type="radio" id="tags" name="tabs" (change)="showReadme = false" />
-      <label class="tab" for="tags">Tags</label>
-    </div>
+    <app-tabs (activeTab)="onTabSelectedGettingStarted($event)" [tabs]="[
+      { label: 'readme', active: true },
+      { label: 'tags' }]" />
     @if (showReadme) {
       <markdown
         clipboard
