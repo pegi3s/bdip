@@ -30,3 +30,8 @@ export const IISGS: Organization = {
   fullName: 'Instituto de Investigación Sanitaria Galicia Sur',
   color: '#0084CE',
 };
+export const INIBIC: Organization = {
+  acronym: 'INIBIC',
+  fullName: 'Instituto de Investigación Biomédica de A Coruña',
+  color: '#00696F',
+};

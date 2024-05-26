@@ -25,6 +25,8 @@ export class LandingComponent {
   contributorService: ContributorService = inject(ContributorService);
   isDarkTheme: boolean = false;
 
+  /* Data */
+  authors: Contributor[];
   contributors: Contributor[];
   supporters: string[] = [
     'assets/images/logo-cresc_algarve_2020.png',
@@ -38,6 +40,7 @@ export class LandingComponent {
   searchClicked: boolean = false;
 
   constructor(private router: Router) {
+    this.authors = this.contributorService.getAuthors();
     this.contributors = this.contributorService.getContributors();
     this.themeService.isDarkTheme().subscribe(isDark => {
       this.isDarkTheme = isDark;
