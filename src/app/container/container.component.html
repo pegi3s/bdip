@@ -57,7 +57,11 @@
       <label class="tab" for="tags">Tags</label>
     </div>
     @if (showReadme) {
-      <markdown class="markdown-body" [data]="container.full_description" />
+      <markdown
+        clipboard
+        [clipboardButtonComponent]="clipboardButton"
+        class="markdown-body" 
+        [data]="container.full_description" />
     } @else if (containerTags != null) {
       <div class="tags">
         @for (tag of containerTags; track $index) {

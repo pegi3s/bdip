@@ -6,6 +6,7 @@ import { ContainerService } from '../services/container.service';
 import { MarkdownModule } from 'ngx-markdown';
 import { DatePipe, SlicePipe } from '@angular/common';
 import { ThemeService } from '../services/theme.service';
+import { ClipboardButtonComponent } from '../clipboard-button/clipboard-button.component';
 
 @Component({
   selector: 'app-container',
@@ -18,6 +19,8 @@ import { ThemeService } from '../services/theme.service';
 export class ContainerComponent {
   activatedRoute: ActivatedRoute = inject(ActivatedRoute);
   containerService: ContainerService = inject(ContainerService);
+
+  readonly clipboardButton = ClipboardButtonComponent;
 
   container?: DockerHubImage;
   containerTags?: DockerHubTag[];

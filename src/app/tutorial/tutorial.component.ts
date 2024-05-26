@@ -4,6 +4,7 @@ import { MarkdownModule } from 'ngx-markdown';
 import { TutorialService } from '../services/tutorial.service';
 import { Tutorial } from '../models/tutorial';
 import { ThemeService } from '../services/theme.service';
+import { ClipboardButtonComponent } from '../clipboard-button/clipboard-button.component';
 
 @Component({
   selector: 'app-tutorial',
@@ -18,6 +19,8 @@ export class TutorialComponent {
   tutorialService: TutorialService = inject(TutorialService);
   themeService: ThemeService = inject(ThemeService);
   isDarkTheme: boolean = false;
+
+  readonly clipboardButton = ClipboardButtonComponent;
   
   tutorialName: string = '';
   headings?: Element[];

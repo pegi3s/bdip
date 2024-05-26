@@ -6,6 +6,8 @@
   }
 </ul>
 <markdown
+  clipboard
+  [clipboardButtonComponent]="clipboardButton"
   class="markdown-body"
   [src]="tutorialService.getTutorialUrl(this.tutorialName)"
   (ready)="this.getHeadings()"

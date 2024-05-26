@@ -1,0 +1,7 @@
+<button #button class="btn-clipboard" [class.copied]="copied" (click)="onCopyToClipboard()">
+    @if (copied) {
+        <span class="material-symbols-rounded">check</span>
+    } @else {
+        <span class="material-symbols-rounded">content_copy</span>
+    }
+</button>

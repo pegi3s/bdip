@@ -3,7 +3,7 @@ import { provideRouter, withComponentInputBinding, withViewTransitions } from '@
 import { provideAnimations } from "@angular/platform-browser/animations";
 import { routes } from './app.routes';
 import { HttpClient, provideHttpClient, withFetch } from '@angular/common/http';
-import { provideMarkdown } from 'ngx-markdown';
+import { CLIPBOARD_OPTIONS, ClipboardButtonComponent, provideMarkdown } from 'ngx-markdown';
 import { baseUrl } from 'marked-base-url';
 
 export const appConfig: ApplicationConfig = {
@@ -13,6 +13,12 @@ export const appConfig: ApplicationConfig = {
     provideMarkdown({
       loader: HttpClient,
       markedExtensions: [baseUrl('https://raw.githubusercontent.com/pegi3s/dockerfiles/master/tutorials/')],
+      clipboardOptions: {
+        provide: CLIPBOARD_OPTIONS,
+        useValue: {
+          buttonComponent: ClipboardButtonComponent,
+        },
+      },
     }),
     provideRouter(
       routes,

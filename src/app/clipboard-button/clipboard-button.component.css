@@ -1,0 +1,46 @@
+.material-symbols-rounded {
+    font-size: 0.875rem;
+  line-height: 1.25rem;
+  font-variation-settings:
+    "FILL" 0,
+    "wght" 400,
+    "GRAD" 0,
+    "opsz" 24;
+}
+
+:host {
+  --button-bg-color: rgba(0, 0, 0, 0.08);
+  --button-bg-color-hover: rgba(0, 0, 0, 0.16);
+  --button-bg-color-copied: rgba(0, 255, 0, 0.15);
+  --font-color-copied: rgb(0, 100, 0);
+}
+
+:host-context(.dark) :host {
+  --button-bg-color: rgba(255, 255, 255, 0.07);
+  --button-bg-color-hover: rgba(255, 255, 255, 0.14);
+  --button-bg-color-copied: rgba(0, 255, 0, 0.1);
+  --font-color-copied: rgb(0, 255, 0);
+}
+
+.btn-clipboard {
+  transition: all 250ms ease-out;
+  cursor: pointer;
+  border: none;
+  border-radius: 6px;
+  background-color: var(--button-bg-color);
+  padding: 4px 8px;
+  color: var(--main-font-color);
+}
+
+.btn-clipboard:hover {
+  background-color: var(--button-bg-color-hover);
+}
+
+.btn-clipboard:active {
+  transform: scale(0.95);
+}
+
+.btn-clipboard.copied {
+  background-color: var(--button-bg-color-copied);
+  color: var(--font-color-copied);
+}
