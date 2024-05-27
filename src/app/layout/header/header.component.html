@@ -1,3 +1,4 @@
+<div class="search-animation" [class.expand]="searchClicked"></div>
 <div class="outer" [class.menu-opened]="showMenu">
   <header [class.transitions-enabled]="enableTransitions" [class.scrolled]="scrolled">
     <div class="header-logo">
@@ -12,7 +13,10 @@
       <a routerLink="/tutorials">Tutorials</a>
     </nav>
     <div class="search-button" [class.visible]="showSearch" (click)="onSearchClick()">
-      <p>🔍 Search</p>
+      <div>
+        <img src="assets/magnifying-glass-tilted-left.svg" alt="search" width="18px">
+        <span>Search</span>
+      </div>
     </div>
     <div class="menu-button">
       <p class="material-symbols-rounded" (click)="toggleMenu()">menu</p>
