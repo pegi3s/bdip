@@ -1,5 +1,5 @@
-import { ApplicationConfig } from '@angular/core';
-import { provideRouter, withComponentInputBinding, withViewTransitions } from '@angular/router';
+import { ApplicationConfig, inject } from '@angular/core';
+import { Router, provideRouter, withComponentInputBinding, withViewTransitions } from '@angular/router';
 import { provideAnimations } from "@angular/platform-browser/animations";
 import { routes } from './app.routes';
 import { HttpClient, provideHttpClient, withFetch } from '@angular/common/http';
@@ -22,7 +22,19 @@ export const appConfig: ApplicationConfig = {
     }),
     provideRouter(
       routes,
-      withViewTransitions(),
+      withViewTransitions({
+        onViewTransitionCreated: ({transition}) => {
+          const router = inject(Router);
+          const url = router.getCurrentNavigation()!.finalUrl!.root.children['primary'];
+          const goingToSearch = url?.segments[0].path == 'search';
+          console.log(goingToSearch);
+          // Skip the transition if we are going to the search page
+          // to avoid mixing it with the custom one defined
+          if (goingToSearch) {
+            transition.skipTransition();
+          }
+        },
+      }),
       withComponentInputBinding()
     )
   ]
