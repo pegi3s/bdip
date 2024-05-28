@@ -3,17 +3,22 @@ import { RouterLink } from "@angular/router";
 import { ContainerService } from "../services/container.service";
 import { Ontology } from "../obo/Ontology";
 import { TermStanza } from "../obo/TermStanza";
+import { ThemeService } from "../services/theme.service";
 
 @Component({
   selector: 'app-search-list-2',
   standalone: true,
   imports: [RouterLink],
   templateUrl: './search-list.component.html',
-  styleUrl: './search-list.component.css'
+  styleUrl: './search-list.component.css',
+  host: { '[class.dark]': 'isDarkTheme' }
 })
 export class SearchListComponent2 implements OnChanges {
   @Input() category?: TermStanza;
   @Input() name: string = '';
+
+  private themeService: ThemeService = inject(ThemeService);
+  protected isDarkTheme: boolean = false;
 
   containerService: ContainerService = inject(ContainerService);
   ontology?: Ontology;
@@ -27,6 +32,9 @@ export class SearchListComponent2 implements OnChanges {
     });
     this.containerService.getContainersMap().subscribe((containers) => {
       this.containers = containers;
+    });
+    this.themeService.isDarkTheme().subscribe((isDark) => {
+      this.isDarkTheme = isDark;
     });
   }
 

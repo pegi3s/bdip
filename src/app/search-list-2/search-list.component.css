@@ -7,14 +7,13 @@
 }
 
 .container-item {
-  background-color: rgba(var(--color-surface-container), 0.9);
+  background-color: white;
   box-shadow: rgba(0, 0, 0, 0.1) 0 10px 32px 0;
 }
 
-@media (prefers-color-scheme: dark) {
-  .container-item {
-    box-shadow: rgb(0 0 0 / 20%) 0 4px 14px 2px;
-  }
+:host-context(.dark) .container-item {
+  background-color: rgba(var(--slate-700), 0.4);
+  box-shadow: rgb(0 0 0 / 20%) 0 4px 14px 2px;
 }
 
 .category-container {
