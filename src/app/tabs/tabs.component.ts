@@ -1,5 +1,5 @@
 import { TitleCasePipe } from '@angular/common';
-import { Component, EventEmitter, Output, input } from '@angular/core';
+import { Component, EventEmitter, Output, input, output } from '@angular/core';
 
 @Component({
   selector: 'app-tabs',
@@ -10,7 +10,7 @@ import { Component, EventEmitter, Output, input } from '@angular/core';
 })
 export class TabsComponent {
   tabs = input.required<Tab[]>();
-  @Output() activeTab = new EventEmitter<string>();
+  activeTab = output<string>();
 
   onSelectTab(tab: string) {
     this.activeTab.emit(tab);
