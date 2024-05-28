@@ -11,19 +11,24 @@ import { Contributor } from '../models/contributor.model';
 import { LogoMarqueeComponent } from "../logo-marquee/logo-marquee.component";
 import { Router } from '@angular/router';
 import { ThemeService } from '../services/theme.service';
+import { TabsComponent } from '../tabs/tabs.component';
+import { UtilsService } from '../services/utils.service';
+import { OS } from '../models/os';
 
 @Component({
   selector: 'app-landing',
   standalone: true,
   templateUrl: './landing.component.html',
   styleUrl: './landing.component.css',
-  imports: [CarouselComponent, ReasonListComponent, SearchComponent, SearchGuidedComponent, SearchListComponent, NgOptimizedImage, ContributorCardComponent, LogoMarqueeComponent],
+  imports: [CarouselComponent, ReasonListComponent, SearchComponent, SearchGuidedComponent, SearchListComponent, NgOptimizedImage, TabsComponent, ContributorCardComponent, LogoMarqueeComponent],
   host: {'[class.dark]':'isDarkTheme'}
 })
 export class LandingComponent {
+  /* Services */
+  utilsService: UtilsService = inject(UtilsService);
   themeService: ThemeService = inject(ThemeService);
-  contributorService: ContributorService = inject(ContributorService);
   isDarkTheme: boolean = false;
+  contributorService: ContributorService = inject(ContributorService);
 
   /* Data */
   authors: Contributor[];
@@ -37,9 +42,15 @@ export class LandingComponent {
     'assets/images/logo-fct.png',
   ];
 
+  /* State */
   searchClicked: boolean = false;
+  gettingStartedOS: OS;
+
+  /* Helpers */
+  OS = OS;
 
   constructor(private router: Router) {
+    this.gettingStartedOS = this.utilsService.getOS() as OS;
     this.authors = this.contributorService.getAuthors();
     this.contributors = this.contributorService.getContributors();
     this.themeService.isDarkTheme().subscribe(isDark => {
@@ -52,5 +63,9 @@ export class LandingComponent {
     setTimeout(() => {
       this.router.navigate(['/search']);
     }, 600);
+  }
+
+  onTabSelectedGettingStarted(os: string) {
+    this.gettingStartedOS = os as OS;
   }
 }

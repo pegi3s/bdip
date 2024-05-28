@@ -1,6 +1,8 @@
 /*TODO: Find a better way*/
 :host {
   flex-grow: 1;
+  max-width: 100vw;
+  overflow-x: hidden;
 }
 
 section > div {
@@ -74,6 +76,8 @@ section > div {
     font-size: 4.5rem;
     line-height: 1;
     text-align: center;
+    animation: 750ms ease 0ms 1 normal both running fadeInMoveDown;
+    z-index: 1;
   }
 
   > div:has(app-carousel) {
@@ -225,21 +229,9 @@ section > div {
   fill: rgba(255, 255, 255, 0.1);
 }
 
-@keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
-
-.about-project {
-  
-}
-
 .about-project > div {
   display: grid;
+  column-gap: 72px;
   grid-template-areas:
     "header"
     "text"
@@ -270,46 +262,6 @@ section > div {
   width: 300px;
 }
 
-.how-to-start > div div {
-  display: flex;
-  gap: 16px;
-
-  a {
-    display: grid;
-    grid-template-columns: min-content 1fr;
-    grid-template-areas:
-      "icon header"
-      "icon text";
-    column-gap: 16px;
-    row-gap: 8px;
-    align-items: center;
-
-    box-shadow: rgba(0, 0, 0, 0.1) 0 10px 32px 0;
-    border-radius: 14px;
-    background-color: #ffffff;
-    padding: 16px;
-    min-width: 75px;
-    max-width: 300px;
-
-    span {
-      grid-area: icon;
-      font-size: 75px;
-    }
-
-    p {
-      margin: 0;
-    }
-
-    p:first-child {
-      grid-area: header;
-    }
-
-    p:last-child {
-      grid-area: text;
-    }
-  }
-}
-
 .authors {
   display: grid;
   grid-template-columns: 1fr;
@@ -320,9 +272,7 @@ section > div {
   row-gap: 16px;
 }
 
-:host-context(.dark) .how-to-start div div a {
-    background-color: rgb(var(--slate-700), 0.65);
-}
+/* Citing */
 
 .citing > div {
   display: grid;
@@ -363,14 +313,14 @@ blockquote {
   }
 }
 
+:host-context(.dark) blockquote {
+  background-color: rgba(var(--slate-800), 0.8);
+}
+
 blockquote::before, blockquote::after {
   font-size: 4.5rem;
   position: absolute;
   color: rgba(var(--slate-800), 0.8);
-}
-
-:host-context(.dark) blockquote {
-  background-color: rgba(var(--slate-800), 0.8);
 }
 
 :host-context(.dark) blockquote::before, :host-context(.dark) blockquote::after {
@@ -391,8 +341,10 @@ blockquote::after {
 
 h2 {
   font-size: 2.25rem;
-  line-height: 2.5rem;
+  line-height: 2.6rem;
 }
+
+/* Why Docker Images? */
 
 .why-docker h2 span {
   background: linear-gradient(315deg, #00aaff 0%, #6633ff 60%, #bb33ff 80%);
@@ -406,6 +358,8 @@ h2 {
   background-clip: text;
   font-weight: 725;
 }
+
+/* Dissemination */
 
 .dissemination .references {
   display: flex;
@@ -468,3 +422,215 @@ h2 {
   border-bottom-right-radius: 4px;
   background: linear-gradient(to bottom, rgba(var(--picton-blue-500), 1) 0%, rgba(var(--picton-blue-600), 1) 100%);
 }
+
+/* Getting started */
+
+.getting-started h2 {
+  background: linear-gradient(45deg, #ed4e50 0%, #f06f00 100%);
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.getting-started app-tabs {
+  margin-bottom: 30px;
+}
+
+.steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.steps li {
+  counter-increment: step 1;
+  position: relative;
+
+  padding-left: 2.75rem;
+  padding-bottom: 2rem;
+}
+
+.steps li h3 {
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+  margin: 0;
+}
+
+.steps li::before {
+  content: counter(step);
+  display: flex;
+  position: absolute;
+  left: 0;
+  width: 1.75rem;
+  height: 1.75rem;
+  justify-content: center;
+  align-items: center;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: white;
+  background-color: rgb(var(--slate-700));
+  border: 0 solid #e5e7eb;
+  border-radius: .375rem;
+  box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.1);
+}
+
+.steps li::after {
+  content: "";
+  position: absolute;
+  top: calc(1.75rem + 10px);
+  left: calc(1.75rem / 2);
+  bottom: 10px;
+  width: 2px;
+  background: linear-gradient(to bottom, rgba(var(--slate-700)), transparent);
+}
+
+.steps li {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: revealOpacity 400ms linear forwards, revealTransform 950ms cubic-bezier(0.215, 0.61, 0.355, 1) forwards;
+  animation-delay: var(--delay);
+}
+
+.steps li:nth-child(1) {
+  --delay: 70ms;
+}
+
+.steps li:nth-child(2) {
+  --delay: 140ms;
+}
+
+.steps li:nth-child(3) {
+  --delay: 210ms;
+}
+
+.steps li:nth-child(4) {
+  --delay: 280ms;
+}
+
+.steps li:nth-child(5) {
+  --delay: 350ms;
+}
+
+.steps li:nth-child(6) {
+  --delay: 420ms;
+}
+
+:not(.codeblock) > pre, .codeblock {
+  background-color: rgb(var(--slate-50));
+  padding: 20px;
+  overflow: auto;
+  color: var(--color-fg-default);
+  font-size: 1rem;
+  line-height: 24px;
+  outline: 1px solid rgb(var(--slate-200));
+  border-radius: 12px;
+}
+
+:host-context(.dark) :not(.codeblock) > pre, :host-context(.dark) .codeblock {
+  background-color: hsla(0, 0%, 4%, 0.6);
+  outline: 1px solid rgba(37, 41, 40, 0.5);
+}
+
+.codeblock pre {
+  margin: 0;
+}
+
+pre code {
+  display: inline;
+  margin: 0;
+  padding: 0;
+  max-width: auto;
+  overflow: visible;
+  line-height: inherit;
+  word-wrap: normal;
+  border: 0;
+  background-color: transparent;
+}
+
+.note {
+  background: #fff8c5e6;
+  border-left: 5px solid #f2cc60;
+  padding: 15px;
+  border-radius: 6px;
+  margin: 10px 0;
+
+  pre {
+    margin-bottom: 0;
+  }
+}
+
+:host-context(.dark) .note {
+  background: #9a670060;
+  border-left: 5px solid #d29922;
+}
+
+@keyframes fadeInMoveDown {
+  0% {
+      opacity: 0;
+      transform: translateY(-15px);
+  }
+
+  100% {
+      opacity: 1;
+      transform: translateY(0px);
+  }
+}
+
+@keyframes revealOpacity {
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes revealTransform {
+  to {
+    transform: translateY(0px);
+  }
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/*
+@keyframes fadeInMoveUp {
+  0% {
+    opacity: 0;
+    transform: translateY(-40px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0px);
+  }
+}
+
+.fadeInAnimation {
+  --motion: 1;
+  --delay: 0;
+  transition: opacity calc(.4s* var(--motion)) linear calc(1s * calc(var(--delay) * var(--motion))), transform calc(.95s* var(--motion)) cubic-bezier(.215,.61,.355,1) calc(1s * calc(var(--delay) * var(--motion)));
+}
+*/
+/*
+.in-view {
+  --motion: 1;
+  --delay: 0;
+  opacity: 1;
+  transform: none;
+  transition: opacity calc(.4s* var(--motion)) linear calc(var(--delay)* var(--motion)), transform calc(.95s* var(--motion)) cubic-bezier(.215,.61,.355,1) calc(var(--delay)* var(--motion));
+}
+
+.out-of-view-top {
+  opacity: 0;
+  transform: translateY(-40px);
+}
+
+.out-of-view-bottom {
+  opacity: 0;
+  transform: translateY(40px);
+}
+*/
