@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, SimpleChanges, inject } from "@angular/core";
+import { Component, Input, OnChanges, SimpleChanges, inject, input } from "@angular/core";
 import { RouterLink } from "@angular/router";
 import { ContainerService } from "../services/container.service";
 import { Ontology } from "../obo/Ontology";
@@ -14,8 +14,8 @@ import { ThemeService } from "../services/theme.service";
   host: { '[class.dark]': 'isDarkTheme' }
 })
 export class SearchListComponent2 implements OnChanges {
-  @Input() category?: TermStanza;
-  @Input() name: string = '';
+  category = input<TermStanza>();
+  name = input<string>('');
 
   private themeService: ThemeService = inject(ThemeService);
   protected isDarkTheme: boolean = false;
@@ -41,14 +41,14 @@ export class SearchListComponent2 implements OnChanges {
   ngOnChanges(changes: SimpleChanges) {
     if (changes["category"] && !changes["category"].firstChange) {
       this.matchedContainers.clear();
-      if (this.category !== undefined) {
-        this.getContainersByCategory(this.category);
+      if (this.category() !== undefined) {
+        this.getContainersByCategory(this.category()!);
       }
     }
     if (changes["name"] && !changes["name"].firstChange) {
       this.matchedContainers.clear();
-      if (this.name.length > 0) {
-        this.getContainersByName(this.name);
+      if (this.name().length > 0) {
+        this.getContainersByName(this.name());
       }
     }
   }

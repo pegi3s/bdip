@@ -1,4 +1,4 @@
-import { Component, HostBinding, HostListener, Input, inject } from '@angular/core';
+import { Component, HostBinding, HostListener, Input, inject, input } from '@angular/core';
 import { TermStanza } from '../obo/TermStanza';
 import { Ontology } from '../obo/Ontology';
 
@@ -10,9 +10,9 @@ import { Ontology } from '../obo/Ontology';
   styleUrl: './ontology-editor-element.component.css',
 })
 export class OntologyEditorElementComponent {
-  @Input() ontology?: Ontology;
-  @Input() category?: TermStanza;
-  @Input() containers?: Map<string, Set<string>>;
+  ontology = input<Ontology>();
+  category = input<TermStanza>();
+  containers = input<Map<string, Set<string>>>();
 
   @HostBinding('class.open') opened = false;
 
@@ -20,7 +20,7 @@ export class OntologyEditorElementComponent {
   onInput(event: any) {
     const isOuterElement = () => event.target.closest('app-ontology-editor-element') === event.currentTarget;
     const isClickInHeader = () => event.target.closest('.dummy') == null && event.target.closest('.name') !== null;
-    const hasChildren = () => this.category?.hasChildren() || this.containers?.get(this.category?.id || "")?.size != 0;
+    const hasChildren = () => this.category()?.hasChildren() || this.containers()?.get(this.category()?.id || "")?.size != 0;
     if (!isOuterElement() || !hasChildren() || (this.opened && !isClickInHeader())) {
       return;
     }
@@ -32,8 +32,8 @@ export class OntologyEditorElementComponent {
   }
 
   removeStanza() {
-    if (this.category) {
-      this.ontology?.removeTerm(this.category);
+    if (this.category()) {
+      this.ontology()?.removeTerm(this.category()!);
     }
   }
 }

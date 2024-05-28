@@ -1,5 +1,5 @@
 <div class="indicator"></div>
-@for (tab of tabs; track $index) {
+@for (tab of tabs(); track $index) {
   <input type="radio" [id]="tab.label" name="tabs" (change)="onSelectTab(tab.label)" [checked]="tab.active" />
   <label class="tab" [for]="tab.label">
     @if (tab.icon) {

@@ -3,7 +3,7 @@
 <div class="name">
   <span class="material-symbols-rounded expand">expand_more</span>
   <p>
-    {{ category?.name?.replaceAll("_", " ") }}
+    {{ category()?.name?.replaceAll("_", " ") }}
   </p>
   <div class="dummy"></div>
 </div>
@@ -13,14 +13,14 @@
 </div>
 
 <div class="children">
-  @for (category of category?.getChildren(); track $index) {
+  @for (category of category()?.getChildren(); track $index) {
     <app-ontology-editor-element
-      [ontology]="ontology"
+      [ontology]="ontology()"
       [category]="category"
-      [containers]="containers"
+      [containers]="containers()"
     />
   }
-  @for (container of containers?.get(category?.id || ""); track $index) {
+  @for (container of containers()?.get(category()?.id || ""); track $index) {
     <div>{{ container }}</div>
   }
   <button class="material-symbols-rounded add" (click)="addStanza()">

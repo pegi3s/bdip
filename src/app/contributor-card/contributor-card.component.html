@@ -1,14 +1,14 @@
 <div
   class="outer-container"
-  [style.--url]="'url(' + contributor.photo + ')'"
+  [style.--url]="'url(' + contributor().photo + ')'"
 >
   <div class="inner-container">
-    <img [src]="contributor.photo" alt="" />
+    <img [src]="contributor().photo" alt="" />
     <div>
       <div class="name">
-        <p>{{ contributor.name }}</p>
+        <p>{{ contributor().name }}</p>
         <div class="organizations">
-          @for (organization of contributor.organizations; track $index) {
+          @for (organization of contributor().organizations; track $index) {
             <div class="organization" [style.--bg-color]="organization.color">
               <span class="tooltip">{{ organization.fullName }}</span>
               <p>{{ organization.acronym }}</p>
@@ -18,24 +18,24 @@
       </div>
       <hr />
       <div class="contact-info">
-        @if (email) {
-        <a [href]="'mailto:' + email">
+        @if (contributor().contactInfo.email) {
+        <a [href]="'mailto:' + contributor().contactInfo.email">
           <span class="material-symbols-rounded">email</span>
-          <span>{{ email }}</span>
+          <span>{{ contributor().contactInfo.email }}</span>
         </a>
         }
-        @if (orcid) {
+        @if (contributor().contactInfo.orcid) {
         <a
-          [href]="'https://orcid.org/' + orcid"
+          [href]="'https://orcid.org/' + contributor().contactInfo.orcid"
           target="_blank"
           rel="noopener noreferrer"
         >
           <img src="assets/ORCIDiD.svg" alt="orcid logo" />
         </a>
         }
-        @if (github) {
+        @if (contributor().contactInfo.github) {
         <a
-          [href]="'https://github.com/' + github"
+          [href]="'https://github.com/' + contributor().contactInfo.github"
           target="_blank"
           rel="noopener noreferrer"
         >
