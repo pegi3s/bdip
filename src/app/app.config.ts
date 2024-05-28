@@ -1,4 +1,4 @@
-import { ApplicationConfig, inject } from '@angular/core';
+import { ApplicationConfig, inject, provideZoneChangeDetection } from '@angular/core';
 import { Router, provideRouter, withComponentInputBinding, withViewTransitions } from '@angular/router';
 import { provideAnimations } from "@angular/platform-browser/animations";
 import { routes } from './app.routes';
@@ -36,6 +36,7 @@ export const appConfig: ApplicationConfig = {
         },
       }),
       withComponentInputBinding()
-    )
+    ),
+    provideZoneChangeDetection({ eventCoalescing: true })
   ]
 };
