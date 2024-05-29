@@ -1,5 +1,7 @@
 :host {
   --vertical-main-margin: 20px;
+  --height: 65px;
+
   --blur-color: rgba(255, 255, 255, 0.2);
   --header-bg-color: rgba(255, 255, 255, 0.6);
   --header-border-color: rgba(var(--slate-900), 0.15);
@@ -49,13 +51,13 @@
 }
 
 .outer {
-  --height: 65px;
+  --height-calc: var(--height);
   display: flex;
   flex-direction: column;
   top: var(--vertical-main-margin);
   margin: var(--vertical-main-margin) var(--horizontal-main-margin);
   border-radius: 24px;
-  height: var(--height);
+  height: var(--height-calc);
   transition: all cubic-bezier(0, 0, 0.15, 1.2) 400ms;
 }
 
@@ -174,7 +176,7 @@ nav {
 }
 
 .menu-opened {
-  height: calc(var(--height) + 3 * 54px + 10px);
+  --height-calc: calc(var(--height) + 3 * 54px + 10px);
 }
 
 .menu-button p {
@@ -182,7 +184,7 @@ nav {
 }
 
 @media (width > 1024px) {
-  .outer {
+  :host {
     --height: 75px;
   }
 
@@ -200,10 +202,6 @@ nav {
 
   header > .search-button {
     justify-content: flex-end;
-  }
-
-  .menu-opened {
-    height: var(--height);
   }
 
   .nav-links-menu {

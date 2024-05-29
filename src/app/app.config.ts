@@ -27,7 +27,6 @@ export const appConfig: ApplicationConfig = {
           const router = inject(Router);
           const url = router.getCurrentNavigation()!.finalUrl!.root.children['primary'];
           const goingToSearch = url?.segments[0].path == 'search';
-          console.log(goingToSearch);
           // Skip the transition if we are going to the search page
           // to avoid mixing it with the custom one defined
           if (goingToSearch) {

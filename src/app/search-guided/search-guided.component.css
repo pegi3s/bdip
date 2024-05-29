@@ -23,7 +23,7 @@
   top: 0;
   border-radius: 24px;
   padding: 24px;
-  margin-top: 115px;
+  margin-top: var(--header-height);
   width: calc(100% - calc(2 * var(--horizontal-main-margin)));
   min-height: 0;
 }

@@ -1,5 +1,5 @@
 :host {
-  padding-top: 115px;
+  padding-top: var(--header-height);
   padding-right: var(--horizontal-main-margin);
   padding-left: var(--horizontal-main-margin);
 }
@@ -20,7 +20,7 @@
   border-radius: 24px;
 
   position: sticky;
-  top: 115px;
+  top: var(--header-height);
 }
 
 .category-list {
