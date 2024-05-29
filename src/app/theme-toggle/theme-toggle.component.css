@@ -1,0 +1,25 @@
+button {
+  cursor: pointer;
+  border: none;
+  border-radius: 80px;
+  background-color: rgba(0, 0, 0, 0.08);
+  padding: 12px;
+  line-height: 0;
+}
+
+button:hover {
+    background-color: rgba(0, 0, 0, 0.16);
+}
+
+button span {
+  font-size: 24px;
+}
+
+/* Dark theme styles */
+:host-context(.dark) button {
+  background-color: rgba(255, 255, 255, 0.08);
+}
+
+:host-context(.dark) button:hover {
+  background-color: rgba(255, 255, 255, 0.16);
+}

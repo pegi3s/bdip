@@ -7,10 +7,12 @@ import { map } from 'rxjs';
   standalone: true,
   imports: [],
   templateUrl: './theme-toggle.component.html',
-  styleUrl: './theme-toggle.component.css'
+  styleUrl: './theme-toggle.component.css',
+  host: {'[class.dark]':'isDarkTheme'}
 })
 export class ThemeToggleComponent {
   themeService: ThemeService = inject(ThemeService);
+  isDarkTheme: boolean = false;
   themeIcon: string = '';
 
   constructor() {
@@ -19,6 +21,9 @@ export class ThemeToggleComponent {
     );
     this.themeService.getTheme().subscribe(theme => {
       this.getThemeIcon(theme);
+    });
+    this.themeService.isDarkTheme().subscribe(isDark => {
+      this.isDarkTheme = isDark;
     });
   }
 
