@@ -9,7 +9,7 @@
   display: flex;
   position: relative;
   flex-direction: column;
-  gap: 24px;
+  gap: 10vh;
   transition: all 400ms cubic-bezier(0.57, 0, 0, 1);
   background-color: rgb(37 60 234);
   padding: 24px;
@@ -17,6 +17,8 @@
   padding-top: calc(24px + 115px);
   width: 100%;
   min-height: 100svh;
+  justify-content: center;
+  align-items: center;
 }
 
 .search-container.active {
@@ -28,12 +30,14 @@
   min-height: 0;
 }
 
-.search-by-category {
+.search-by-category, .search-by-text {
   display: flex;
   flex-direction: column;
   justify-content: center;
   gap: 24px;
 }
+
+
 
 .selected-container {
   display: flex;

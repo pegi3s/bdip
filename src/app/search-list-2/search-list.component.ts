@@ -68,7 +68,7 @@ export class SearchListComponent2 implements OnChanges {
   getContainersByName(name: string) {
     this.containers.forEach((containerSet) => {
       containerSet.forEach((container) => {
-        if (container.includes(name)) {
+        if (container.toLowerCase().includes(name.toLowerCase())) {
           this.matchedContainers.add(container);
         }
       });

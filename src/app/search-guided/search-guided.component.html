@@ -2,8 +2,10 @@
   @if (this.searchTerm.length === 0) {
     <div class="search-by-category" @fadeIn>
       <p>
-        <span class="material-symbols-rounded" (click)="goUpLevel()">arrow_back</span>
-        What are you looking for?
+        @if (categorySelectionStack.length > 0) {
+          <span class="material-symbols-rounded" (click)="goUpLevel()">arrow_back</span>
+        }
+        Ready to explore? Choose a category!
       </p>
       @if (categorySelectionStack.length > 0) {
         <div class="selected-container">
@@ -27,7 +29,12 @@
   }
 
   @if (this.categorySelectionStack.length === 0) {
-    <input placeholder="Search" type="text" maxlength="200" [(ngModel)]="searchTerm" @fadeIn/>
+    <div class="search-by-text" @fadeIn> 
+      <p>
+        Unleash the power of our advanced search!
+      </p>
+      <input placeholder="Search" type="text" maxlength="200" [(ngModel)]="searchTerm" @fadeIn/>
+    </div>
   }
 </section>
 <app-search-list-2 [name]="searchTerm" [category]="this.categorySelectionStack.length === 0 ? undefined : this.categorySelectionStack[this.categorySelectionStack.length - 1]"></app-search-list-2>
