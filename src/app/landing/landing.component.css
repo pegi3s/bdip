@@ -563,6 +563,48 @@ pre code {
   border-left: 5px solid #d29922;
 }
 
+/* Funding */
+
+.funding > div {
+  display: grid;
+  grid-template-areas:
+    "text"
+    "img";
+  column-gap: 72px;
+  row-gap: 40px;
+  @media (min-width: 768px) {
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas: "text img";
+  }
+
+  > div {
+    grid-area: text;
+  }
+
+  h2 {
+    margin-top: 0;
+  }
+
+  a {
+    display: contents;
+    
+    img {
+      grid-area: img;
+      align-self: center;
+      justify-self: center;
+      max-height: 100px;
+      
+      @media (min-width: 768px) {
+        justify-self: end;
+      }
+    }
+  }
+}
+
+:host-context(.dark) .funding img {
+  filter: brightness(0%) contrast(200%) invert(100%);
+}
+
 @keyframes fadeInMoveDown {
   0% {
       opacity: 0;
