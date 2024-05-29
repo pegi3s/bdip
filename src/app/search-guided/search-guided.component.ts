@@ -57,13 +57,16 @@ export class SearchGuidedComponent {
   }
 
   goUpLevel(): void {
-    const parent = this.categories[0].getParents()[0];
-    if (parent === undefined || !parent.hasParents()) {
-      this.categories = this.rootCategories;
-    } else {
-      this.categories = parent.getParents()[0].getChildren();
+    if (this.categorySelectionStack.length > 0) {
+      this.categorySelectionStack.pop();
     }
-    this.categorySelectionStack.pop();
+  
+    if (this.categorySelectionStack.length > 0) {
+      const parent = this.categorySelectionStack[this.categorySelectionStack.length - 1];
+      this.categories = parent.getChildren();
+    } else {
+      this.categories = this.rootCategories;
+    }
   }
 
   getSelectedCategory(): TermStanza | undefined {
