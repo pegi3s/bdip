@@ -1,5 +1,5 @@
 import { ApplicationConfig, inject, provideZoneChangeDetection } from '@angular/core';
-import { Router, provideRouter, withComponentInputBinding, withViewTransitions } from '@angular/router';
+import { Router, provideRouter, withComponentInputBinding, withInMemoryScrolling, withViewTransitions } from '@angular/router';
 import { provideAnimations } from "@angular/platform-browser/animations";
 import { routes } from './app.routes';
 import { HttpClient, provideHttpClient, withFetch } from '@angular/common/http';
@@ -34,7 +34,11 @@ export const appConfig: ApplicationConfig = {
           }
         },
       }),
-      withComponentInputBinding()
+      withComponentInputBinding(),
+      withInMemoryScrolling({
+        scrollPositionRestoration: 'top',
+        anchorScrolling: 'enabled',
+      })
     ),
     provideZoneChangeDetection({ eventCoalescing: true })
   ]

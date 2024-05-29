@@ -51,7 +51,6 @@ export class HeaderComponent {
     this.searchClicked = true;
     setTimeout(() => {
       this.router.navigate(['/search']);
-      window.scrollTo(0, 0);
     }, 600);
   }
 
