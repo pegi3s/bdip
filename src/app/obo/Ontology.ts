@@ -143,7 +143,9 @@ export class Ontology {
 
   // [Term], [Typedef], and [Instance] stanzas should be serialized in alphabetical order on the value of their id tag.
   private parseStanza(lines: string[]) {
+    // Regular expression to match stanza headers
     const stanzaRegex = /^\[(\w+)\]/;
+    // Object mapping term properties to their setter functions
     const termProperties: {
       [key: string]: { setter: (value: string) => void };
     } = {
@@ -168,8 +170,10 @@ export class Ontology {
     let line;
     while ((line = lines.shift()) !== undefined) {
       let matched = false;
+      // Split the line into tag, value, and comment
       const [tag, value, comment] = line.split(/: | ! /);
       if (tag !== undefined && value !== undefined) {
+        // If the tag is not recognized, log a warning
         if (termProperties[tag] === undefined) {
           console.warn(`Unknown tag: ${tag}`);
         } else {
@@ -178,11 +182,15 @@ export class Ontology {
         }
       }
 
+      // If the line did not match any tag and that line indicates a new stanza,
+      // add the current term to the ontology
       if (!matched && stanzaRegex.test(line)) {
         this.addTerm(ontologyTerm);
         ontologyTerm = new TermStanza();
       }
     }
+    // Add the last term to the ontology
+    this.addTerm(ontologyTerm);
   }
 
   private kebabToCamel(s: string): string {
