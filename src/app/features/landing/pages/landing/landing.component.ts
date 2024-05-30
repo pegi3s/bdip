@@ -3,7 +3,6 @@ import { NgOptimizedImage } from '@angular/common';
 import { SearchGuidedComponent } from "../../../containers/pages/search-guided/search-guided.component";
 import { SearchListComponent } from '../../../../search-list/search-list.component';
 import { ReasonListComponent } from '../../../../reason-list/reason-list.component';
-import { CarouselComponent } from '../../../../carousel/carousel.component';
 import { ContributorCardComponent } from "../../components/contributor-card/contributor-card.component";
 import { ContributorService } from '../../../../services/contributor.service';
 import { Contributor } from '../../models/contributor.model';
@@ -19,7 +18,7 @@ import { OS } from '../../../../models/os';
   standalone: true,
   templateUrl: './landing.component.html',
   styleUrl: './landing.component.css',
-  imports: [CarouselComponent, ReasonListComponent, SearchGuidedComponent, SearchListComponent, NgOptimizedImage, TabsComponent, ContributorCardComponent, LogoMarqueeComponent],
+  imports: [ReasonListComponent, SearchGuidedComponent, SearchListComponent, NgOptimizedImage, TabsComponent, ContributorCardComponent, LogoMarqueeComponent],
   host: {'[class.dark]':'isDarkTheme'}
 })
 export class LandingComponent {
