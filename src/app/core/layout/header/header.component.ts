@@ -39,7 +39,7 @@ export class HeaderComponent {
   ngOnInit() {
     this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
-        this.showSearch = this.router.url !== '/search';
+        this.showSearch = this.router.url.indexOf('/search') === -1;
         if (this.searchClicked) {
           this.searchClicked = false;
         }

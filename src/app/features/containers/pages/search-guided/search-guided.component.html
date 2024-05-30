@@ -1,15 +1,15 @@
-<section class="search-container" #searchContainer [class.active]="categorySelectionStack.length !== 0 || this.searchTerm.length !== 0">
-  @if (this.searchTerm.length === 0) {
+<section class="search-container" #searchContainer [class.active]="categorySelectionStack().length !== 0 || this.searchTerm().length !== 0">
+  @if (this.searchTerm().length === 0) {
     <div class="search-by-category" @fadeIn>
       <p>
-        @if (categorySelectionStack.length > 0) {
+        @if (categorySelectionStack().length > 0) {
           <span class="material-symbols-rounded" (click)="goUpLevel()">arrow_back</span>
         }
         Ready to explore? Choose a category!
       </p>
-      @if (categorySelectionStack.length > 0) {
+      @if (categorySelectionStack().length > 0) {
         <div class="selected-container">
-          @for (category of categorySelectionStack; track $index) {
+          @for (category of categorySelectionStack(); track $index) {
             <div>
               {{ category.name?.replaceAll("_", " ") }}
             </div>
@@ -28,7 +28,7 @@
     </div>
   }
 
-  @if (this.categorySelectionStack.length === 0) {
+  @if (this.categorySelectionStack().length === 0) {
     <div class="search-by-text" @fadeIn> 
       <p>
         Unleash the power of our advanced search!
@@ -37,4 +37,4 @@
     </div>
   }
 </section>
-<app-search-list-2 [name]="searchTerm" [category]="this.categorySelectionStack.length === 0 ? undefined : this.categorySelectionStack[this.categorySelectionStack.length - 1]"></app-search-list-2>
+<app-search-list-2 [name]="searchTerm()" [category]="getSelectedCategory()"></app-search-list-2>
