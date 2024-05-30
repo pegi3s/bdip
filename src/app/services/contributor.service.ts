@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Contributor } from '../models/contributor.model';
+import { Contributor } from '../features/landing/models/contributor.model';
 import * as Organization from '../models/organization';
 
 @Injectable({

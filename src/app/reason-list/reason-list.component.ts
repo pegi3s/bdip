@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { ReasonCardComponent } from '../reason-card/reason-card.component';
+import { ReasonCardComponent } from '../shared/components/reason-card/reason-card.component';
 
 @Component({
   selector: 'app-reason-list',

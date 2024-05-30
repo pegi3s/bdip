@@ -1,8 +1,8 @@
 import { Component, ElementRef, effect, viewChild } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { HeaderComponent } from './layout/header/header.component';
-import { FooterComponent } from './layout/footer/footer.component';
-import { LandingComponent } from './landing/landing.component';
+import { HeaderComponent } from './core/layout/header/header.component';
+import { FooterComponent } from './core/layout/footer/footer.component';
+import { LandingComponent } from './features/landing/pages/landing/landing.component';
 import { debounceTime, fromEvent, map } from 'rxjs';
 
 @Component({
@@ -29,7 +29,7 @@ export class AppComponent {
         return this.getHeaderHeight(style);
       })
     );
-    
+
     offsetHeight$.subscribe(height => {
       this.headerHeight = height;
     });

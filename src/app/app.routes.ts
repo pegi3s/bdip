@@ -1,12 +1,11 @@
 import { Routes } from '@angular/router';
-import { LandingComponent } from './landing/landing.component';
+import { LandingComponent } from './features/landing/pages/landing/landing.component';
 import { SearchListComponent } from './search-list/search-list.component';
-import { EmptyComponent } from './empty/empty.component';
 import { OntologyEditorComponent } from './ontology-editor/ontology-editor.component';
-import { ContainerComponent } from './container/container.component';
-import { TutorialComponent } from './tutorial/tutorial.component';
-import { TutorialsLandingComponent } from './tutorials-landing/tutorials-landing.component';
-import { SearchGuidedComponent } from './search-guided/search-guided.component';
+import { ContainerComponent } from './features/containers/container/container.component';
+import { TutorialComponent } from './features/tutorials/pages/tutorial/tutorial.component';
+import { TutorialsLandingComponent } from './features/tutorials/pages/tutorials-landing/tutorials-landing.component';
+import { SearchGuidedComponent } from './features/containers/pages/search-guided/search-guided.component';
 
 export const routes: Routes = [
     {

@@ -1,0 +1,245 @@
+<section class="intro">
+  <div>
+    <h2>Bioinformatics Docker<br />Images Project</h2>
+    <div class="search-container-landing">
+      <!-- <app-carousel /> -->
+      <div class="halo-container" (click)="onSearchClick()" [class.clicked]="searchClicked">
+        <svg class="svg1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path d="M12.876.64V.639l8.25 4.763c.541.313.875.89.875 1.515v9.525a1.75 1.75 0 0 1-.875 1.516l-8.25 4.762a1.748 1.748 0 0 1-1.75 0l-8.25-4.763a1.75 1.75 0 0 1-.875-1.515V6.917c0-.625.334-1.202.875-1.515L11.126.64a1.748 1.748 0 0 1 1.75 0Zm-1 1.298L4.251 6.34l7.75 4.474 7.75-4.474-7.625-4.402a.248.248 0 0 0-.25 0Zm.875 19.123 7.625-4.402a.25.25 0 0 0 .125-.216V7.639l-7.75 4.474ZM3.501 7.64v8.803c0 .09.048.172.125.216l7.625 4.402v-8.947Z"></path></svg>
+        <svg class="svg2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path d="M12.876.64V.639l8.25 4.763c.541.313.875.89.875 1.515v9.525a1.75 1.75 0 0 1-.875 1.516l-8.25 4.762a1.748 1.748 0 0 1-1.75 0l-8.25-4.763a1.75 1.75 0 0 1-.875-1.515V6.917c0-.625.334-1.202.875-1.515L11.126.64a1.748 1.748 0 0 1 1.75 0Zm-1 1.298L4.251 6.34l7.75 4.474 7.75-4.474-7.625-4.402a.248.248 0 0 0-.25 0Zm.875 19.123 7.625-4.402a.25.25 0 0 0 .125-.216V7.639l-7.75 4.474ZM3.501 7.64v8.803c0 .09.048.172.125.216l7.625 4.402v-8.947Z"></path></svg>
+        <svg class="svg3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path d="M12.876.64V.639l8.25 4.763c.541.313.875.89.875 1.515v9.525a1.75 1.75 0 0 1-.875 1.516l-8.25 4.762a1.748 1.748 0 0 1-1.75 0l-8.25-4.763a1.75 1.75 0 0 1-.875-1.515V6.917c0-.625.334-1.202.875-1.515L11.126.64a1.748 1.748 0 0 1 1.75 0Zm-1 1.298L4.251 6.34l7.75 4.474 7.75-4.474-7.625-4.402a.248.248 0 0 0-.25 0Zm.875 19.123 7.625-4.402a.25.25 0 0 0 .125-.216V7.639l-7.75 4.474ZM3.501 7.64v8.803c0 .09.048.172.125.216l7.625 4.402v-8.947Z"></path></svg>
+        <svg class="svg4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path d="M12.876.64V.639l8.25 4.763c.541.313.875.89.875 1.515v9.525a1.75 1.75 0 0 1-.875 1.516l-8.25 4.762a1.748 1.748 0 0 1-1.75 0l-8.25-4.763a1.75 1.75 0 0 1-.875-1.515V6.917c0-.625.334-1.202.875-1.515L11.126.64a1.748 1.748 0 0 1 1.75 0Zm-1 1.298L4.251 6.34l7.75 4.474 7.75-4.474-7.625-4.402a.248.248 0 0 0-.25 0Zm.875 19.123 7.625-4.402a.25.25 0 0 0 .125-.216V7.639l-7.75 4.474ZM3.501 7.64v8.803c0 .09.048.172.125.216l7.625 4.402v-8.947Z"></path></svg>
+        <svg class="svg5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path d="M12.876.64V.639l8.25 4.763c.541.313.875.89.875 1.515v9.525a1.75 1.75 0 0 1-.875 1.516l-8.25 4.762a1.748 1.748 0 0 1-1.75 0l-8.25-4.763a1.75 1.75 0 0 1-.875-1.515V6.917c0-.625.334-1.202.875-1.515L11.126.64a1.748 1.748 0 0 1 1.75 0Zm-1 1.298L4.251 6.34l7.75 4.474 7.75-4.474-7.625-4.402a.248.248 0 0 0-.25 0Zm.875 19.123 7.625-4.402a.25.25 0 0 0 .125-.216V7.639l-7.75 4.474ZM3.501 7.64v8.803c0 .09.048.172.125.216l7.625 4.402v-8.947Z"></path></svg>
+        <svg class="svg6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path d="M12.876.64V.639l8.25 4.763c.541.313.875.89.875 1.515v9.525a1.75 1.75 0 0 1-.875 1.516l-8.25 4.762a1.748 1.748 0 0 1-1.75 0l-8.25-4.763a1.75 1.75 0 0 1-.875-1.515V6.917c0-.625.334-1.202.875-1.515L11.126.64a1.748 1.748 0 0 1 1.75 0Zm-1 1.298L4.251 6.34l7.75 4.474 7.75-4.474-7.625-4.402a.248.248 0 0 0-.25 0Zm.875 19.123 7.625-4.402a.25.25 0 0 0 .125-.216V7.639l-7.75 4.474ZM3.501 7.64v8.803c0 .09.048.172.125.216l7.625 4.402v-8.947Z"></path></svg>
+        <svg class="halo" viewBox="0 0 88 92" fill="none" xmlns="http://www.w3.org/2000/svg"><path shape-rendering="geometricPrecision" d="M35.7886 3.94375C40.367 -0.485401 47.633 -0.485401 52.2114 3.94375C54.8296 6.47653 58.47 7.65939 62.0769 7.14922C68.3842 6.25708 74.2626 10.528 75.3632 16.8023C75.9926 20.3903 78.2425 23.4871 81.4604 25.1944C87.0876 28.18 89.3329 35.0904 86.5353 40.8134C84.9356 44.0861 84.9356 47.9139 86.5353 51.1866C89.3329 56.9096 87.0876 63.82 81.4604 66.8056C78.2425 68.513 75.9926 71.6097 75.3632 75.1977C74.2626 81.472 68.3842 85.7429 62.0769 84.8508C58.47 84.3406 54.8296 85.5235 52.2114 88.0563C47.633 92.4854 40.367 92.4854 35.7886 88.0563C33.1704 85.5235 29.53 84.3406 25.9231 84.8508C19.6158 85.7429 13.7374 81.472 12.6368 75.1977C12.0074 71.6097 9.75747 68.513 6.5396 66.8056C0.912426 63.82 -1.33291 56.9096 1.46466 51.1866C3.06443 47.9139 3.06443 44.0861 1.46466 40.8134C-1.33291 35.0904 0.912426 28.18 6.5396 25.1944C9.75747 23.4871 12.0074 20.3903 12.6368 16.8023C13.7374 10.528 19.6158 6.25708 25.9231 7.14922C29.53 7.65939 33.1704 6.47653 35.7886 3.94375Z"></path></svg>
+        <img src="../../../../../assets/magnifying-glass.svg" alt="" class="search">
+      </div>
+    </div>
+    <div>
+      <p>
+        Unlock the power of containerized bioinformatics tools with our
+        comprehensive Docker repository
+      </p>
+    </div>
+    <img src="../../../../../assets/Whale.png" alt="" class="foreground" />
+    <img src="../../../../../assets/Whale.png" alt="" class="background" />
+  </div>
+</section>
+<section class="about-project">
+  <div>
+    <h2>About this project</h2>
+    <div>
+      <p>
+        This website contains information about the Docker images maintained by
+        the Phenotypic Evolution Group (pegi3s) at the Instituto de Biologia
+        Molecular e Celular (IBMC) / Instituto de Investigação e Inovação em
+        Saúde da Universidade do Porto (i3S). All images are available through
+        our Docker Hub repository, and the respective Docker files at our GitHub
+        repository.
+      </p>
+      <p>
+        In addition, this repository also contains tutorials to serve as
+        guidance on the usage of existing Docker images (e.g. Trinity for
+        RNA-Seq).
+      </p>
+    </div>
+    <img
+      src="../../../../../assets/dockerfiles-logo.svg"
+      alt=""
+      class="docker-img"
+    />
+  </div>
+</section>
+<section class="why-docker">
+  <div>
+    <h2>Why <span>Docker Images?</span></h2>
+    <app-reason-list />
+  </div>
+</section>
+<section class="getting-started">
+  <div>
+    <h2>Getting started</h2>
+    <app-tabs (activeTab)="onTabSelectedGettingStarted($event)" [tabs]="[
+      { label: OS.WINDOWS, icon: 'assets/Windows11.svg', active: gettingStartedOS === OS.WINDOWS },
+      { label: OS.LINUX, icon: 'assets/linux.svg', active: gettingStartedOS === OS.LINUX }
+    ]" />
+    @if (gettingStartedOS === OS.WINDOWS) {
+      <p class="lead">
+        To install Docker in Windows, please follow these instructions before following the Linux installation instructions given above.
+        Please note that during software installation, you may need to restart the Ubuntu console or the computer itself, before proceeding
+        to the next step. Therefore, try these solutions first if you find any problems.
+      </p>
+      <ol class="steps">
+        <li>
+          <h3>Enable Virtualization Option</h3>
+          <p>
+            The following approach requires that the virtualization option is enabled in your BIOS, which is the case for most recent laptops.
+            To enable this option, follow the instructions provided in this <a href="https://support.microsoft.com/en-us/windows/enable-virtualization-on-windows-11-pcs-c5578302-6e43-4b4b-a449-8ced115f58e1" target="_blank">guide</a>.
+          </p>
+        </li>
+        <li>
+          <h3>Install Windows Subsystem Linux</h3>
+          <p>Open a PowerShell prompt as an Administrator and run the following command:</p>
+          <pre><code>wsl -install</code></pre>
+        </li>
+        <li>
+          <h3>Install Ubuntu using the Microsoft Store</h3>
+          <p>
+            To install Ubuntu you can use the following link: <a href="ms-windows-store://pdp?productid=9pdxgncfsczv&mode=mini">Ubuntu</a>
+          </p>
+          <p>
+            As an alternative, press the Windows button, type “Microsoft Store” in the search bar, and run the application. In the “Microsoft Store”
+            search bar, type Ubuntu, choose the distribution you want, and then click on the “Get” button. During the installation, you will be asked
+            to give a name to the super user account, that could be different from the name of your Windows account, and set the respective password.
+          </p>
+          <p>
+            Once the installation is completed, a new app, named "Ubuntu” will be available, that can be accessed by pressing the Windows button,
+            typing “Ubuntu” in the search bar, and running the application. When this is done, a command line terminal appears.
+          </p>
+          <p>
+            Now that you have Ubuntu installed, you can follow the Linux steps in the Ubuntu terminal. All your Windows directories will be mounted
+            in the "/mnt" directory. For instance, if your project's directory is "C:/Users/&lt;windows_username&gt;/Documents/Project", inside Ubuntu
+            it will be "/mnt/c/Users/&lt;windows_username&gt;/Documents/Project". Try to not use whitespaces in the directories you mount into the Docker
+            images (e.x. Project_example instead of Project example). Users are advised to work under "/mnt/c/Users/&lt;windows_username&gt;/Documents"
+            or below.
+          </p>
+        </li>
+      </ol>
+    } @else {
+      <p class="lead">To install Docker in Linux, please follow the steps below:</p>
+      <ol class="steps">
+        <li>
+            <h3>Update Ubuntu repositories</h3>
+            <p>In the Ubuntu terminal, run the following commands (you will be asked for the super user password):</p>
+            <div class="codeblock">
+              <pre><code>sudo apt-get update</code></pre>
+              <pre><code>sudo apt-get upgrade</code></pre>
+            </div>
+        </li>
+
+        <li>
+            <h3>Install xorg (Required to run Docker images with graphical interface)</h3>
+            <p>In the Ubuntu terminal, run the following command (you will be asked for the super user password):</p>
+            <pre><code>sudo apt install -y xorg xinit</code></pre>
+        </li>
+
+        <li>
+            <h3>Install Docker</h3>
+            <p>Run the following commands one by one:</p>
+            <div class="codeblock">
+              <pre><code>sudo apt-get install ca-certificates curl</code></pre>
+              <pre><code>sudo install -m 0755 -d /etc/apt/keyrings</code></pre>
+              <pre><code>sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc</code></pre>
+              <pre><code>sudo chmod a+r /etc/apt/keyrings/docker.asc</code></pre>
+              <pre><code>echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null</code></pre>
+              <pre><code>sudo apt-get update</code></pre>
+              <pre><code>sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin</code></pre>
+            </div>
+        </li>
+
+        <li>
+            <h3>Change Docker permissions</h3>
+            <p>Run the following commands one by one so that the user does not need to use sudo to run Docker images:</p>
+            <div class="codeblock">
+              <pre><code>sudo groupadd docker</code></pre>
+              <pre><code>sudo gpasswd -a $USER docker</code></pre>
+            </div>
+        </li>
+
+        <li>
+            <h3>Test the Docker installation</h3>
+            <p>Run the following command:</p>
+            <pre><code>docker run hello-world</code></pre>
+        </li>
+
+        <li>
+            <h3>Step 6: Reboot</h3>
+            <p>Reboot your computer. Docker Images with a graphical interface may not be displayed properly until you reboot your computer.</p>
+            <div class="note">
+                <strong>Note:</strong> To run Docker images with a graphical interface, you need to run the following command first:
+                <pre><code>xhost +</code></pre>
+            </div>
+        </li>
+      </ol>
+      <p>You are now ready to run any <strong>pegi3s</strong> Docker image.</p>
+    }
+  </div>
+</section>
+<section class="dissemination">
+  <div>
+    <h2>Dissemination</h2>
+    <div class="references">
+      <p class="lead">
+        H. López-Fernández; P. Ferreira; M. Reboiro-Jato; C.P. Vieira; J. Vieira (2021)
+        <a href="https://doi.org/10.1007/978-3-030-86258-9_4" target="_blank">The pegi3s Bioinformatics Docker Images Project</a>.
+        15th International Conference on Practical Applications of Computational Biology & Bioinformatics: PACBB 2021.
+        Salamanca, Spain. 6 - October
+        <a href="https://doi.org/10.1007/978-3-030-86258-9_4" target="_blank" class="badge">
+          <span>DOI</span><span>10.1007/978-3-030-86258-9_4</span>
+        </a>
+      </p>
+      <p class="lead">
+        P. Ferreira; H. López-Fernández; P. Duque; Cristina P. Vieira; F. Fdez-Riverola; Miguel Reboiro-Jato; J. Vieira (2019)
+        <a href="https://doi.org/10.5281/zenodo.2573107" target="_blank">Bioinformatics Docker Images</a>.
+        Bioinformatics Open Days: BOD 2019. Braga, Portugal. 21 - February
+        <a href="https://doi.org/10.5281/zenodo.2573107" target="_blank" class="badge">
+          <span>DOI</span><span>10.5281/zenodo.2573107</span>
+        </a>
+      </p>
+      <p class="lead">
+        ELIXIR bio.tools:
+        <a href="https://bio.tools/Bioinformatics_Docker_Images_Project" target="_blank">Bioinformatics Docker Images Project</a>.
+      </p>
+    </div>
+  </div>
+</section>
+<section class="citing">
+  <div>
+    <img src="../../../../../assets/mention.svg" alt="" class="search">
+    <div>
+      <h2>Citing</h2>
+      <p>
+        If you use these Docker Images, please include in the acknowledgments section of your paper the sentence:
+      </p>
+      <blockquote>
+        The authors wish to thank to the Bioinformatics Docker Images Project (https://pegi3s.github.io/dockerfiles/) and to the BioData.pt Project (https://biodata.pt).
+      </blockquote>
+    </div>
+  </div>
+</section>
+<section>
+  <div>
+    <h2>Authors</h2>
+    <div class="authors">
+      @for (author of authors; track $index) {
+        <app-contributor-card [contributor]="author" />
+      }
+    </div>
+  </div>
+</section>
+<section>
+  <div>
+    <h2>Contributors</h2>
+    <div class="authors">
+      @for (contributor of contributors; track $index) {
+        <app-contributor-card [contributor]="contributor" />
+      }
+    </div>
+  </div>
+</section>
+<section class="funding">
+  <div>
+    <div>
+      <h2>Funding</h2>
+      <p>We are grateful to <a href="https://biodata.pt/" target="_blank">BioData.pt</a>, funded by project 22231/01/SAICT/2016.</p>
+    </div>
+    <a href="https://biodata.pt/" target="_blank">
+      <img src="../../../../../assets/images/biodatapt-elixir-logo.svg" alt="BioData.pt" />
+    </a>
+  </div>
+</section>
+<section>
+  <div>
+    <h2>Co-funded by</h2>
+    <app-logo-marquee />
+  </div>
+</section>

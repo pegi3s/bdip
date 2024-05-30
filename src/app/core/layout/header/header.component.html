@@ -1,0 +1,30 @@
+<div class="search-animation" [class.expand]="searchClicked"></div>
+<div class="outer" [class.menu-opened]="showMenu">
+  <header [class.transitions-enabled]="enableTransitions" [class.scrolled]="scrolled">
+    <div class="header-logo">
+      <a routerLink="/">
+        <img src="../../../../assets/pegi3s.png" alt="logo">
+      </a>
+      <span class="title">Bioinformatics Docker Images Project</span>
+    </div>
+    <nav class="nav-links-top">
+      <a routerLink="/about">About</a>
+      <a routerLink="/containers">Containers</a>
+      <a routerLink="/tutorials">Tutorials</a>
+    </nav>
+    <div class="search-button" [class.visible]="showSearch" (click)="onSearchClick()">
+      <div>
+        <img src="../../../../assets/magnifying-glass-tilted-left.svg" alt="search" width="18px">
+        <span>Search</span>
+      </div>
+    </div>
+    <div class="menu-button">
+      <p class="material-symbols-rounded" (click)="toggleMenu()">menu</p>
+    </div>
+  </header>
+  <nav class="nav-links-menu">
+    <a routerLink="/about">About</a>
+    <a routerLink="/containers">Containers</a>
+    <a routerLink="/tutorials">Tutorials</a>
+  </nav>
+</div>
