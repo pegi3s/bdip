@@ -1,4 +1,4 @@
-<section class="search-container" #searchContainer [class.active]="categorySelectionStack().length !== 0 || this.searchTerm().length !== 0">
+<section class="search-container" #searchContainer [class.active]="categorySelectionStack().length !== 0 || this.searchTerm().length !== 0" [class.collapsed]="showAll()">
   @if (this.searchTerm().length === 0) {
     <div class="search-by-category" @fadeIn>
       <p>
@@ -18,7 +18,7 @@
       }
       @if (getSelectedCategory() === undefined || getSelectedCategory()?.hasChildren()) {
         <div class="container">
-          @for (category of categories; track $index) {
+          @for (category of categories(); track $index) {
             <div (click)="loadChildren(category)">
               {{ category.name?.replaceAll("_", " ") }}
             </div>
@@ -37,4 +37,7 @@
     </div>
   }
 </section>
-<app-search-list-2 [name]="searchTerm()" [category]="getSelectedCategory()"></app-search-list-2>
+<app-search-list-2 
+  [name]="searchTerm()"
+  [rootCategories]="showAll() ? rootCategories : []"
+  [selectedCategory]="getSelectedCategory()" />

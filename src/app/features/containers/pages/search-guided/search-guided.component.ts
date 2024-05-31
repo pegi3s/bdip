@@ -1,4 +1,4 @@
-import { Component, EnvironmentInjector, effect, inject, runInInjectionContext, signal } from '@angular/core';
+import { Component, EnvironmentInjector, computed, effect, inject, runInInjectionContext, signal } from '@angular/core';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { ContainerService } from '../../../../services/container.service';
 import { TermStanza } from '../../../../obo/TermStanza';
@@ -23,33 +23,55 @@ import { ActivatedRoute, Router } from '@angular/router';
   /* host: { '[@fadeIn]': '' }, */
 })
 export class SearchGuidedComponent {
+  /* Services */
   router: Router = inject(Router);
   activatedRoute: ActivatedRoute = inject(ActivatedRoute);
+  envInjector: EnvironmentInjector = inject(EnvironmentInjector);
   containerService: ContainerService = inject(ContainerService);
 
+  /** The root categories of the ontology. */
   rootCategories: TermStanza[] = [];
-  categories: TermStanza[] = [];
+  /** The current cantegories between which the user can navigate. */
+  categories = computed(() => {
+    if (this.getSelectedCategory()) {
+      return this.getSelectedCategory()!.getChildren();
+    } else {
+      return this.rootCategories;
+    }
+  });
+  /** The stack of categories that the user has selected. */
   categorySelectionStack = signal<TermStanza[]>([]);
+  /** The search term that the user has entered. */
   searchTerm = signal<string>('');
+  /** Whether to show all containers. */
+  showAll = signal<boolean>(false);
 
-  constructor(private injector: EnvironmentInjector) {
-
-  }
+  constructor() { }
 
   ngOnInit() {
     this.containerService.getOntology().subscribe((ontology) => {
       const roots = ontology
-        .getOntology()
+        .getAllOntologyTerms()
         ?.filter((term) => term.hasParents() === false);
-      roots?.forEach((root) => {
-        this.rootCategories.push(root);
-        this.categories.push(root);
+      if (roots) {
+        this.rootCategories.push(...roots);
+      }
+
+      // Check if the user has requested to show all containers
+      this.activatedRoute.queryParams.subscribe((params) => {
+        if (!this.showAll() && params['showAll'] === 'true') {
+          this.showAll.set(true);
+          this.searchTerm.set('');
+          this.categorySelectionStack.set([]);
+        }
       });
 
       // The query parameters are evaluated inside the subscription to the ontology to ensure
       // that the ontology data is available before the query parameters are processed.
       const params = this.activatedRoute.snapshot.queryParams;
-      if (params['q']) {
+      if (params['showAll']) {
+        // Handled in the subscription
+      } else if (params['q']) {
         this.searchTerm.set(params['q']);
       } else if (params['c']) {
         const categoryIds = params['c'].split(',');
@@ -57,7 +79,7 @@ export class SearchGuidedComponent {
         let categoryId = categoryIds.shift();
         let category = this.rootCategories.find((root) => root.id === categoryId);
         if (!category) {
-          console.error(`Category with id ${categoryId} not found in root`);          
+          console.error(`Category with id ${categoryId} not found in root`);
         } else {
           categoryStack.push(category);
           while (category && categoryIds.length > 0) {
@@ -70,18 +92,14 @@ export class SearchGuidedComponent {
             }
           }
           this.categorySelectionStack.set(categoryStack);
-          this.categories = categoryStack.at(-1)!.getChildren();
         }
       }
 
       // The effects always run at least once, so in order to prevent the query parameters from
       // being updated before params are processed, the effects are injected after the parsing
-      runInInjectionContext(this.injector, () => {
+      runInInjectionContext(this.envInjector, () => {
         effect(() => {
-          this.updateRouteWithQuery(this.searchTerm());
-        });
-        effect(() => {
-          this.updateRouteWithCategories(this.categorySelectionStack());
+          this.updateRoute(this.showAll(), this.searchTerm(), this.categorySelectionStack());
         });
       });
     });
@@ -104,7 +122,6 @@ export class SearchGuidedComponent {
     if (!category.hasChildren()) {
       return;
     }
-    this.categories = category.getChildren();
   }
 
   goUpLevel(): void {
@@ -114,41 +131,34 @@ export class SearchGuidedComponent {
         return [...stack];
       });
     }
-
-    if (this.categorySelectionStack().length > 0) {
-      const parent = this.categorySelectionStack()[this.categorySelectionStack().length - 1];
-      this.categories = parent.getChildren();
-    } else {
-      this.categories = this.rootCategories;
-    }
   }
 
   getSelectedCategory(): TermStanza | undefined {
     if (this.categorySelectionStack().length === 0) {
       return undefined;
     } else {
-      return this.categorySelectionStack()[this.categorySelectionStack().length - 1];
+      return this.categorySelectionStack().at(-1);
     }
   }
 
-  updateRouteWithQuery(text: string) {
+  updateRoute(showAll: boolean, text: string, categorySelectionStack: TermStanza[]) {
+    const queryParams: any = {};
+
+    if (showAll) {
+      queryParams.showAll = true;
+    }
+  
     if (text) {
-      this.router.navigate([], {
-        queryParams: {
-          q: text
-        },
-      });
-    } else {
-      this.router.navigate([]);
+      queryParams.q = text;
     }
-  }
-
-  updateRouteWithCategories(categorySelectionStack: TermStanza[]) {
-    if (categorySelectionStack.length > 0) {
+  
+    if (categorySelectionStack && categorySelectionStack.length > 0) {
+      queryParams.c = categorySelectionStack.map((category) => category.id).join(',');
+    }
+  
+    if (Object.keys(queryParams).length > 0) {
       this.router.navigate([], {
-        queryParams: {
-          c: categorySelectionStack.map((category) => category.id).join(','),
-        },
+        queryParams,
       });
     } else {
       this.router.navigate([]);

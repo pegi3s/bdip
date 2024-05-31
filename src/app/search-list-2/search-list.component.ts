@@ -1,7 +1,6 @@
-import { Component, Input, OnChanges, SimpleChanges, inject, input } from "@angular/core";
+import { ChangeDetectionStrategy, Component, computed, inject, input } from "@angular/core";
 import { RouterLink } from "@angular/router";
 import { ContainerService } from "../services/container.service";
-import { Ontology } from "../obo/Ontology";
 import { TermStanza } from "../obo/TermStanza";
 import { ThemeService } from "../services/theme.service";
 
@@ -11,25 +10,34 @@ import { ThemeService } from "../services/theme.service";
   imports: [RouterLink],
   templateUrl: './search-list.component.html',
   styleUrl: './search-list.component.css',
-  host: { '[class.dark]': 'isDarkTheme' }
+  host: { '[class.dark]': 'isDarkTheme' },
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SearchListComponent2 implements OnChanges {
-  category = input<TermStanza>();
+export class SearchListComponent2 {
+  /* Inputs */
+  rootCategories = input<TermStanza[]>([]);
+  selectedCategory = input<TermStanza>();
   name = input<string>('');
 
   private themeService: ThemeService = inject(ThemeService);
   protected isDarkTheme: boolean = false;
 
   containerService: ContainerService = inject(ContainerService);
-  ontology?: Ontology;
   containers: Map<string, Set<string>> = new Map<string, Set<string>>();
 
-  matchedContainers: Set<string> = new Set<string>();
+  matchedContainers = computed(() => {
+    const matchedContainers = new Set<string>();
+    if (this.name().length > 0) {
+      this.getContainersByName(this.name(), matchedContainers);
+    } else if (this.selectedCategory() !== undefined) {
+      this.getContainersByCategory(this.selectedCategory()!, matchedContainers);
+    } else {
+      this.getContainersByCategories(this.rootCategories(), matchedContainers);
+    }
+    return matchedContainers;
+  });
 
   constructor() {
-    this.containerService.getOntology(false).subscribe((ontology) => {
-      this.ontology = ontology;
-    });
     this.containerService.getContainersMap().subscribe((containers) => {
       this.containers = containers;
     });
@@ -38,38 +46,29 @@ export class SearchListComponent2 implements OnChanges {
     });
   }
 
-  ngOnChanges(changes: SimpleChanges) {
-    if (changes["category"] && !changes["category"].firstChange) {
-      this.matchedContainers.clear();
-      if (this.category() !== undefined) {
-        this.getContainersByCategory(this.category()!);
-      }
-    }
-    if (changes["name"] && !changes["name"].firstChange) {
-      this.matchedContainers.clear();
-      if (this.name().length > 0) {
-        this.getContainersByName(this.name());
-      }
-    }
+  getContainersByCategories(categories: TermStanza[], matchedContainers: Set<string>) {
+    categories.forEach((category) => {
+      this.getContainersByCategory(category, matchedContainers);
+    });
   }
 
-  getContainersByCategory(category: TermStanza) {
+  getContainersByCategory(category: TermStanza, matchedContainers: Set<string>) {
     if (!category.hasChildren()) {
       this.containers.get(category.id)?.forEach((container) => {
-        this.matchedContainers.add(container);
+        matchedContainers.add(container);
       });
     } else {
       category.getChildren().forEach((child) => {
-        this.getContainersByCategory(child);
+        this.getContainersByCategory(child, matchedContainers);
       });
     }
   }
 
-  getContainersByName(name: string) {
+  getContainersByName(name: string, matchedContainers: Set<string>) {
     this.containers.forEach((containerSet) => {
       containerSet.forEach((container) => {
         if (container.toLowerCase().includes(name.toLowerCase())) {
-          this.matchedContainers.add(container);
+          matchedContainers.add(container);
         }
       });
     });

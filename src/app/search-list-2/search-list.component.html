@@ -1,5 +1,5 @@
 <div class="category-container">
-  @for (container of matchedContainers; track $index) {
+  @for (container of matchedContainers(); track $index) {
       <!-- @for (container of containers.get(category); track $index) { -->
         <div class="container-item">
           <p>{{ container }}</p>

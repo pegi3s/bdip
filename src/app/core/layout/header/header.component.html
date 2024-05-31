@@ -8,8 +8,9 @@
       <span class="title">Bioinformatics Docker Images Project</span>
     </div>
     <nav class="nav-links-top">
-      <a routerLink="/containers">Containers</a>
-      <a routerLink="/tutorials">Tutorials</a>
+      <!-- <a routerLink="/containers">Containers</a> -->
+      <a [routerLink]="['/search']" [queryParams]="{showAll: true}">Containers</a>
+      <a [routerLink]="['/tutorials']">Tutorials</a>
     </nav>
     <div class="search-button" [class.visible]="showSearch" (click)="onSearchClick()">
       <div>
@@ -22,7 +23,8 @@
     </div>
   </header>
   <nav class="nav-links-menu">
-    <a routerLink="/containers">Containers</a>
-    <a routerLink="/tutorials">Tutorials</a>
+    <!-- <a routerLink="/containers">Containers</a> -->
+    <a [routerLink]="['/search']" [queryParams]="{showAll: true}">Containers</a>
+    <a [routerLink]="['/tutorials']">Tutorials</a>
   </nav>
 </div>

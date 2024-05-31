@@ -34,7 +34,7 @@ export class Ontology {
     console.log(this);
   }
 
-  public getOntology() {
+  public getAllOntologyTerms() {
     return this.stanzas;
   }
 
