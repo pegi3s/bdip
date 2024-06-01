@@ -68,7 +68,7 @@ section > div {
   > .foreground {
     z-index: 1;
     backdrop-filter: blur(3px);
-    filter: drop-shadow(3px 3px 7px rgba(0, 0, 0, 0.125));
+    /* filter: drop-shadow(3px 3px 7px rgba(0, 0, 0, 0.125)); */
   }
 
   > h2 {
@@ -233,7 +233,7 @@ section > div {
 }
 
 :host-context(.dark) .intro > div .foreground {
-  filter: drop-shadow(4px 4px 10px rgba(0, 0, 0, 0.65));
+  /* filter: drop-shadow(4px 4px 10px rgba(0, 0, 0, 0.65)); */
 }
 
 :host-context(.dark) .intro > div .halo {
