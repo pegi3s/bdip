@@ -1,20 +1,20 @@
 import { Component, inject } from '@angular/core';
-import { DockerHubImage } from '../../../models/docker-hub-image';
-import { DockerHubTag } from '../../../models/docker-hub-tag';
+import { DockerHubImage } from '../../../../models/docker-hub-image';
+import { DockerHubTag } from '../../../../models/docker-hub-tag';
 import { ActivatedRoute } from '@angular/router';
-import { ContainerService } from '../../../services/container.service';
+import { ContainerService } from '../../../../services/container.service';
 import { MarkdownModule } from 'ngx-markdown';
 import { DatePipe, SlicePipe } from '@angular/common';
-import { ThemeService } from '../../../services/theme.service';
-import { ClipboardButtonComponent } from '../../../shared/components/clipboard-button/clipboard-button.component';
-import { TabsComponent } from "../../../shared/components/tabs/tabs.component";
-import { BytesToSizePipe } from "../../../shared/pipes/bytes-to-size/bytes-to-size.pipe";
+import { ThemeService } from '../../../../services/theme.service';
+import { ClipboardButtonComponent } from '../../../../shared/components/clipboard-button/clipboard-button.component';
+import { TabsComponent } from "../../../../shared/components/tabs/tabs.component";
+import { BytesToSizePipe } from "../../../../shared/pipes/bytes-to-size/bytes-to-size.pipe";
 
 @Component({
   selector: 'app-container',
   standalone: true,
   templateUrl: './container.component.html',
-  styleUrls: ['./container.component.css', '../../../shared/styles/markdown-body.css'],
+  styleUrls: ['./container.component.css', '../../../../shared/styles/markdown-body.css'],
   host: { '[class.dark]': 'isDarkTheme' },
   imports: [DatePipe, SlicePipe, MarkdownModule, TabsComponent, BytesToSizePipe]
 })
