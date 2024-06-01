@@ -217,21 +217,25 @@
 <section>
   <div>
     <h2>Authors</h2>
-    <div class="authors">
-      @for (author of authors; track $index) {
-        <app-contributor-card [contributor]="author" />
-      }
-    </div>
+    @defer (on idle) {
+      <div class="authors">
+        @for (author of authors; track $index) {
+          <app-contributor-card [contributor]="author" />
+        }
+      </div>
+    }
   </div>
 </section>
 <section>
   <div>
     <h2>Contributors</h2>
-    <div class="authors">
-      @for (contributor of contributors; track $index) {
-        <app-contributor-card [contributor]="contributor" />
-      }
-    </div>
+    @defer (on idle) {
+      <div class="authors">
+        @for (contributor of contributors; track $index) {
+          <app-contributor-card [contributor]="contributor" />
+        }
+      </div>
+    }
   </div>
 </section>
 <section class="funding">
@@ -248,6 +252,8 @@
 <section>
   <div>
     <h2>Co-funded by</h2>
-    <app-logo-marquee />
+    @defer (on idle) {
+      <app-logo-marquee />
+    }
   </div>
 </section>
