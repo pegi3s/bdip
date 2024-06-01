@@ -24,6 +24,7 @@ export class ContainerComponent {
 
   readonly clipboardButton = ClipboardButtonComponent;
 
+  httpResponseCode: number = 102;
   container?: DockerHubImage;
   containerTags?: DockerHubTag[];
 
@@ -35,9 +36,12 @@ export class ContainerComponent {
   constructor() {
     this.activatedRoute.params.subscribe(params => {
       const containerName = this.activatedRoute.snapshot.params['name'];
-      this.containerService.getContainerInfo(containerName).subscribe(
-        container => this.container = container,
-      );
+      this.containerService.getContainerInfo(containerName).subscribe({
+        next: (container) => {
+          this.container = container
+        },
+        error: (error) => this.httpResponseCode = error.status,
+      });
       this.containerService.getContainerTags(containerName).subscribe(
         containerTags => this.containerTags = containerTags,
       );
