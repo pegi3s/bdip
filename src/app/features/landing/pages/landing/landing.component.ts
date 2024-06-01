@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, ElementRef, inject, viewChild } from '@angular/core';
 import { NgOptimizedImage } from '@angular/common';
 import { SearchGuidedComponent } from "../../../containers/pages/search-guided/search-guided.component";
 import { SearchListComponent } from '../../../../search-list/search-list.component';
@@ -12,14 +12,15 @@ import { ThemeService } from '../../../../services/theme.service';
 import { TabsComponent } from '../../../../shared/components/tabs/tabs.component';
 import { UtilsService } from '../../../../services/utils.service';
 import { OS } from '../../../../models/os';
+import { ClipboardButtonComponent } from "../../../../shared/components/clipboard-button/clipboard-button.component";
 
 @Component({
-  selector: 'app-landing',
-  standalone: true,
-  templateUrl: './landing.component.html',
-  styleUrl: './landing.component.css',
-  imports: [ReasonListComponent, SearchGuidedComponent, SearchListComponent, NgOptimizedImage, TabsComponent, ContributorCardComponent, LogoMarqueeComponent],
-  host: {'[class.dark]':'isDarkTheme'}
+    selector: 'app-landing',
+    standalone: true,
+    templateUrl: './landing.component.html',
+    styleUrl: './landing.component.css',
+    host: { '[class.dark]': 'isDarkTheme' },
+    imports: [ReasonListComponent, SearchGuidedComponent, SearchListComponent, NgOptimizedImage, TabsComponent, ContributorCardComponent, LogoMarqueeComponent, ClipboardButtonComponent]
 })
 export class LandingComponent {
   /* Services */
@@ -27,6 +28,9 @@ export class LandingComponent {
   themeService: ThemeService = inject(ThemeService);
   isDarkTheme: boolean = false;
   contributorService: ContributorService = inject(ContributorService);
+
+  /* HTML Elements */
+  citingQuoteElem = viewChild<ElementRef>('citingQuote');
 
   /* Data */
   authors: Contributor[];
