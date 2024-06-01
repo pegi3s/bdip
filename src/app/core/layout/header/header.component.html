@@ -12,7 +12,7 @@
       <a [routerLink]="['/search']" [queryParams]="{showAll: true}">Containers</a>
       <a [routerLink]="['/tutorials']">Tutorials</a>
     </nav>
-    <div class="search-button" [class.visible]="showSearch" (click)="onSearchClick()">
+    <div class="search-button" [class.hiding]="searchClicked" [class.hidden]="!showSearch" (click)="onSearchClick()">
       <div>
         <img src="assets/magnifying-glass-tilted-left.svg" alt="search" width="18px">
         <span>Search</span>

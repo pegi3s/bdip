@@ -146,14 +146,24 @@ nav {
   max-width: 200px;
   background-color: rgba(var(--slate-400), 15%);
   box-shadow: inset 0 1px 0 0 #ffffff0d;
+  transition: background-color 200ms;
 }
 
 .search-button > div:hover {
   background-color: rgba(var(--slate-400), 0.2);
 }
 
-.search-button:not(.visible) {
+.search-button {
+  transition: opacity 350ms ease;
+  user-select: none;
+}
+
+.search-button.hidden {
   visibility: hidden;
+}
+
+.search-button.hiding {
+  opacity: 0;
 }
 
 .nav-links-top {
@@ -217,9 +227,10 @@ nav {
   width: 10px;
   height: 10px;
   @media (width > 1024px) {
+    transform: translate(-35%, 35%);
     right: calc(var(--horizontal-main-margin) + 63px);
   }
-  transform: translateX(-50%), translateY(50%);
+  transform: translate(15%, 10%);
   opacity: 0;
   z-index: -1;
   transition:
@@ -234,16 +245,9 @@ nav {
   right: 0;
   transform: none;
   opacity: 1;
-  animation: toTransparent 100ms linear forwards;
   animation-delay: 600ms;
   border-radius: 0px;
   background-color: rgb(37 60 234);
   width: 105vw;
   height: 105vh;
-}
-
-@keyframes toTransparent {
-  to {
-    opacity: 0;
-  }
 }
