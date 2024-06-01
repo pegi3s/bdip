@@ -132,3 +132,14 @@ input:not(:checked) + label:hover {
 :host :is(svg, img) {
     height: 19px;
 }
+
+/* 01/06/2024 Firefox does not support Anchor Positioning */
+@supports not (anchor-name) {
+  indicator {
+    visibility: hidden;
+  }
+
+  input:checked + label {
+    background: rgba(var(--color-surface-container-lowest), .8);
+  }
+}
