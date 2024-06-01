@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TutorialService } from '../../../../services/tutorial.service';
 import { Tutorial } from '../../../../models/tutorial';
@@ -12,5 +12,11 @@ import { Tutorial } from '../../../../models/tutorial';
 })
 export class TutorialsLandingComponent {
   tutorialService: TutorialService = inject(TutorialService);
-  tutorials: Tutorial[] = this.tutorialService.getTutorials();
+  tutorials = signal<Tutorial[]>([]);
+
+  ngOnInit() {
+    this.tutorialService.getTutorials().subscribe(tutorials => {
+      this.tutorials.set(tutorials);
+    });
+  }
 }

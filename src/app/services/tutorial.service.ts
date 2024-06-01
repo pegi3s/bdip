@@ -1,46 +1,142 @@
 import { Injectable } from '@angular/core';
 import { Tutorial } from '../models/tutorial';
+import { HttpClient } from '@angular/common/http';
+import { Observable, ReplaySubject, catchError, map } from 'rxjs';
+import { githubInfo } from '../core/constants/github-info';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TutorialService {
-  baseTutorialUrl = 'https://raw.githubusercontent.com/pegi3s/dockerfiles/master/tutorials/';
+  private githubTutorialDirUrl: string = `https://api.github.com/repos/${githubInfo.owner}/${githubInfo.repository}/contents/tutorials`;
 
-  tutorials: Tutorial[] = [
-    {
-      name: 'Docker in Docker',
-      description: 'Running Docker images inside a Docker image',
-      url: '/tutorials/docker-in-docker',
-      image: 'https://scontent.fvgo3-1.fna.fbcdn.net/v/t39.30808-6/387014737_709990191164525_541744141589515144_n.png?_nc_cat=111&ccb=1-7&_nc_sid=5f2048&_nc_ohc=bhF-JR4kKAcQ7kNvgHMOcfv&_nc_ht=scontent.fvgo3-1.fna&oh=00_AfCVRPkqRFGNDGcMOH3sgbEr8cUS3SRg7bvBPkCFr97WSw&oe=6632C0C8'
-    },
-    {
-      name: 'Singularity',
-      description: 'Using project images with Singularity',
-      url: '/tutorials/singularity',
-      image: 'https://ciq.com/static/c1513e6d4f8ceae1259ede6c601cf29a/c8710/CIQ_blog_Aptnr-ubuntu.webp'
-    },
-    {
-      name: 'Podman',
-      description: 'Using project images with Podman',
-      url: '/tutorials/podman',
-      image: 'https://i0.wp.com/blog.podman.io/wp-content/uploads/2023/07/podman_blog-banner.png?fit=960%2C480&ssl=1'
-    },
-    {
-      name: 'Alias',
-      description: 'Creating alias in .bashrc to be used as shortcut',
-      url: '/tutorials/alias',
-      image: 'https://bashlogo.com/img/symbol/jpg/full_colored_light.jpg'
-    },
-  ];
+  private tutorials: Tutorial[] = [];
+  
+  private tutorialsSubject = new ReplaySubject<Tutorial[]>(1);
+  tutorials$: Observable<Tutorial[]> = this.tutorialsSubject.asObservable();
 
-  constructor() { }
-
-  getTutorials(): Tutorial[] {
-    return this.tutorials;
+  constructor(private http: HttpClient) {
+    this.loadTutorials();
   }
 
-  getTutorialUrl(name: string): string {
-    return `${this.baseTutorialUrl}${name}.md`;
+  /**
+   * Loads the list of tutorials from the server.
+   * 
+   * This method first fetches the list of tutorial files from the server. It filters out any items that are not files.
+   * 
+   * For each tutorial file, it creates a tutorial object with the following properties:
+   * - `name`: the name of the tutorial, derived from the filename by removing the '.md' extension, replacing hyphens with spaces, and capitalizing the first letter of each word
+   * - `filename`: the filename of the tutorial, derived from the filename by removing the '.md' extension
+   * - `url`: the URL to download the tutorial file
+   * 
+   * After creating the tutorial objects, it updates the `tutorials` property and emits the new list of tutorials through the `tutorialsSubject`.
+   * 
+   * Finally, it calls `loadAditionalInfoTutorials` to load additional information for each tutorial.
+   */
+  private loadTutorials(): void {
+    // First load the basic tutorial information
+    this.getTutorialListing().pipe(
+      map((items: GithubListingItem[]) => items.filter(item => item.type === 'file')),
+      catchError(error => {
+        console.error('Error loading tutorials:', error);
+        return [];
+      })
+    ).subscribe((tutorials: GithubListingItem[]) => {
+      this.tutorials = tutorials.map(item => ({
+        name: item.name.replace('.md', '').replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
+        filename: item.name.replace('.md', ''),
+        url: item.download_url! // Files always have a download_url
+      }));
+      this.tutorialsSubject.next(this.tutorials);
+
+      this.loadAditionalInfoTutorials();
+    });
+  }
+
+  /**
+   * Loads additional information for each tutorial.
+   * 
+   * This method performs three main tasks:
+   * 
+   * 1. Fetches the Markdown content for each tutorial. It extracts the first line of the content and sets it as the tutorial description.
+   * 2. Retrieves tutorial images from the server and associates them with the corresponding tutorial.
+   * 3. Assigns a placeholder image to tutorials without an image.
+   */
+  private loadAditionalInfoTutorials(): void {
+    // Get the Markdown content for each tutorial
+    this.tutorials.forEach(tutorial => {
+      this.getTutorialDescription(tutorial);
+    });
+    // Get the images for each tutorial
+    this.getTutorialImages().pipe(
+      map((items: GithubListingItem[]) => items.filter(item => item.type === 'file')),
+      catchError(error => {
+        console.error('Error loading tutorial images:', error);
+        return [];
+      })
+    ).subscribe((images: GithubListingItem[]) => {
+      images.forEach(image => {
+        const tutorial = this.tutorials.find(tutorial => tutorial.filename === image.name.replace(/\.[^/.]+$/, ""));
+        if (tutorial) {
+          tutorial.image = image.download_url!;
+        }
+      });
+      this.tutorialsSubject.next(this.tutorials);
+    });
+    // Add placeholder image for tutorials without image
+    this.tutorials.forEach(tutorial => {
+      if (!tutorial.image) {
+        // TODO
+      }
+    });
+  }
+
+  /**
+   * Fetches the list of tutorial files from the GitHub repository.
+   */
+  private getTutorialListing(): Observable<GithubListingItem[]> {
+    return this.http.get<GithubListingItem[]>(this.githubTutorialDirUrl);
+  }
+
+  /**
+   * Fetches the Markdown content for a tutorial and extracts the first line to set it as the tutorial description.
+   */
+  private getTutorialDescription(tutorial: Tutorial): void {
+    this.http.get(tutorial.url, { responseType: 'text' }).subscribe((markdown: string) => {
+      tutorial.description = markdown.split('\n')[0].replace(/^#+ /, '').replaceAll('`', '');
+      this.tutorialsSubject.next(this.tutorials);
+    });
+  }
+
+  /**
+   * Fetches the list of tutorial images from the GitHub repository.
+   */
+  private getTutorialImages(): Observable<GithubListingItem[]> {
+    return this.http.get<GithubListingItem[]>(`${this.githubTutorialDirUrl}/images`);
+  }
+
+  /**
+   * @returns An observable that emits the list of tutorials.
+   */
+  getTutorials(): Observable<Tutorial[]> {
+    return this.tutorials$;
   }
 }
+
+type GithubListingItem = {
+  type: 'dir' | 'file' | 'submodule' | 'symlink';
+  size: number;
+  name: string;
+  path: string;
+  sha: string;
+  url: string;
+  git_url: string | null;
+  html_url: string | null;
+  download_url: string | null;
+  _links: {
+    git: string | null;
+    html: string | null;
+    self: string;
+  };
+};
+

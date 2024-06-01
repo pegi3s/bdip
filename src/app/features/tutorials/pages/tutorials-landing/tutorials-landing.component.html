@@ -8,8 +8,8 @@
     learning journey.
   </p>
   <div class="tutorials">
-    @for (tutorial of tutorials; track $index) {
-      <a routerLink="{{ tutorial.url }}" [style.--url]="'url(' + tutorial.image + ')'">
+    @for (tutorial of tutorials(); track $index) {
+      <a [routerLink]="[tutorial.filename]">
         <img src="{{ tutorial.image }}" alt="" />
         <h3>{{ tutorial.name }}</h3>
         <p>{{ tutorial.description }}</p>

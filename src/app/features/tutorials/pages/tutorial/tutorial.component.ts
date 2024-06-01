@@ -1,4 +1,4 @@
-import { Component, ElementRef, ViewEncapsulation, inject } from '@angular/core';
+import { Component, ElementRef, ViewEncapsulation, inject, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { MarkdownModule } from 'ngx-markdown';
 import { TutorialService } from '../../../../services/tutorial.service';
@@ -22,15 +22,19 @@ export class TutorialComponent {
 
   readonly clipboardButton = ClipboardButtonComponent;
 
-  tutorialName: string = '';
+  selectedTutorial = signal<Tutorial | undefined>(undefined);
   headings?: Element[];
-  tutorials: Tutorial[];
+  tutorials: Tutorial[] = [];
 
   constructor(private elementRef: ElementRef<HTMLElement>) {
-    this.activatedRoute.params.subscribe(params => {
-      this.tutorialName = this.activatedRoute.snapshot.params['name'];
+    this.tutorialService.getTutorials().subscribe(tutorials => {
+      this.tutorials = tutorials;
+
+      this.activatedRoute.params.subscribe(params => {
+        const tutorialName = this.activatedRoute.snapshot.params['name'];
+        this.selectedTutorial.set(tutorials.find(tutorial => tutorial.filename === tutorialName));
+      });
     });
-    this.tutorials = this.tutorialService.getTutorials();
     this.themeService.isDarkTheme().subscribe(isDark => {
       this.isDarkTheme = isDark;
     });

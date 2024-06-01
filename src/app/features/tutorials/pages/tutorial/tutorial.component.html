@@ -1,7 +1,7 @@
 <ul class="tutorials">
-  @for (tutorial of tutorials; track $index) {
-    <li [class.current]="tutorial.url.endsWith(tutorialName)">
-      <a routerLink="{{ tutorial.url }}">{{ tutorial.name }}</a>
+  @for (tutorial of tutorials; track tutorial.filename) {
+    <li [class.current]="tutorial === selectedTutorial()">
+      <a [routerLink]="['../' + tutorial.filename]">{{ tutorial.name }}</a>
     </li>
   }
 </ul>
@@ -9,7 +9,7 @@
   clipboard
   [clipboardButtonComponent]="clipboardButton"
   class="markdown-body"
-  [src]="tutorialService.getTutorialUrl(this.tutorialName)"
+  [src]="selectedTutorial()?.url"
   (ready)="this.getHeadings()"
 />
 <!-- There shouldn't be any risk of XSS as the headers are being obtained from the rendered Markdown that already has been sanitized. -->
