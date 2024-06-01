@@ -38,6 +38,10 @@ export class Ontology {
     return this.stanzas;
   }
 
+  public getRootTerms() {
+    return this.stanzas.filter((term) => term.hasParents() === false);
+  }
+
   private addTerm(term: TermStanza) {
     if (term.isValid())
       this.stanzas.push(term);

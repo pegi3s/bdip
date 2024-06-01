@@ -79,11 +79,21 @@
   line-height: 1.75rem;
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
   cursor: pointer;
-  transition: background 400ms ease
+  transition: background 400ms ease, opacity 400ms ease;
 }
   
 .selected-container > div {
   background: rgba(0, 0, 127, 0.5);
+  opacity: 1;
+}
+
+/* 
+When one of the categories in the selected stack is hovered, the rest of following 
+categories will be dimmed to indicate that clicking on the hovered category will
+move the user to that level.
+*/
+.selected-container > div:hover ~ div {
+  opacity: 0.4;
 }
 
 .container > div {
@@ -91,20 +101,43 @@
 }
 
 .container > div:hover {
-  animation: pulse 1.75s cubic-bezier(0.39, 0.58, 0.57, 1) ;
+  animation: pulse 1.75s cubic-bezier(0.39, 0.58, 0.57, 1);
   background: rgba(255, 255, 255, 0.2);
 }
 
-:is(.selected-container, .container) > div {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  backdrop-filter: blur(10px);
-  border-radius: 16px;
-  padding: 16px 32px;
-  font-size: 1.25rem;
-  line-height: 1.75rem;
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+.selected-container > div:has(> button) {
+  transition: all 400ms ease;
+  cursor: initial;
+}
+
+.selected-container > div:has(> button):hover,
+.selected-container > div:has(> button:focus) {
+  padding-inline: 24px 12px;
+}
+
+:is(.selected-container, .container) > div button {
+  flex: 0;
+  opacity: 0;
+  transition: inherit;
+  margin: 0;
+  border: none;
+  border-radius: 24px;
+  background: none;
+  padding: 0;
+  width: 0;
+  min-width: 0;
+}
+
+.selected-container > div:hover button,
+.selected-container > div button:focus {
+  flex: 1;
+  opacity: 1;
+  margin-left: 8px;
+  width: 24px;
+}
+
+.selected-container > div button:hover {
+  background: rgba(255, 255, 255, 0.15);
 }
 
 .collapsed:not(.active) .container > div {

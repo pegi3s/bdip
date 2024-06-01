@@ -3,16 +3,23 @@
     <div class="search-by-category" @fadeIn>
       <p>
         @if (categorySelectionStack().length > 0) {
-          <span class="material-symbols-rounded" (click)="goUpLevel()">arrow_back</span>
+          <span class="material-symbols-rounded" (click)="clearSearch()">arrow_back</span>
         }
         Ready to explore? Choose a category!
       </p>
       @if (categorySelectionStack().length > 0) {
         <div class="selected-container">
-          @for (category of categorySelectionStack(); track $index) {
-            <div>
-              {{ category.name?.replaceAll("_", " ") }}
-            </div>
+          @for (category of categorySelectionStack(); track $index; let last = $last) {
+            @if (last) {
+              <div>
+                {{ category.name?.replaceAll("_", " ") }}
+                <button class="material-symbols-rounded" (click)="goUpLevel()">close_small</button>
+              </div>
+            } @else {
+              <div (click)="goToLevel($index)">
+                {{ category.name?.replaceAll("_", " ") }}
+              </div>
+            }
           }
         </div>
       }
@@ -39,5 +46,5 @@
 </section>
 <app-search-list-2 
   [name]="searchTerm()"
-  [rootCategories]="showAll() ? rootCategories : []"
+  [rootCategories]="showAll() ? rootCategories() : []"
   [selectedCategory]="getSelectedCategory()" />

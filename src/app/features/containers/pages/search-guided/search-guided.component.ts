@@ -20,7 +20,6 @@ import { ActivatedRoute, Router } from '@angular/router';
       ]),
     ]),
   ],
-  /* host: { '[@fadeIn]': '' }, */
 })
 export class SearchGuidedComponent {
   /* Services */
@@ -30,13 +29,13 @@ export class SearchGuidedComponent {
   containerService: ContainerService = inject(ContainerService);
 
   /** The root categories of the ontology. */
-  rootCategories: TermStanza[] = [];
+  rootCategories = signal<TermStanza[]>([]);
   /** The current cantegories between which the user can navigate. */
   categories = computed(() => {
     if (this.getSelectedCategory()) {
       return this.getSelectedCategory()!.getChildren();
     } else {
-      return this.rootCategories;
+      return this.rootCategories();
     }
   });
   /** The stack of categories that the user has selected. */
@@ -49,13 +48,9 @@ export class SearchGuidedComponent {
   constructor() { }
 
   ngOnInit() {
+    // Load the ontology and set the root categories
     this.containerService.getOntology().subscribe((ontology) => {
-      const roots = ontology
-        .getAllOntologyTerms()
-        ?.filter((term) => term.hasParents() === false);
-      if (roots) {
-        this.rootCategories.push(...roots);
-      }
+      this.rootCategories.set(ontology.getRootTerms());
 
       // Check if the user has requested to show all containers
       this.activatedRoute.queryParams.subscribe((params) => {
@@ -72,12 +67,14 @@ export class SearchGuidedComponent {
       if (params['showAll']) {
         // Handled in the subscription
       } else if (params['q']) {
+        // Set the search term
         this.searchTerm.set(params['q']);
       } else if (params['c']) {
+        // Set the category selection stack
         const categoryIds = params['c'].split(',');
         let categoryStack = [];
         let categoryId = categoryIds.shift();
-        let category = this.rootCategories.find((root) => root.id === categoryId);
+        let category = this.rootCategories().find((root) => root.id === categoryId);
         if (!category) {
           console.error(`Category with id ${categoryId} not found in root`);
         } else {
@@ -105,6 +102,12 @@ export class SearchGuidedComponent {
     });
   }
 
+  /**
+   * Load the children categories of the selected category by updating the category selection stack.
+   * The categories between which the user can navigate are determined by a computed signal.
+   *
+   * @param {TermStanza} category - The selected category for which to load the children.
+   */
   loadChildren(category: TermStanza): void {
     if (!this.getSelectedCategory()?.hasChildren()) {
       this.categorySelectionStack.update((stack) => {
@@ -118,12 +121,11 @@ export class SearchGuidedComponent {
         return [...stack];
       });
     }
-
-    if (!category.hasChildren()) {
-      return;
-    }
   }
 
+  /**
+   * Navigates up one level in the category selection stack.
+   */
   goUpLevel(): void {
     if (this.categorySelectionStack().length > 0) {
       this.categorySelectionStack.update((stack) => {
@@ -133,6 +135,38 @@ export class SearchGuidedComponent {
     }
   }
 
+  /**
+   * Navigates to a specific level in the category selection stack.
+   * If the level is valid, all categories above that level are removed from the stack.
+   *
+   * @param {number} level - The level to navigate to.
+   */
+  goToLevel(level: number): void {
+    if (level < 0 || level >= this.categorySelectionStack().length) {
+      console.error(`Invalid level ${level}`);
+      return;
+    }
+
+    this.categorySelectionStack.update((stack) => {
+      stack.splice(level + 1);
+      return [...stack];
+    });
+  }
+
+  /**
+   * Clears the current search term and category selection stack.
+   */
+  clearSearch(): void {
+    this.searchTerm.set('');
+    this.categorySelectionStack.set([]);
+  }
+
+  /**
+   * Returns the last selected category from the category selection stack.
+   * If the stack is empty, it returns undefined.
+   *
+   * @returns {TermStanza | undefined} The last selected category or undefined if the stack is empty.
+   */
   getSelectedCategory(): TermStanza | undefined {
     if (this.categorySelectionStack().length === 0) {
       return undefined;
@@ -141,6 +175,19 @@ export class SearchGuidedComponent {
     }
   }
 
+  /**
+   * Updates the route based on the provided parameters.
+   * 
+   * If `showAll` is true, it adds a `showAll` query parameter.
+   * If `text` is provided, it adds a `q` query parameter with the text.
+   * If `categorySelectionStack` is provided and not empty, it adds a `c` query parameter with the category IDs joined by commas.
+   * 
+   * If no query parameters are added, it navigates to the base route.
+   * 
+   * @param {boolean} showAll - Determines whether to show all categories.
+   * @param {string} text - The search text query.
+   * @param {TermStanza[]} categorySelectionStack - The stack of selected categories.
+   */
   updateRoute(showAll: boolean, text: string, categorySelectionStack: TermStanza[]) {
     const queryParams: any = {};
 
