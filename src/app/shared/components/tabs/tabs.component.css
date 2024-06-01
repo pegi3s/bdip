@@ -134,7 +134,7 @@ input:not(:checked) + label:hover {
 }
 
 /* 01/06/2024 Firefox does not support Anchor Positioning */
-@supports not (anchor-name) {
+@supports not (anchor-name: --choice-1) {
   indicator {
     visibility: hidden;
   }
