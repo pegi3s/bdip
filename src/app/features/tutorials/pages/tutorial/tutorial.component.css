@@ -4,7 +4,7 @@
   column-gap: 80px;
 
   margin-inline: auto;
-  padding: 150px var(--horizontal-main-margin) 35px;
+  padding: calc(35px + var(--header-height)) var(--horizontal-main-margin) 35px;
   max-inline-size: 2048px;
 }
 

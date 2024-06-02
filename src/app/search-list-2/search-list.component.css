@@ -7,13 +7,26 @@
 }
 
 .container-item {
+  /* https://codepen.io/jh3y/pen/yLWgjpd */
+  --tint: 222;
+  --alpha: 4;
+  --base: hsl(var(--tint, 214) 50% 40% / calc(var(--alpha, 4) * 1%));
+  --shade: hsl(from var(--base) calc(h + 8) 25 calc(l - 5));
+  --perfect-shadow: 0 0 0 1px var(--base), 0 1px 1px -0.5px var(--shade),
+    0 3px 3px -1.5px var(--shade), 0 6px 6px -3px var(--shade),
+    0 12px 12px -6px var(--base), 0 24px 24px -12px var(--base);
+  transition: box-shadow 0.4s ease;
+  box-shadow: var(--perfect-shadow);
   background-color: white;
-  box-shadow: rgba(0, 0, 0, 0.1) 0 10px 32px 0;
+}
+
+.container-item:hover {
+  --alpha: 7.5;
 }
 
 :host-context(.dark) .container-item {
-  background-color: rgba(var(--slate-700), 0.4);
   box-shadow: rgb(0 0 0 / 20%) 0 4px 14px 2px;
+  background-color: rgba(var(--slate-700), 0.4);
 }
 
 .category-container {

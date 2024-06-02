@@ -7,7 +7,7 @@
 
 section > div {
   margin-inline: auto;
-  padding: 35px var(--horizontal-main-margin);
+  padding: 65px var(--horizontal-main-margin) 35px;
   max-inline-size: 2048px;
 }
 
@@ -359,6 +359,12 @@ blockquote app-clipboard-button {
 h2 {
   font-size: 2.25rem;
   line-height: 2.6rem;
+  margin-block: 0 30px;
+}
+
+p {
+  font-size: 1.125rem;
+  line-height: 1.5rem;
 }
 
 /* Why Docker Images? */
