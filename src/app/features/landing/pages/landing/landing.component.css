@@ -169,6 +169,11 @@ section > div {
     z-index: 2;
   }
 
+  .halo:hover {
+    fill: rgba(158, 198, 250, 0.7);
+    width: calc(var(--size) + 24px);
+  }
+
   .halo-container.clicked > .halo {
     width: max(150vw, 150vh);
     animation: spin 2s linear infinite reverse;

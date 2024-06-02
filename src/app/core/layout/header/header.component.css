@@ -111,6 +111,7 @@ header > div:last-child {
 
 .header-logo img {
   height: 45px;
+  padding-block: 3px;
 }
 
 :host-context(.dark) .header-logo img {
@@ -137,6 +138,16 @@ nav {
   a:hover {
     background-color: rgba(255, 255, 255, 0.2);
   }
+}
+
+.current {
+  background-color: rgba(0, 0, 0, 0.04);
+  color: rgb(0, 62, 148);
+}
+
+:host-context(.dark) .current {
+  background-color: rgba(255, 255, 255, 0.06);
+  color: rgb(179, 229, 255);
 }
 
 .search-button > div {
