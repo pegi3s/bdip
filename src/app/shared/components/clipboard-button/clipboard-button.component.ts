@@ -10,11 +10,14 @@ import ClipboardJS from 'clipboard';
 })
 export class ClipboardButtonComponent {
   element = input<ElementRef<any>>();
+  text = input<string>();
   copied: boolean = false;
 
   onCopyToClipboard() {
     if (this.element()) {
       ClipboardJS.copy(this.element()?.nativeElement);
+    } else if (this.text()) {
+      ClipboardJS.copy(this.text()!);
     }
 
     this.copied = true;

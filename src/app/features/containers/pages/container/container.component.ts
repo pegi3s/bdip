@@ -16,7 +16,7 @@ import { BytesToSizePipe } from "../../../../shared/pipes/bytes-to-size/bytes-to
   templateUrl: './container.component.html',
   styleUrls: ['./container.component.css', '../../../../shared/styles/markdown-body.css'],
   host: { '[class.dark]': 'isDarkTheme' },
-  imports: [DatePipe, SlicePipe, MarkdownModule, TabsComponent, BytesToSizePipe]
+  imports: [DatePipe, SlicePipe, MarkdownModule, TabsComponent, BytesToSizePipe, ClipboardButtonComponent]
 })
 export class ContainerComponent {
   activatedRoute: ActivatedRoute = inject(ActivatedRoute);

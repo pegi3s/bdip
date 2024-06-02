@@ -37,7 +37,10 @@
       <div class="install">
           <span class="material-symbols-rounded">terminal</span>
           <p>Install from the command line</p>
-          <code>docker pull {{ container.namespace }}/{{ container.name }}</code>
+          <code>
+            docker pull {{ container.namespace }}/{{ container.name }}
+            <app-clipboard-button [text]="'docker pull ' + container.namespace + '/' + container.name" />
+          </code>
       </div>
     }
     <div class="links">
@@ -66,6 +69,7 @@
             <p>Last pushed {{ tag.tag_last_pushed | date }}</p>
             <code class="install">
               docker pull {{ container.namespace }}/{{ container.name }}:{{ tag.name }}
+              <app-clipboard-button [text]="'docker pull ' + container.namespace + '/' + container.name + ':' + tag.name" />
             </code>
             <div>
               <table>

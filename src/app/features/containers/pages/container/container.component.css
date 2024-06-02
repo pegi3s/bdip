@@ -74,7 +74,7 @@ svg {
 
   span {
     border-radius: 1rem;
-    background-color: rgba(var(--main-font-color), 0.1);
+    background-color: rgba(var(--main-font-color), 0.07);
     padding: 6px 10px;
     font-size: 0.75rem;
     line-height: 1rem;
@@ -114,7 +114,6 @@ svg {
 
   span {
     grid-area: icon;
-    color: rgba(var(--main-font-color), 0.6);
   }
 
   p {
@@ -128,9 +127,19 @@ svg {
 
 code {
   border-radius: 6px;
-  background-color: rgba(var(--main-font-color), 0.1);
+  background-color: rgba(var(--main-font-color), 0.07);
   padding: 12px 16px;
   font-family: "JetBrains Mono", monospace;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  position: relative;
+}
+
+app-clipboard-button {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  right: 8px;
 }
 
 markdown {
@@ -161,9 +170,10 @@ markdown {
       grid-template-columns: 1fr;
   }
 }
+
 .tag {
-  /* background-color: #161b22; */
-  /* color: #c9d1d9; */
+  /* background-color: #161b22;
+  color: #c9d1d9; */
 }
 .tag h3 {
   grid-area: name;
@@ -188,12 +198,13 @@ markdown {
   grid-area: code;
   align-items: center;
   margin-bottom: 16px;
-  /* background-color: #f6f8fa; */
+  background-color: #f6f8fa;
   border: 1px solid #e1e4e8;
   border-radius: 6px;
   padding: 16px;
 }
-.tag .install {
+
+:host-context(.dark) .tag .install {
   border: 1px solid #30363d;
   /* background-color: #161b22; */
   background-color: #0d1117;
