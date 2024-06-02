@@ -10,7 +10,12 @@
   <div class="tutorials">
     @for (tutorial of tutorials(); track $index) {
       <a [routerLink]="[tutorial.filename]">
-        <img src="{{ tutorial.image }}" alt="" />
+        @if (tutorial.image) {
+          <img [src]="tutorial.image" alt="" />
+        } @else {
+          <!-- Avoid broken images placeholder -->
+          <div></div>
+        }
         <h3>{{ tutorial.name }}</h3>
         <p>{{ tutorial.description }}</p>
       </a>

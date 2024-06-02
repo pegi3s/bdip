@@ -5,6 +5,7 @@ import { ContainerComponent } from './features/containers/pages/container/contai
 import { TutorialComponent } from './features/tutorials/pages/tutorial/tutorial.component';
 import { TutorialsLandingComponent } from './features/tutorials/pages/tutorials-landing/tutorials-landing.component';
 import { SearchGuidedComponent } from './features/containers/pages/search-guided/search-guided.component';
+import { GettingStartedComponent } from './features/landing/pages/getting-started/getting-started.component';
 
 export const routes: Routes = [
     {
@@ -23,6 +24,10 @@ export const routes: Routes = [
     {
         path: 'container/:name',
         component: ContainerComponent,
+    },
+    {
+        path: 'getting-started',
+        component: GettingStartedComponent,
     },
     {
         path: 'tutorials',

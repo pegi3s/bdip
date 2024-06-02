@@ -10,8 +10,6 @@ import { LogoMarqueeComponent } from "../../../../shared/components/logo-marquee
 import { Router } from '@angular/router';
 import { ThemeService } from '../../../../services/theme.service';
 import { TabsComponent } from '../../../../shared/components/tabs/tabs.component';
-import { UtilsService } from '../../../../services/utils.service';
-import { OS } from '../../../../models/os';
 import { ClipboardButtonComponent } from "../../../../shared/components/clipboard-button/clipboard-button.component";
 
 @Component({
@@ -24,7 +22,6 @@ import { ClipboardButtonComponent } from "../../../../shared/components/clipboar
 })
 export class LandingComponent {
   /* Services */
-  utilsService: UtilsService = inject(UtilsService);
   themeService: ThemeService = inject(ThemeService);
   isDarkTheme: boolean = false;
   contributorService: ContributorService = inject(ContributorService);
@@ -46,13 +43,8 @@ export class LandingComponent {
 
   /* State */
   searchClicked: boolean = false;
-  gettingStartedOS: OS;
-
-  /* Helpers */
-  OS = OS;
 
   constructor(private router: Router) {
-    this.gettingStartedOS = this.utilsService.getOS() as OS;
     this.authors = this.contributorService.getAuthors();
     this.contributors = this.contributorService.getContributors();
     this.themeService.isDarkTheme().subscribe(isDark => {
@@ -65,9 +57,5 @@ export class LandingComponent {
     setTimeout(() => {
       this.router.navigate(['/search']);
     }, 600);
-  }
-
-  onTabSelectedGettingStarted(os: string) {
-    this.gettingStartedOS = os as OS;
   }
 }
