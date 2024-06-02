@@ -178,6 +178,10 @@ move the user to that level.
   background: rgba(255, 255, 255, 0.15);
 }
 
+.search-by-text > div {
+  position: relative;
+}
+
 input[type="text"] {
   backdrop-filter: blur(10px);
   transition:
@@ -218,6 +222,25 @@ input[type="text"]:focus {
   outline: none;
   box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.5);
   background-color: rgba(255, 255, 255, 0.2);
+}
+
+input[type="text"] + button {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  border: none;
+  background: none;
+  color: white;
+  font-size: 1.5rem;
+  line-height: 2rem;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: background 0.3s ease;
+}
+
+input[type="text"] + button:hover {
+  background: rgba(255, 255, 255, 0.1);
 }
 
 p {

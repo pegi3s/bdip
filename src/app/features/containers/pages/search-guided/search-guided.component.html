@@ -40,7 +40,12 @@
       <p>
         Unleash the power of our advanced search!
       </p>
-      <input placeholder="Search" type="text" maxlength="200" [(ngModel)]="searchTerm" @fadeIn/>
+      <div>
+        <input placeholder="Search" type="text" maxlength="200" [(ngModel)]="searchTerm" @fadeIn/>
+        @if (this.searchTerm().length > 0) {
+          <button class="material-symbols-rounded" (click)="clearSearch()">close_small</button>
+        }
+      </div>
     </div>
   }
 </section>
