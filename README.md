@@ -31,6 +31,26 @@ The application will automatically reload if you make any changes to the source 
 
 To build the website for production, run `ng build`. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
 
+## Deployment
+
+### Docker
+
+To deploy the website using Docker:
+
+1. **Build the Docker image.**
+
+   To ensure the Docker build process fetches the latest changes from the repo and does not use any cached layers, use the `--no-cache` option.
+
+    ```bash
+    docker build --no-cache -t dockerfiles-website .
+    ```
+
+2. **Run the Docker container.**
+
+    ```bash
+    docker run -d -p 80:80 -p 8080:8080 --name dockerfiles-website-container dockerfiles-website
+    ```
+
 ## Code scaffolding
 
 Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
