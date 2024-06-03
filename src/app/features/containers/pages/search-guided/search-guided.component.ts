@@ -51,52 +51,51 @@ export class SearchGuidedComponent {
     // Load the ontology and set the root categories
     this.containerService.getOntology().subscribe((ontology) => {
       this.rootCategories.set(ontology.getRootTerms());
-
-      // Check if the user has requested to show all containers
-      this.activatedRoute.queryParams.subscribe((params) => {
-        if (!this.showAll() && params['showAll'] === 'true') {
-          this.showAll.set(true);
-          this.searchTerm.set('');
-          this.categorySelectionStack.set([]);
-        }
-      });
-
+  
       // The query parameters are evaluated inside the subscription to the ontology to ensure
       // that the ontology data is available before the query parameters are processed.
-      const params = this.activatedRoute.snapshot.queryParams;
-      if (params['showAll']) {
-        // Handled in the subscription
-      } else if (params['q']) {
-        // Set the search term
-        this.searchTerm.set(params['q']);
-      } else if (params['c']) {
-        // Set the category selection stack
-        const categoryIds = params['c'].split(',');
-        let categoryStack = [];
-        let categoryId = categoryIds.shift();
-        let category = this.rootCategories().find((root) => root.id === categoryId);
-        if (!category) {
-          console.error(`Category with id ${categoryId} not found in root`);
-        } else {
-          categoryStack.push(category);
-          while (category && categoryIds.length > 0) {
-            categoryId = categoryIds.shift();
-            category = category.getChildren().find((child) => child.id === categoryId);
-            if (category) {
-              categoryStack.push(category);
-            } else {
-              console.error(`Category with id ${categoryId} following hierarchy not found`);
-            }
+      this.activatedRoute.queryParams.subscribe((params) => {
+        if (!this.showAll() && params['showAll'] === 'true') {
+          // The user has requested to show all containers
+          this.showAll.set(true);
+          if (this.categorySelectionStack().length > 0 || this.searchTerm()) {
+            // If the user has selected a category or entered a search term, clear them when moving to show all
+            this.clearSearch();
           }
-          this.categorySelectionStack.set(categoryStack);
         }
-      }
-
-      // The effects always run at least once, so in order to prevent the query parameters from
-      // being updated before params are processed, the effects are injected after the parsing
-      runInInjectionContext(this.envInjector, () => {
-        effect(() => {
-          this.updateRoute(this.showAll(), this.searchTerm(), this.categorySelectionStack());
+  
+        if (params['q']) {
+          // Set the search term
+          this.searchTerm.set(params['q']);
+        } else if (params['c']) {
+          // Set the category selection stack
+          const categoryIds = params['c'].split(',');
+          let categoryStack = [];
+          let categoryId = categoryIds.shift();
+          let category = this.rootCategories().find((root) => root.id === categoryId);
+          if (!category) {
+            console.error(`Category with id ${categoryId} not found in root`);
+          } else {
+            categoryStack.push(category);
+            while (category && categoryIds.length > 0) {
+              categoryId = categoryIds.shift();
+              category = category.getChildren().find((child) => child.id === categoryId);
+              if (category) {
+                categoryStack.push(category);
+              } else {
+                console.error(`Category with id ${categoryId} following hierarchy not found`);
+              }
+            }
+            this.categorySelectionStack.set(categoryStack);
+          }
+        }
+  
+        // The effects always run at least once, so in order to prevent the query parameters from
+        // being updated before params are processed, the effects are injected after the parsing
+        runInInjectionContext(this.envInjector, () => {
+          effect(() => {
+            this.updateRoute(this.showAll(), this.searchTerm(), this.categorySelectionStack());
+          });
         });
       });
     });
