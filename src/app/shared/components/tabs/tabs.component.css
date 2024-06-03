@@ -140,6 +140,10 @@ input:not(:checked) + label:hover {
   }
 
   input:checked + label {
-    background: rgba(var(--color-surface-container-lowest), .8);
+    background: rgba(var(--slate-900), 1);
+  }
+  
+  :host-context(.dark) input:checked + label {
+    background: rgba(var(--color-surface-container-lowest), 0.8);
   }
 }
