@@ -6,13 +6,14 @@ import { map, shareReplay } from 'rxjs/operators';
 import { Ontology } from '../obo/Ontology';
 import { DockerHubImage } from '../models/docker-hub-image';
 import { DockerHubTag } from '../models/docker-hub-tag';
+import { githubInfo } from '../core/constants/github-info';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ContainerService {
-  private urlDiaf = './assets/dio.diaf';
-  private urlObo = './assets/dio.obo';
+  private urlDiaf = `https://raw.githubusercontent.com/${githubInfo.owner}/${githubInfo.repository}/master/metadata/dio.diaf`;
+  private urlObo = `https://raw.githubusercontent.com/${githubInfo.owner}/${githubInfo.repository}/master/metadata/dio.obo`;
   //private baseURLDockerHub = 'https://hub.docker.com/v2/namespaces/pegi3s/repositories';
   private proxyServerURL = 'http://localhost:8080/';
   private baseDockerHubEndpoint = '/v2/namespaces/pegi3s/repositories';
