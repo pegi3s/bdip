@@ -3,6 +3,7 @@ export class TermStanza {
   id!: string;
   // Optional tags
   name?: string; // Required in 1.2 ; Optional in 1.4
+  definition?: string;
   private parents: Set<TermStanza> = new Set(); // is_a
   private children: Set<TermStanza> = new Set(); // Not present in the spec. Added for traversal purposes
 

@@ -159,6 +159,9 @@ export class Ontology {
       name: {
         setter: (value: string) => (ontologyTerm.name = value),
       },
+      def: {
+        setter: (value: string) => {ontologyTerm.definition = value.replace(/"/g, '')},
+      },
       is_a: {
         setter: (parentID: string) => {
           const parent = this.stanzas.find((term) => term.id === parentID);
@@ -243,6 +246,7 @@ export class Ontology {
       oboString.push(`[Term]`);
       oboString.push(`id: ${term.id}`);
       if (term.name) oboString.push(`name: ${term.name}`);
+      if (term.definition) oboString.push(`def: "${term.definition}"`);
       term.getParents().forEach((parent) => {
         oboString.push(`is_a: ${parent.id}`);
       });
