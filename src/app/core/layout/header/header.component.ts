@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component, ElementRef, Renderer2, signal } from '@angular/core';
 import { NavigationEnd, RouterLink, Router } from '@angular/router';
-import { SearchGuidedComponent } from "../../../features/containers/pages/search-guided/search-guided.component";
 import { ThemeService } from '../../../services/theme.service';
 
 @Component({
@@ -8,7 +7,7 @@ import { ThemeService } from '../../../services/theme.service';
     standalone: true,
     templateUrl: './header.component.html',
     styleUrl: './header.component.css',
-    imports: [RouterLink, SearchGuidedComponent],
+    imports: [RouterLink],
     host: {'[class.dark]':'isDarkTheme'},
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
