@@ -103,6 +103,15 @@ export class ContributorService {
       },
       organizations: [Organization.SING],
     },
+    {
+      name: 'Pablo González González',
+      description: '',
+      photo: 'https://github.com/PabloG02.png',
+      contactInfo: {
+        github: 'PabloG02',
+      },
+      organizations: [],
+    },
   ];
 
   constructor() { }
