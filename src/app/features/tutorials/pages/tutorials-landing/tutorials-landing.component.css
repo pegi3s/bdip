@@ -56,19 +56,34 @@ h2 + p {
       box-shadow: rgba(0, 0, 0, 0.16) 0 10px 32px 0;
     }
 
-    img {
+    .image {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 4px;
+      background-image: var(--image-url);
+      background-position: center;
+      background-size: cover;
       width: 100%;
       height: 100%;
-      object-fit: cover;
-      border-radius: 4px;
+    }
+
+    .image p {
+      mix-blend-mode: overlay;
+      margin: 0;
+      color: hsl(0 0% 100% / 1);
+      font-size: 2.25rem;
+      line-height: 2.5rem;
+      font-family: "Poetsen One";
+      text-shadow: 1px 2px 4px #212121;
     }
 
     h3 {
-      font-size: 1.25rem;
-      line-height: 1.75rem;
       margin: 0;
+      font-size: 1.5rem;
+      line-height: 2rem;
     }
-    
+
     p {
       margin: 0;
     }

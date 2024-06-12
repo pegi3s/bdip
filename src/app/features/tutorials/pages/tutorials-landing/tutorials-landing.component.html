@@ -11,7 +11,11 @@
     @for (tutorial of tutorials(); track $index) {
       <a [routerLink]="[tutorial.filename]">
         @if (tutorial.image) {
-          <img [src]="tutorial.image" alt="" />
+          <div class="image" [style.--image-url]="'url(' + tutorial.image + ')'">
+            @if (tutorial.image.includes('assets/')) {
+              <p>{{ tutorial.name }}</p>
+            }
+          </div>
         } @else {
           <!-- Avoid broken images placeholder -->
           <div></div>

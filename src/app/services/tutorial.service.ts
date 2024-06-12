@@ -84,9 +84,12 @@ export class TutorialService {
       this.tutorialsSubject.next(this.tutorials);
     });
     // Add placeholder image for tutorials without image
+    const numGradients = 2;
+    let gradientIndex = 1;
     this.tutorials.forEach(tutorial => {
       if (!tutorial.image) {
-        // TODO
+        tutorial.image = `assets/gradients/gradient${gradientIndex}.png`;
+        gradientIndex = (gradientIndex % numGradients) + 1;
       }
     });
   }

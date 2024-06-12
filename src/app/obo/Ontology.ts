@@ -173,7 +173,7 @@ export class Ontology {
       },
     };
 
-    let ontologyTerm: TermStanza = new TermStanza(); // TODO: Fix first iteration
+    let ontologyTerm: TermStanza = new TermStanza();
     let line;
     while ((line = lines.shift()) !== undefined) {
       let matched = false;
