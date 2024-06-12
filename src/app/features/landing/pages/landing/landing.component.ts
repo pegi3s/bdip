@@ -7,7 +7,7 @@ import { ContributorCardComponent } from "../../components/contributor-card/cont
 import { ContributorService } from '../../../../services/contributor.service';
 import { Contributor } from '../../models/contributor.model';
 import { LogoMarqueeComponent } from "../../../../shared/components/logo-marquee/logo-marquee.component";
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { ThemeService } from '../../../../services/theme.service';
 import { TabsComponent } from '../../../../shared/components/tabs/tabs.component';
 import { ClipboardButtonComponent } from "../../../../shared/components/clipboard-button/clipboard-button.component";
@@ -18,7 +18,7 @@ import { ClipboardButtonComponent } from "../../../../shared/components/clipboar
     templateUrl: './landing.component.html',
     styleUrl: './landing.component.css',
     host: { '[class.dark]': 'isDarkTheme' },
-    imports: [ReasonListComponent, SearchGuidedComponent, SearchListComponent, NgOptimizedImage, TabsComponent, ContributorCardComponent, LogoMarqueeComponent, ClipboardButtonComponent]
+    imports: [ReasonListComponent, SearchGuidedComponent, SearchListComponent, NgOptimizedImage, TabsComponent, ContributorCardComponent, LogoMarqueeComponent, ClipboardButtonComponent, RouterLink]
 })
 export class LandingComponent {
   /* Services */

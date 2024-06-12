@@ -1,4 +1,4 @@
-import { Component, ElementRef, ViewEncapsulation, inject, signal } from '@angular/core';
+import { Component, ElementRef, inject, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { MarkdownModule } from 'ngx-markdown';
 import { TutorialService } from '../../../../services/tutorial.service';

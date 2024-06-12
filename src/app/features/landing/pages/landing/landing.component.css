@@ -453,6 +453,97 @@ p {
   background: linear-gradient(to bottom, rgba(var(--picton-blue-500), 1) 0%, rgba(var(--picton-blue-600), 1) 100%);
 }
 
+/* Getting Started */
+
+.getting-started h2 + div {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px;
+  
+  @media (width > 768px) {
+    grid-template-columns: repeat(auto-fill, minmax(605px, 1fr));
+  }
+}
+
+.getting-started a {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 24px;
+  border-radius: 14px;
+  transition: background-color 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.getting-started a {
+  /* https://codepen.io/jh3y/pen/yLWgjpd */
+  --tint: 222;
+  --alpha: 4;
+  --base: hsl(var(--tint, 214) 50% 40% / calc(var(--alpha, 4) * 1%));
+  --shade: hsl(from var(--base) calc(h + 8) 25 calc(l - 5));
+  --perfect-shadow: 0 0 0 1px var(--base), 0 1px 1px -0.5px var(--shade),
+    0 3px 3px -1.5px var(--shade), 0 6px 6px -3px var(--shade),
+    0 12px 12px -6px var(--base), 0 24px 24px -12px var(--base);
+  transition: all 0.4s ease;
+  box-shadow: var(--perfect-shadow);
+}
+
+.getting-started a:first-child {
+  background-color: hsl(208, 100%, 87%);
+  --tint: 208;
+}
+  
+.getting-started a:nth-child(2) {
+  background-color: hsl(239, 100%, 89%);
+  --tint: 239;
+}
+
+.getting-started a:hover {
+  --alpha: 9;
+}
+
+:host-context(.dark) .getting-started a:first-child {
+  background-color: rgb(var(--picton-blue-800));
+}
+  
+:host-context(.dark) .getting-started a:nth-child(2) {
+  background-color: rgb(54, 16, 106);
+}
+
+.getting-started p {
+  margin: 0;
+  @media (width > 640px) {
+    max-width: calc(100% - 200px);
+  }
+}
+
+.getting-started .title {
+  font-weight: 600;
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+}
+
+.getting-started img {
+  position: absolute;
+  align-self: end;
+  transform: rotate(-7deg);
+  top: 12%;
+  right: 2.5%;
+  height: 130%;
+  max-width: 180px;
+  object-fit: scale-down;
+  transition: all 0.3s ease;
+  @media (width <= 640px) {
+    display: none;
+  }
+}
+
+.getting-started a:hover img {
+  top: 8%;
+  transform: scale(1.1) rotate(-7deg);
+}
+
 /* Funding */
 
 .funding > div {
