@@ -415,6 +415,7 @@
   margin-bottom: 16px;
   font-weight: var(--base-text-weight-semibold, 600);
   line-height: 1.25;
+  overflow-wrap: anywhere;
 }
 
 .markdown-body ::ng-deep h2 {
@@ -1265,6 +1266,7 @@
 
 .markdown-body ::ng-deep code {
   white-space: pre-wrap;
+  overflow-wrap: anywhere;
 }
 
 .markdown-body ::ng-deep img {
