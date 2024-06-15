@@ -26,7 +26,10 @@ section > div {
     radial-gradient(74% 86% at 67% 38%, #80adf533 24%, #ffffff00 100%);
   background-color: #f5f5ff;
 
-  padding-top: var(--header-height);
+  padding-block: var(--header-height);
+  @media (height < 1024px) {
+    padding-bottom: 0;
+  }
   height: 100svh;
   min-height: 720px;
   overflow: hidden; /* Due to SVG animation */
@@ -48,16 +51,22 @@ section > div {
 
 .intro > div {
   display: grid;
-  grid-template-rows: 30% 30% 1fr minmax(150px, 200px);
+  /* With whale */
+  /* grid-template-rows: 30% 30% 1fr minmax(150px, 200px); */
+  /* Without whale */
+  grid-template-rows: 1fr 1fr 1fr;
   grid-template-areas:
     "header"
     "carousel"
-    "text"
-    "whale";
+    "text";
+    /* "whale"; */
   align-content: center;
   align-items: center;
   justify-items: center;
   height: 100%;
+  @media (height < 1024px) {
+    padding-top: 0;
+  }
 
   > img {
     grid-area: whale;
@@ -98,6 +107,9 @@ section > div {
   .svg1, .svg2, .svg3, .svg4, .svg5, .svg6 {
     position: absolute;
     fill: #91b9ef;
+    @media (height < 768px) {
+      fill: rgba(145, 186, 239, 0.25);
+    }
     animation: float 5s ease-in-out infinite;
     animation-delay: var(--delay);
   }
@@ -208,20 +220,18 @@ section > div {
     font-size: 2.25rem;
     line-height: 2.5rem;
     text-align: center;
+    max-width: 1000px;
   }
 
   @media (width < 768px) {
-    grid-template-rows: 20% 30% 1fr minmax(100px, 150px);
-    grid-template-areas:
-      "header"
-      "carousel"
-      "text"
-      "whale";
+    /* With whale */
+    /* grid-template-rows: 20% 30% 1fr minmax(100px, 150px); */
+    /* Without whale */
 
-      > img {
-        width: 100px;
-        height: 100px;
-      }
+    > img {
+      width: 100px;
+      height: 100px;
+    }
 
     > h2 {
       font-size: 2.25rem;
