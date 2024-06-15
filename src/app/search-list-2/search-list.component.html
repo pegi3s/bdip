@@ -1,11 +1,17 @@
-<div class="category-container" [class.collapsed]="isCollapsed">
+@if (matchedContainers().size !== 0) {
+  <app-tabs class="only-icons" [tabs]="[
+    { id: 'c', icon: 'view_cozy', active: isCompact()},
+    { id: 'd', icon: 'view_agenda', active: !isCompact()}
+  ]" (activeTab)="onTabSelectedGridView($event)" />
+}
+<div class="category-container" [class.compact]="isCompact()">
   @for (container of matchedContainers(); track container) {
     <a class="container-item" [routerLink]="['/container', container]">
       <div class="header">
         <span>{{ container }}</span>
         <app-container-icon [name]="container" [icon]="(getContainerMetadataByName(container) | async)?.icon" [color]="isDarkTheme()? 'white' : '#0082c4'"/>
       </div>
-      @if (!isCollapsed) {
+      @if (!isCompact()) {
         <p class="description">
           {{ (getContainerMetadataByName(container) | async)?.description }}
         </p>

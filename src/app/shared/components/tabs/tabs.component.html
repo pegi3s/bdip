@@ -1,10 +1,16 @@
 <div class="indicator"></div>
 @for (tab of tabs(); track $index) {
-  <input type="radio" [id]="tab.label" name="tabs" (change)="onSelectTab(tab.label)" [checked]="tab.active" />
-  <label class="tab" [for]="tab.label">
+  <input type="radio" [id]="tab.id" name="tabs" (change)="onSelectTab(tab)" [checked]="tab.active" />
+  <label class="tab" [for]="tab.id">
     @if (tab.icon) {
-      <img [src]="tab.icon" [alt]="tab.label" />
+      @if (tab.icon.endsWith('.svg')) {
+        <img [src]="tab.icon" [alt]="tab.label" />
+      } @else {
+        <span class="material-symbols-rounded">{{ tab.icon }}</span>
+      }
     }
-    {{ tab.label | titlecase }}
+    @if (tab.label) {
+      {{ tab.label | titlecase }}
+    }
   </label>
 }

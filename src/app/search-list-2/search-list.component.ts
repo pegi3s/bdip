@@ -40,7 +40,7 @@ export class SearchListComponent2 {
     return matchedContainers;
   });
 
-  protected isCollapsed = true;
+  protected isCompact = signal<boolean>(true);
 
   constructor() {
     this.containerService.getContainersMap().subscribe((containers) => {
@@ -81,5 +81,9 @@ export class SearchListComponent2 {
 
   getContainerMetadataByName(name: string) {
     return this.containerService.getContainerMetadata(name);
+  }
+
+  onTabSelectedGridView(view: string) {
+    this.isCompact.set(view === 'c');
   }
 }

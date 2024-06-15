@@ -1,5 +1,5 @@
 import { TitleCasePipe } from '@angular/common';
-import { Component, EventEmitter, Output, input, output } from '@angular/core';
+import { Component, input, output } from '@angular/core';
 
 @Component({
   selector: 'app-tabs',
@@ -12,13 +12,14 @@ export class TabsComponent {
   tabs = input.required<Tab[]>();
   activeTab = output<string>();
 
-  onSelectTab(tab: string) {
-    this.activeTab.emit(tab);
+  onSelectTab(tab: Tab) {
+    this.activeTab.emit(tab.id);
   }
 }
 
 interface Tab {
-  label: string;
+  id: string;
+  label?: string;
   icon?: string;
   active?: boolean;
 }

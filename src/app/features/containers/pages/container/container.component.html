@@ -53,8 +53,8 @@
   </div>
   <div class="details-container">
     <app-tabs (activeTab)="onTabSelectedGettingStarted($event)" [tabs]="[
-      { label: 'readme', active: true },
-      { label: 'tags' }]" />
+      { id: 'readme', label: 'readme', active: true },
+      { id: 'tags', label: 'tags' }]" />
     @if (showReadme) {
       <markdown
         clipboard
