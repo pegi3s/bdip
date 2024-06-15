@@ -3,15 +3,18 @@ import { RouterLink } from "@angular/router";
 import { ContainerService } from "../services/container.service";
 import { TermStanza } from "../obo/TermStanza";
 import { ThemeService } from "../services/theme.service";
+import { AsyncPipe } from "@angular/common";
+import { TabsComponent } from "../shared/components/tabs/tabs.component";
+import { ContainerIconComponent } from "../container-icon/container-icon.component";
 
 @Component({
   selector: 'app-search-list-2',
   standalone: true,
-  imports: [RouterLink],
+  imports: [RouterLink, AsyncPipe, TabsComponent, ContainerIconComponent],
   templateUrl: './search-list.component.html',
   styleUrl: './search-list.component.css',
-  host: { '[class.dark]': 'isDarkTheme' },
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  host: { '[class.dark]': 'isDarkTheme()' },
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SearchListComponent2 {
   /* Inputs */
@@ -20,7 +23,7 @@ export class SearchListComponent2 {
   name = input<string>('');
 
   private themeService: ThemeService = inject(ThemeService);
-  protected isDarkTheme: boolean = false;
+  protected isDarkTheme = signal<boolean>(false);
 
   containerService: ContainerService = inject(ContainerService);
   containers = signal<Map<string, Set<string>>>(new Map<string, Set<string>>());
@@ -37,12 +40,14 @@ export class SearchListComponent2 {
     return matchedContainers;
   });
 
+  protected isCollapsed = true;
+
   constructor() {
     this.containerService.getContainersMap().subscribe((containers) => {
       this.containers.set(containers);
     });
     this.themeService.isDarkTheme().subscribe((isDark) => {
-      this.isDarkTheme = isDark;
+      this.isDarkTheme.set(isDark);
     });
   }
 
@@ -72,5 +77,9 @@ export class SearchListComponent2 {
         }
       });
     });
+  }
+
+  getContainerMetadataByName(name: string) {
+    return this.containerService.getContainerMetadata(name);
   }
 }

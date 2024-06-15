@@ -45,7 +45,7 @@
 [data-theme="light"] {
   color-scheme: light;
   /* --main-bg-color: rgb(246, 246, 246); */
-  --color-surface-container-lowest: 255, 255, 255;
+  --color-surface-container-lowest: 252, 252, 252;
   --color-surface-container: 255, 255, 255;
   --color-surface-container-high: 255, 255, 255;
 

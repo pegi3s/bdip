@@ -1,19 +1,15 @@
-<div class="category-container">
+<div class="category-container" [class.collapsed]="isCollapsed">
   @for (container of matchedContainers(); track container) {
-      <!-- @for (container of containers.get(category); track $index) { -->
-        <div class="container-item">
-          <p>{{ container }}</p>
-          <!-- <p>{{ container.name }}</p>
-          <p>{{ container.description }}</p> -->
-          <div>
-            <a routerLink="/container/{{ container }}"><span class="material-symbols-rounded">description</span></a>
-            <!-- <a routerLink="/container/{{ container.name }}"><span class="material-symbols-rounded">description</span></a> -->
-            <!-- @if (!container.docs.startsWith('https://github.com/pegi3s/dockerfiles')) {
-              <a [href]="container.docs"><span class="material-symbols-rounded">link</span></a>
-            } -->
-          </div>
-        </div>
-      <!-- } -->
-    }
-  </div>
-
+    <a class="container-item" [routerLink]="['/container', container]">
+      <div class="header">
+        <span>{{ container }}</span>
+        <app-container-icon [name]="container" [icon]="(getContainerMetadataByName(container) | async)?.icon" [color]="isDarkTheme()? 'white' : '#0082c4'"/>
+      </div>
+      @if (!isCollapsed) {
+        <p class="description">
+          {{ (getContainerMetadataByName(container) | async)?.description }}
+        </p>
+      }
+    </a>
+  }
+</div>
