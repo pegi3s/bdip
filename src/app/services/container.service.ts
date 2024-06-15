@@ -1,27 +1,35 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
-import { Observable } from 'rxjs';
-import { map, shareReplay } from 'rxjs/operators';
+import { Observable, ReplaySubject } from 'rxjs';
+import { catchError, map, shareReplay, tap } from 'rxjs/operators';
 import { Ontology } from '../obo/Ontology';
 import { DockerHubImage } from '../models/docker-hub-image';
 import { DockerHubTag } from '../models/docker-hub-tag';
 import { githubInfo } from '../core/constants/github-info';
+import { ImageMetadata } from '../models/image-metadata';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ContainerService {
-  private urlDiaf = `https://raw.githubusercontent.com/${githubInfo.owner}/${githubInfo.repository}/master/metadata/dio.diaf`;
-  private urlObo = `https://raw.githubusercontent.com/${githubInfo.owner}/${githubInfo.repository}/master/metadata/dio.obo`;
+  private readonly baseMetadataURL = `https://raw.githubusercontent.com/${githubInfo.owner}/${githubInfo.repository}/master/metadata/`;
+  private readonly urlObo = `${this.baseMetadataURL}/dio.obo`;
+  private readonly urlDiaf = `${this.baseMetadataURL}/dio.diaf`;
+  //private readonly urlJson = `${this.baseMetadataURL}/metadata.json`;
+  private readonly urlJson = `assets/metadata.json`;
   //private baseURLDockerHub = 'https://hub.docker.com/v2/namespaces/pegi3s/repositories';
-  private proxyServerURL = 'http://localhost:8080/';
-  private baseDockerHubEndpoint = '/v2/namespaces/pegi3s/repositories';
+  private readonly proxyServerURL = 'http://localhost:8080/';
+  private readonly baseDockerHubEndpoint = '/v2/namespaces/pegi3s/repositories';
 
-  private containersCache?: Observable<Map<string, Set<string>>>;
   private ontologyCache?: Observable<Ontology>;
+  private containersCache?: Observable<Map<string, Set<string>>>;
+  private containersMetadataSubject: ReplaySubject<Map<string, ImageMetadata>> = new ReplaySubject(1);
+  private containersMetadata$: Observable<Map<string, ImageMetadata>> = this.containersMetadataSubject.asObservable();
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {
+    this.getContainersMetadata();
+  }
 
   /**
    * Fetch the OBO file that contains the ontology.
@@ -137,6 +145,47 @@ export class ContainerService {
         });
         return Array.from(containersDistinct);
       }),
+    );
+  }
+
+  /**
+   * Fetches and processes container metadata from a specified URL.
+   * 
+   * This method retrieves an array of `ImageMetadata` objects from the specified `urlJson`.
+   * It then processes this array to create a `Map` where each key is the container's name and the value is its metadata.
+   * The resulting `Map` is then emitted through `containersMetadataSubject`.
+   * In case of an error during the fetching process, it logs the error and returns an empty array.
+   */
+  private getContainersMetadata(): void {
+    this.http.get<ImageMetadata[]>(this.urlJson).pipe(
+      map(data => {
+        const map = new Map<string, ImageMetadata>();
+        data.forEach((item) => {
+          if (map.has(item.name)) {
+            console.error(`Duplicate container name found: ${item.name}`);
+          } else {
+            map.set(item.name, item);
+          }
+        });
+        return map;
+      }),
+      tap(data => this.containersMetadataSubject.next(data)),
+      catchError(error => {
+        console.error('Error loading tutorials:', error);
+        return [];
+      })
+    ).subscribe();
+  }
+
+  /**
+   * Retrieves the metadata for the specified container.
+   * 
+   * @param {string} name The name of the container to retrieve metadata for.
+   * @returns {Observable<ImageMetadata | undefined>} An Observable that emits the metadata of the specified container if found, otherwise undefined.
+   */
+  getContainerMetadata(name: string): Observable<ImageMetadata | undefined> {
+    return this.containersMetadata$.pipe(
+      map(containers => containers.get(name)),
     );
   }
 
