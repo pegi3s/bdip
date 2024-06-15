@@ -84,7 +84,7 @@ export class TutorialService {
       this.tutorialsSubject.next(this.tutorials);
     });
     // Add placeholder image for tutorials without image
-    const numGradients = 2;
+    const numGradients = 3;
     let gradientIndex = 1;
     this.tutorials.forEach(tutorial => {
       if (!tutorial.image) {
