@@ -47,6 +47,11 @@
   border-radius: 16px;
   padding: 16px 24px;
   transition: transform 0.4s ease, box-shadow 0.4s ease;
+  /* Hack: The transition to scale down the card blurs a bit the element. When the transition finishes,
+  the blur effect is removed and the renders again to adapt to the new size. This causes a flicker effect.
+  To avoid this, the will-change property is added to the element. This property makes the element keep the  
+  blur effect. As it's just doing it on hover, IMO it's better to keep the blur than the flicker effect. */
+  will-change: transform;
 
   .header {
     display: flex;
