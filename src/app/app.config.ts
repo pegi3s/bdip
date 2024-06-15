@@ -1,10 +1,11 @@
-import { ApplicationConfig, inject, provideZoneChangeDetection } from '@angular/core';
+import { ApplicationConfig, inject, provideZoneChangeDetection, SecurityContext } from '@angular/core';
 import { Router, provideRouter, withComponentInputBinding, withInMemoryScrolling, withViewTransitions } from '@angular/router';
 import { provideAnimations } from "@angular/platform-browser/animations";
 import { routes } from './app.routes';
 import { HttpClient, provideHttpClient, withFetch } from '@angular/common/http';
 import { CLIPBOARD_OPTIONS, ClipboardButtonComponent, provideMarkdown } from 'ngx-markdown';
 import { baseUrl } from 'marked-base-url';
+import markedAlert from 'marked-alert';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -12,13 +13,18 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(withFetch()),
     provideMarkdown({
       loader: HttpClient,
-      markedExtensions: [baseUrl('https://raw.githubusercontent.com/pegi3s/dockerfiles/master/tutorials/')],
+      markedExtensions: [
+        baseUrl('https://raw.githubusercontent.com/pegi3s/dockerfiles/master/tutorials/'),
+        markedAlert(),
+        /* marked-gfm-heading-id wont work due DomSanitizer removing them */
+      ],
       clipboardOptions: {
         provide: CLIPBOARD_OPTIONS,
         useValue: {
           buttonComponent: ClipboardButtonComponent,
         },
       },
+      sanitize: SecurityContext.NONE,
     }),
     provideRouter(
       routes,

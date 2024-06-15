@@ -5,6 +5,7 @@ import { TutorialService } from '../../../../services/tutorial.service';
 import { Tutorial } from '../../../../models/tutorial';
 import { ThemeService } from '../../../../services/theme.service';
 import { ClipboardButtonComponent } from '../../../../shared/components/clipboard-button/clipboard-button.component';
+import { ViewportScroller } from '@angular/common';
 
 @Component({
   selector: 'app-tutorial',
@@ -16,6 +17,7 @@ import { ClipboardButtonComponent } from '../../../../shared/components/clipboar
 })
 export class TutorialComponent {
   activatedRoute: ActivatedRoute = inject(ActivatedRoute);
+  private viewportScroller: ViewportScroller = inject(ViewportScroller);
   tutorialService: TutorialService = inject(TutorialService);
   themeService: ThemeService = inject(ThemeService);
   isDarkTheme: boolean = false;
@@ -35,6 +37,7 @@ export class TutorialComponent {
         this.selectedTutorial.set(tutorials.find(tutorial => tutorial.filename === tutorialName));
       });
     });
+    this.viewportScroller.setOffset([0, 150]);
     this.themeService.isDarkTheme().subscribe(isDark => {
       this.isDarkTheme = isDark;
     });
@@ -42,6 +45,8 @@ export class TutorialComponent {
 
   getHeadings() {
     this.headings = Array.from(this.elementRef.nativeElement.querySelectorAll('h1, h2, h3, h4, h5, h6'));
-    console.log(this.headings);
+    this.headings.forEach(heading => {
+      heading.id = heading.textContent!.toLowerCase().replace(/ /g, '-').replace(/[^a-z0-9-]/g, '');
+    });
   }
 }
