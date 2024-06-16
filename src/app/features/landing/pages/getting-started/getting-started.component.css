@@ -82,12 +82,16 @@ p {
   content: "";
 }
 
+/* When enabling optimization, Angular Compiler does not prefix keyframes-name from the 
+   second animation onwards unless the spec order for the shorthand is used */
+/* https://github.com/angular/angular/issues/49068 */
+/* https://www.w3.org/TR/css-animations-1/#animation */
 .steps li {
   transform: translateY(20px);
   opacity: 0;
   animation:
-    revealOpacity 400ms linear forwards,
-    revealTransform 950ms cubic-bezier(0.215, 0.61, 0.355, 1) forwards;
+    400ms linear forwards revealOpacity,
+    950ms cubic-bezier(0.215, 0.61, 0.355, 1) forwards revealTransform;
   animation-delay: var(--delay);
 }
 
