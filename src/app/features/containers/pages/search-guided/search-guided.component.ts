@@ -2,14 +2,14 @@ import { Component, EnvironmentInjector, computed, effect, inject, runInInjectio
 import { trigger, transition, style, animate } from '@angular/animations';
 import { ContainerService } from '../../../../services/container.service';
 import { TermStanza } from '../../../../obo/TermStanza';
-import { SearchListComponent2 } from "../../../../search-list-2/search-list.component";
+import { SearchListComponent } from "../../components/search-list-2/search-list.component";
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-search-guided',
   standalone: true,
-  imports: [FormsModule, SearchListComponent2],
+  imports: [FormsModule, SearchListComponent],
   templateUrl: './search-guided.component.html',
   styleUrl: './search-guided.component.css',
   animations: [
@@ -51,7 +51,7 @@ export class SearchGuidedComponent {
     // Load the ontology and set the root categories
     this.containerService.getOntology().subscribe((ontology) => {
       this.rootCategories.set(ontology.getRootTerms());
-  
+
       // The query parameters are evaluated inside the subscription to the ontology to ensure
       // that the ontology data is available before the query parameters are processed.
       this.activatedRoute.queryParams.subscribe((params) => {
@@ -63,7 +63,7 @@ export class SearchGuidedComponent {
             this.clearSearch();
           }
         }
-  
+
         if (params['q']) {
           // Set the search term
           this.searchTerm.set(params['q']);
@@ -89,7 +89,7 @@ export class SearchGuidedComponent {
             this.categorySelectionStack.set(categoryStack);
           }
         }
-  
+
         // The effects always run at least once, so in order to prevent the query parameters from
         // being updated before params are processed, the effects are injected after the parsing
         runInInjectionContext(this.envInjector, () => {
@@ -176,13 +176,13 @@ export class SearchGuidedComponent {
 
   /**
    * Updates the route based on the provided parameters.
-   * 
+   *
    * If `showAll` is true, it adds a `showAll` query parameter.
    * If `text` is provided, it adds a `q` query parameter with the text.
    * If `categorySelectionStack` is provided and not empty, it adds a `c` query parameter with the category IDs joined by commas.
-   * 
+   *
    * If no query parameters are added, it navigates to the base route.
-   * 
+   *
    * @param {boolean} showAll - Determines whether to show all categories.
    * @param {string} text - The search text query.
    * @param {TermStanza[]} categorySelectionStack - The stack of selected categories.
@@ -193,15 +193,15 @@ export class SearchGuidedComponent {
     if (showAll) {
       queryParams.showAll = true;
     }
-  
+
     if (text) {
       queryParams.q = text;
     }
-  
+
     if (categorySelectionStack && categorySelectionStack.length > 0) {
       queryParams.c = categorySelectionStack.map((category) => category.id).join(',');
     }
-  
+
     if (Object.keys(queryParams).length > 0) {
       this.router.navigate([], {
         queryParams,

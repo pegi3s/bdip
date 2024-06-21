@@ -399,6 +399,25 @@ p {
   font-weight: 725;
 }
 
+.why-docker h2 + div {
+  display: grid;
+  grid-template-columns: 1fr;
+  column-gap: 16px;
+  row-gap: 16px;
+
+  @media (width > 576px) {
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  }
+
+  @media (width > 1024px) {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  @media (width > 1536px) {
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+  }
+}
+
 /* Dissemination */
 
 .dissemination .references {

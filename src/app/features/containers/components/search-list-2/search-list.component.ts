@@ -1,14 +1,14 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input, signal } from "@angular/core";
 import { RouterLink } from "@angular/router";
-import { ContainerService } from "../services/container.service";
-import { TermStanza } from "../obo/TermStanza";
-import { ThemeService } from "../services/theme.service";
+import { ContainerService } from "../../../../services/container.service";
+import { TermStanza } from "../../../../obo/TermStanza";
+import { ThemeService } from "../../../../services/theme.service";
 import { AsyncPipe } from "@angular/common";
-import { TabsComponent } from "../shared/components/tabs/tabs.component";
+import { TabsComponent } from "../../../../shared/components/tabs/tabs.component";
 import { ContainerIconComponent } from "../container-icon/container-icon.component";
 
 @Component({
-  selector: 'app-search-list-2',
+  selector: 'app-search-list',
   standalone: true,
   imports: [RouterLink, AsyncPipe, TabsComponent, ContainerIconComponent],
   templateUrl: './search-list.component.html',
@@ -16,7 +16,7 @@ import { ContainerIconComponent } from "../container-icon/container-icon.compone
   host: { '[class.dark]': 'isDarkTheme()' },
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SearchListComponent2 {
+export class SearchListComponent {
   /* Inputs */
   rootCategories = input<TermStanza[]>([]);
   selectedCategory = input<TermStanza>();

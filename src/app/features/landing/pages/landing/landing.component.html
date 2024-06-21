@@ -52,7 +52,16 @@
 <section class="why-docker">
   <div>
     <h2>Why <span>Docker Images?</span></h2>
-    <app-reason-list />
+    <div>
+      @for (feature of features; track $index) {
+        <app-reason-card
+          [icon]="feature.icon"
+          [title]="feature.title"
+          [description]="feature.description"
+          [style.--color]="feature.color"
+        />
+      }
+    </div>
   </div>
 </section>
 <section class="getting-started">

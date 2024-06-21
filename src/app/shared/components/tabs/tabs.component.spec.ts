@@ -7,7 +7,7 @@ describe('TabsComponent', () => {
   let component: TabsComponent;
   let fixture: ComponentFixture<TabsComponent>;
 
-  const tabs = [{ label: 'Tab 1', active: true }, { label: 'Tab 2' }];
+  const tabs = [{ id: 'tab1', label: 'Tab 1', active: true }, { id: 'tab2', label: 'Tab 2' }];
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -32,13 +32,13 @@ describe('TabsComponent', () => {
 
   it('should display the active tab', () => {
     const activeTab = fixture.debugElement.query(By.css('input:checked'));
-    expect(activeTab.nativeElement.id).toContain(tabs[0].label);
+    expect(activeTab.nativeElement.id).toContain(tabs[0].id);
   });
 
   it('should emit the selected tab on onSelectTab', () => {
     spyOn(component.activeTab, 'emit');
-    const expectedTab = 'Test Tab';
+    const expectedTab = tabs[0];
     component.onSelectTab(expectedTab);
-    expect(component.activeTab.emit).toHaveBeenCalledWith(expectedTab);
+    expect(component.activeTab.emit).toHaveBeenCalledWith(expectedTab.id);
   });
 });

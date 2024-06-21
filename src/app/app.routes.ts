@@ -1,6 +1,5 @@
 import { Routes } from '@angular/router';
 import { LandingComponent } from './features/landing/pages/landing/landing.component';
-import { SearchListComponent } from './search-list/search-list.component';
 import { ContainerComponent } from './features/containers/pages/container/container.component';
 import { TutorialComponent } from './features/tutorials/pages/tutorial/tutorial.component';
 import { TutorialsLandingComponent } from './features/tutorials/pages/tutorials-landing/tutorials-landing.component';
@@ -16,10 +15,6 @@ export const routes: Routes = [
     {
         path: 'search',
         component: SearchGuidedComponent,
-    },
-    {
-        path: 'containers',
-        component: SearchListComponent,
     },
     {
         path: 'container/:name',

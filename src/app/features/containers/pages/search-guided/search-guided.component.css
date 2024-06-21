@@ -263,11 +263,11 @@ p {
   line-height: 2rem;
 }
 
-app-search-list-2 {
+app-search-list {
   transition: margin-block 400ms cubic-bezier(0.57, 0, 0, 1);
 }
 
-.search-container:is(.active, .collapsed) + app-search-list-2 {
+.search-container:is(.active, .collapsed) + app-search-list {
   margin-block: 24px;
 }
 
