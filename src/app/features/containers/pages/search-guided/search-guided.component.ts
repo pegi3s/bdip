@@ -64,13 +64,15 @@ export class SearchGuidedComponent {
           }
         }
 
+        let searchQuery = '';
+        let categoryStack = [];
+
         if (params['q']) {
           // Set the search term
-          this.searchTerm.set(params['q']);
+          searchQuery = params['q'];
         } else if (params['c']) {
           // Set the category selection stack
           const categoryIds = params['c'].split(',');
-          let categoryStack = [];
           let categoryId = categoryIds.shift();
           let category = this.rootCategories().find((root) => root.id === categoryId);
           if (!category) {
@@ -86,8 +88,15 @@ export class SearchGuidedComponent {
                 console.error(`Category with id ${categoryId} following hierarchy not found`);
               }
             }
-            this.categorySelectionStack.set(categoryStack);
           }
+        }
+
+        // Update the signals with the query parameters
+        this.searchTerm.set(searchQuery);
+        // [] == [] is false, so we need to compare the elements of the arrays to not trigger an update when the arrays are the same
+        if (!(categoryStack.length === this.categorySelectionStack().length
+          && categoryStack.every((element, index) => element === this.categorySelectionStack()[index]))) {
+          this.categorySelectionStack.set(categoryStack);
         }
 
         // The effects always run at least once, so in order to prevent the query parameters from
