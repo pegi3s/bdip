@@ -34,6 +34,8 @@ FROM nginx:stable-alpine
 COPY --from=build-frontend /angular/dockerfiles-website/dist/dockerfiles-website/browser /usr/share/nginx/html
 # Copy the built Go binary
 COPY --from=build-backend /app/backend /usr/bin/backend
+# Configure Nginx to fallback to index.html for Angular routing
+RUN sed -i '/index  index.html index.htm;/a\        try_files $uri $uri/ /index.html;' /etc/nginx/conf.d/default.conf
 # Expose ports
 EXPOSE 80 8080
 
