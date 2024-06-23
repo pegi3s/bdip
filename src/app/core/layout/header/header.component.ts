@@ -9,7 +9,6 @@ import { ThemeService } from '../../../services/theme.service';
     styleUrl: './header.component.css',
     imports: [RouterLink],
     host: {'[class.dark]':'isDarkTheme'},
-    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HeaderComponent {
   /* Disable transitions on first load to prevent the header from sliding in */
