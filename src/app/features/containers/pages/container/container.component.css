@@ -30,17 +30,13 @@ svg {
 :host {
   display: grid;
   grid-template-columns: minmax(auto, 400px) minmax(auto, 1000px);
-  grid-template-areas: "info readme";
   column-gap: 32px;
 
   @media (width < 1280px) {
-    width: 100%;
-    grid-template-columns: 1fr;
     grid-template-rows: auto 1fr;
-    grid-template-areas:
-      "info"
-      "readme";
+    grid-template-columns: 1fr;
     row-gap: 32px;
+    /* width: 100%; */
   }
 }
 
@@ -125,6 +121,10 @@ svg {
   }
 }
 
+.details-container {
+  min-width: 0;
+}
+
 code {
   border-radius: 6px;
   background-color: rgba(var(--main-font-color), 0.07);
@@ -138,15 +138,10 @@ code {
 app-clipboard-button {
   position: absolute;
   top: 50%;
-  transform: translateY(-50%);
   right: 8px;
+  transform: translateY(-50%);
 }
 
-markdown {
-  grid-area: readme;
-}
-
-/*  */
 .tag {
   display: grid;
   grid-template-columns: 1fr 1fr;

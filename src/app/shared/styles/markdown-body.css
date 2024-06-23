@@ -857,7 +857,7 @@
   background-color: var(--color-neutral-muted);
   padding: 0.2em 0.4em;
   font-size: 85%;
-  white-space: break-spaces;
+  /* white-space: break-spaces; */
 }
 
 .markdown-body ::ng-deep code br,
@@ -1265,7 +1265,7 @@
 }
 
 .markdown-body ::ng-deep code {
-  white-space: pre-wrap;
+  /* white-space: pre-wrap; */
   overflow-wrap: anywhere;
 }
 
