@@ -1,8 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-
 import { Observable, ReplaySubject } from 'rxjs';
 import { catchError, map, shareReplay, tap } from 'rxjs/operators';
+
 import { Ontology } from '../obo/Ontology';
 import { DockerHubImage } from '../models/docker-hub-image';
 import { DockerHubTag } from '../models/docker-hub-tag';

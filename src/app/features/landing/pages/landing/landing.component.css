@@ -107,7 +107,7 @@ section > div {
   .svg1, .svg2, .svg3, .svg4, .svg5, .svg6 {
     position: absolute;
     fill: #91b9ef;
-    @media (height < 768px) {
+    @media (height < 870px) {
       fill: rgba(145, 186, 239, 0.25);
     }
     animation: float 5s ease-in-out infinite;
@@ -294,7 +294,7 @@ section > div {
   display: grid;
   grid-template-columns: 1fr;
   @media (min-width: 576px) {
-    grid-template-columns: repeat(auto-fill, minmax(540px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(500px, 1fr));
   }
   column-gap: 16px;
   row-gap: 16px;
@@ -486,7 +486,7 @@ p {
 
 .getting-started h2 + div {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-template-columns: 1fr;
   gap: 16px;
   
   @media (width > 768px) {
@@ -688,42 +688,3 @@ p {
     transform-origin: 35% 65%;
   }
 }
-
-/*
-@keyframes fadeInMoveUp {
-  0% {
-    opacity: 0;
-    transform: translateY(-40px);
-  }
-
-  100% {
-    opacity: 1;
-    transform: translateY(0px);
-  }
-}
-
-.fadeInAnimation {
-  --motion: 1;
-  --delay: 0;
-  transition: opacity calc(.4s* var(--motion)) linear calc(1s * calc(var(--delay) * var(--motion))), transform calc(.95s* var(--motion)) cubic-bezier(.215,.61,.355,1) calc(1s * calc(var(--delay) * var(--motion)));
-}
-*/
-/*
-.in-view {
-  --motion: 1;
-  --delay: 0;
-  opacity: 1;
-  transform: none;
-  transition: opacity calc(.4s* var(--motion)) linear calc(var(--delay)* var(--motion)), transform calc(.95s* var(--motion)) cubic-bezier(.215,.61,.355,1) calc(var(--delay)* var(--motion));
-}
-
-.out-of-view-top {
-  opacity: 0;
-  transform: translateY(-40px);
-}
-
-.out-of-view-bottom {
-  opacity: 0;
-  transform: translateY(40px);
-}
-*/

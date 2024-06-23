@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { OS } from '../../../../models/os';
 import { UtilsService } from '../../../../services/utils.service';
-import { TabsComponent } from "../../../../shared/components/tabs/tabs.component";
+import { TabsComponent } from '../../../../shared/components/tabs/tabs.component';
 import { ThemeService } from '../../../../services/theme.service';
 
 @Component({
@@ -10,12 +10,12 @@ import { ThemeService } from '../../../../services/theme.service';
   templateUrl: './getting-started.component.html',
   styleUrl: './getting-started.component.css',
   imports: [TabsComponent],
-  host: { '[class.dark]': 'isDarkTheme' }
+  host: { '[class.dark]': 'isDarkTheme' },
 })
 export class GettingStartedComponent {
   /* Services */
-  utilsService: UtilsService = inject(UtilsService);
-  themeService: ThemeService = inject(ThemeService);
+  private utilsService: UtilsService = inject(UtilsService);
+  private themeService: ThemeService = inject(ThemeService);
   isDarkTheme: boolean = false;
 
   /* State */

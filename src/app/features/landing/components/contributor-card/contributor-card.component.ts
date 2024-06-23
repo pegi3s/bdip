@@ -8,13 +8,15 @@ import { ThemeService } from '../../../../services/theme.service';
   imports: [],
   templateUrl: './contributor-card.component.html',
   styleUrl: './contributor-card.component.css',
-  host: {'[class.dark]':'isDarkTheme'}
+  host: { '[class.dark]': 'isDarkTheme' },
 })
 export class ContributorCardComponent {
-  contributor = input.required<Contributor>();
-
-  themeService: ThemeService = inject(ThemeService);
+  /* Services */
+  private themeService: ThemeService = inject(ThemeService);
   isDarkTheme: boolean = false;
+
+  /* Inputs */
+  contributor = input.required<Contributor>();
 
   constructor() {
     this.themeService.isDarkTheme().subscribe(isDark => this.isDarkTheme = isDark);

@@ -55,10 +55,10 @@ footer {
 }
 
 .social-links a {
+  transition: background-color 200ms;
   border-radius: 6px;
   padding: 6px;
   line-height: 0;
-  transition: background-color 200ms;
 
   &:hover {
     background-color: rgba(var(--main-font-color), 0.1);

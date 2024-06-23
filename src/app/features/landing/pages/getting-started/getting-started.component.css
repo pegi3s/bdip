@@ -4,24 +4,11 @@ section {
   max-inline-size: 2048px;
 }
 
+/* Page title */
 h2 {
   margin-block: 0 24px;
   font-size: 2.25rem;
   line-height: 2.5rem;
-}
-
-a {
-  color: #0969da;
-  font-weight: 600;
-}
-
-p {
-  font-size: 1rem;
-  line-height: 1.5rem;
-}
-
-:host-context(.dark) a {
-  color: rgb(97, 218, 251);
 }
 
 .getting-started h2 {
@@ -30,10 +17,26 @@ p {
   background-clip: text;
 }
 
+/* Links */
+a {
+  color: #0969da;
+  font-weight: 600;
+}
+
+:host-context(.dark) a {
+  color: rgb(97, 218, 251);
+}
+
+p {
+  font-size: 1rem;
+  line-height: 1.5rem;
+}
+
 .getting-started :is(app-tabs, .lead) {
   margin-bottom: 24px;
 }
 
+/* Guide's steps */
 .steps {
   margin: 0;
   padding: 0;
@@ -44,16 +47,17 @@ p {
   position: relative;
   counter-increment: step 1;
   padding-bottom: 2rem;
-
   padding-left: 2.75rem;
 }
 
+/* Step title */
 .steps li h3 {
   margin: 0;
   font-size: 1.25rem;
   line-height: 1.75rem;
 }
 
+/* Step number */
 .steps li::before {
   display: flex;
   position: absolute;
@@ -72,6 +76,7 @@ p {
   font-size: 0.875rem;
 }
 
+/* Step line */
 .steps li::after {
   position: absolute;
   top: calc(1.75rem + 10px);

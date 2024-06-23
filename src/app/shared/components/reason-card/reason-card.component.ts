@@ -1,4 +1,4 @@
-import { Component, Input, inject, input } from '@angular/core';
+import { Component, inject, input } from '@angular/core';
 import { ThemeService } from '../../../services/theme.service';
 
 @Component({
@@ -10,11 +10,13 @@ import { ThemeService } from '../../../services/theme.service';
   host: {'[class.dark]':'isDarkTheme'}
 })
 export class ReasonCardComponent {
+  /* Input */
   icon = input.required<string>();
   title = input.required<string>();
   description = input.required<string>();
 
-  themeService: ThemeService = inject(ThemeService);
+  /* Services */
+  private themeService: ThemeService = inject(ThemeService);
   isDarkTheme: boolean = false;
 
   constructor() {

@@ -6,8 +6,7 @@ export type Organization = {
 
 export const i3S: Organization = {
   acronym: 'i3S',
-  fullName:
-    'Instituto de Investigação e Inovação em Saúde da Universidade do Porto',
+  fullName: 'Instituto de Investigação e Inovação em Saúde da Universidade do Porto',
   color: '#0082C4',
 };
 export const IBMC: Organization = {

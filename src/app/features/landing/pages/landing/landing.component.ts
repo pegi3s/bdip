@@ -20,9 +20,10 @@ import { ReasonCardComponent } from "../../../../shared/components/reason-card/r
 })
 export class LandingComponent {
   /* Services */
-  themeService: ThemeService = inject(ThemeService);
+  private router: Router = inject(Router);
+  private themeService: ThemeService = inject(ThemeService);
   isDarkTheme: boolean = false;
-  contributorService: ContributorService = inject(ContributorService);
+  private contributorService: ContributorService = inject(ContributorService);
 
   /* HTML Elements */
   citingQuoteElem = viewChild<ElementRef>('citingQuote');
@@ -68,7 +69,7 @@ export class LandingComponent {
   /* State */
   searchClicked: boolean = false;
 
-  constructor(private router: Router) {
+  constructor() {
     this.authors = this.contributorService.getAuthors();
     this.contributors = this.contributorService.getContributors();
     this.themeService.isDarkTheme().subscribe(isDark => {

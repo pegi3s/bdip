@@ -13,10 +13,12 @@ import { ThemeService } from '../../../../services/theme.service';
   host: {'[class.dark]':'isDarkTheme'}
 })
 export class TutorialsLandingComponent {
-  themeService: ThemeService = inject(ThemeService);
+  /* Services */
+  private themeService: ThemeService = inject(ThemeService);
   isDarkTheme: boolean = false;
+  private tutorialService: TutorialService = inject(TutorialService);
 
-  tutorialService: TutorialService = inject(TutorialService);
+  /* Data */
   tutorials = signal<Tutorial[]>([]);
 
   ngOnInit() {

@@ -25,9 +25,15 @@ export class SearchListComponent {
   private themeService: ThemeService = inject(ThemeService);
   protected isDarkTheme = signal<boolean>(false);
 
-  containerService: ContainerService = inject(ContainerService);
+  private containerService: ContainerService = inject(ContainerService);
   containers = signal<Map<string, Set<string>>>(new Map<string, Set<string>>());
 
+  /**
+   * This computed property generates a set of container names that match the current search criteria.
+   * If a name is provided, it searches for containers by name. If a specific category is selected,
+   * it searches for containers within that category. If no specific category is selected, it searches
+   * within all root categories. The search results are stored in a unique set to avoid duplicates.
+   */
   matchedContainers = computed(() => {
     const matchedContainers = new Set<string>();
     if (this.name().length > 0) {
@@ -69,6 +75,13 @@ export class SearchListComponent {
     }
   }
 
+  /**
+   * Filters containers by checking if any container's name includes the specified 
+   * name (case-insensitive) and adds matching containers to a set.
+   * 
+   * @param {string} name - The name to search for within container names.
+   * @param {Set<string>} matchedContainers - The set to add matching containers to.
+   */
   getContainersByName(name: string, matchedContainers: Set<string>) {
     this.containers().forEach((containerSet) => {
       containerSet.forEach((container) => {

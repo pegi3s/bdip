@@ -23,10 +23,10 @@ import { ActivatedRoute, Router } from '@angular/router';
 })
 export class SearchGuidedComponent {
   /* Services */
-  router: Router = inject(Router);
-  activatedRoute: ActivatedRoute = inject(ActivatedRoute);
-  envInjector: EnvironmentInjector = inject(EnvironmentInjector);
-  containerService: ContainerService = inject(ContainerService);
+  private router: Router = inject(Router);
+  private activatedRoute: ActivatedRoute = inject(ActivatedRoute);
+  private envInjector: EnvironmentInjector = inject(EnvironmentInjector);
+  private containerService: ContainerService = inject(ContainerService);
 
   /** The root categories of the ontology. */
   rootCategories = signal<TermStanza[]>([]);

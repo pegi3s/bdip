@@ -19,8 +19,11 @@ import { BytesToSizePipe } from "../../../../shared/pipes/bytes-to-size/bytes-to
   imports: [DatePipe, SlicePipe, MarkdownModule, TabsComponent, BytesToSizePipe, ClipboardButtonComponent]
 })
 export class ContainerComponent {
-  activatedRoute: ActivatedRoute = inject(ActivatedRoute);
-  containerService: ContainerService = inject(ContainerService);
+  /* Services */
+  private activatedRoute: ActivatedRoute = inject(ActivatedRoute);
+  private containerService: ContainerService = inject(ContainerService);
+  private themeService: ThemeService = inject(ThemeService);
+  isDarkTheme: boolean = false;
 
   readonly clipboardButton = ClipboardButtonComponent;
 
@@ -30,10 +33,9 @@ export class ContainerComponent {
 
   showReadme = true;
 
-  themeService: ThemeService = inject(ThemeService);
-  isDarkTheme: boolean = false;
+  constructor() {}
 
-  constructor() {
+  ngOnInit() {
     this.activatedRoute.params.subscribe(params => {
       const containerName = this.activatedRoute.snapshot.params['name'];
       this.containerService.getContainerInfo(containerName).subscribe({

@@ -1,6 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { ThemeService } from '../../../services/theme.service';
 import { map } from 'rxjs';
+import { Theme } from '../../enums/theme';
 
 @Component({
   selector: 'app-theme-toggle',
@@ -8,7 +9,7 @@ import { map } from 'rxjs';
   imports: [],
   templateUrl: './theme-toggle.component.html',
   styleUrl: './theme-toggle.component.css',
-  host: {'[class.dark]':'isDarkTheme'}
+  host: { '[class.dark]': 'isDarkTheme' }
 })
 export class ThemeToggleComponent {
   themeService: ThemeService = inject(ThemeService);
@@ -37,5 +38,3 @@ export class ThemeToggleComponent {
     }
   }
 }
-
-enum Theme { LIGHT = 'light', DARK = 'dark', SYSTEM = 'system' };

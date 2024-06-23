@@ -1,10 +1,9 @@
 <div class="container">
   <ul>
-    @for (img of supporters; track $index) {
+    @for (img of logos(); track $index) {
       <li [style.--index]="$index">
-          <img src="{{ img }}" />
+        <img [src]="img" />
       </li>
     }
   </ul>
 </div>
-

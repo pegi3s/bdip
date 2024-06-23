@@ -5,7 +5,6 @@ import { Pipe, PipeTransform } from '@angular/core';
   standalone: true
 })
 export class BytesToSizePipe implements PipeTransform {
-
   transform(bytes: number, decimals: number = 2): string {
     if (bytes === 0) return '0 Bytes';
 
@@ -17,5 +16,4 @@ export class BytesToSizePipe implements PipeTransform {
 
     return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
   }
-
 }

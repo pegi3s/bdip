@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { Theme } from '../shared/enums/theme';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ThemeService {
   private _theme: Theme;
@@ -59,5 +60,3 @@ export class ThemeService {
     return this.theme;
   }
 }
-
-enum Theme { LIGHT = 'light', DARK = 'dark', SYSTEM = 'system' };

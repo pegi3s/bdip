@@ -16,19 +16,22 @@ import { ViewportScroller } from '@angular/common';
   host: {'[class.dark]':'isDarkTheme'}
 })
 export class TutorialComponent {
-  activatedRoute: ActivatedRoute = inject(ActivatedRoute);
+  /* Services */
+  private activatedRoute: ActivatedRoute = inject(ActivatedRoute);
   private viewportScroller: ViewportScroller = inject(ViewportScroller);
-  tutorialService: TutorialService = inject(TutorialService);
-  themeService: ThemeService = inject(ThemeService);
+  private elementRef: ElementRef<HTMLElement> = inject(ElementRef);
+  private tutorialService: TutorialService = inject(TutorialService);
+  private themeService: ThemeService = inject(ThemeService);
   isDarkTheme: boolean = false;
 
   readonly clipboardButton = ClipboardButtonComponent;
 
+  /* Data */
+  tutorials: Tutorial[] = [];
   selectedTutorial = signal<Tutorial | undefined>(undefined);
   headings?: Element[];
-  tutorials: Tutorial[] = [];
 
-  constructor(private elementRef: ElementRef<HTMLElement>) {
+  constructor() {
     this.tutorialService.getTutorials().subscribe(tutorials => {
       this.tutorials = tutorials;
 
@@ -43,6 +46,9 @@ export class TutorialComponent {
     });
   }
 
+  /**
+   * Assigns unique IDs to headings in the component based on their text content.
+   */
   getHeadings() {
     this.headings = Array.from(this.elementRef.nativeElement.querySelectorAll('h1, h2, h3, h4, h5, h6'));
     this.headings.forEach(heading => {

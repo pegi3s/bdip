@@ -126,13 +126,13 @@ svg {
 }
 
 code {
+  position: relative;
   border-radius: 6px;
   background-color: rgba(var(--main-font-color), 0.07);
   padding: 12px 16px;
-  font-family: "JetBrains Mono", monospace;
   font-size: 0.875rem;
   line-height: 1.25rem;
-  position: relative;
+  font-family: "JetBrains Mono", monospace;
 }
 
 app-clipboard-button {
@@ -157,19 +157,15 @@ app-clipboard-button {
   padding: 16px;
 
   @media (width < 1024px) {
+    grid-template-columns: 1fr;
     grid-template-areas:
       "name"
       "last-update"
       "code"
       "images";
-      grid-template-columns: 1fr;
   }
 }
 
-.tag {
-  /* background-color: #161b22;
-  color: #c9d1d9; */
-}
 .tag h3 {
   grid-area: name;
   margin-bottom: 8px;
@@ -177,36 +173,30 @@ app-clipboard-button {
   font-size: 1.5rem;
   line-height: 2rem;
 }
-.tag h3 {
-  /* color: #c9d1d9; */
-}
+
 .tag p {
   grid-area: last-update;
-  /* color: #586069; */
   margin-bottom: 16px;
 }
-.tag p {
-  /* color: #8b949e; */
-}
+
 .tag .install {
   display: flex;
   grid-area: code;
   align-items: center;
   margin-bottom: 16px;
-  background-color: #f6f8fa;
   border: 1px solid #e1e4e8;
   border-radius: 6px;
+  background-color: #f6f8fa;
   padding: 16px;
 }
 
 :host-context(.dark) .tag .install {
   border: 1px solid #30363d;
-  /* background-color: #161b22; */
   background-color: #0d1117;
 }
 
 div:has(> table) {
-    grid-area: images;
+  grid-area: images;
   overflow-x: auto;
 }
 
@@ -217,7 +207,6 @@ table {
 
 table th,
 table td {
-  /* border: 1px solid #e1e4e8; */
   padding: 8px;
   text-align: left;
 }
@@ -228,22 +217,7 @@ table td:last-child {
 }
 
 table th {
-  /* background-color: #f6f8fa; */
   font-weight: 600;
-}
-
-table {
-  /* background-color: #161b22; */
-  /* color: #c9d1d9; */
-}
-
-table th,
-table td {
-  /* border: 1px solid #30363d; */
-}
-
-table th {
-  /* background-color: #0d1117; */
 }
 
 .info .links {
@@ -254,14 +228,14 @@ table th {
 
 .info .links a {
   display: inline-flex;
-  width: max-content;
   align-items: center;
   gap: 8px;
+  transition: background-color 0.25s;
+  border-radius: 24px;
+  padding: 6px 10px;
+  width: max-content;
   color: rgb(var(--main-font-color));
   text-decoration: none;
-  padding: 6px 10px;
-  border-radius: 24px;
-  transition: background-color 0.25s;
 }
 
 .info .links a:hover {

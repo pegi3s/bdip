@@ -9,6 +9,7 @@ import { Component, input } from '@angular/core';
   styleUrl: './container-icon.component.css'
 })
 export class ContainerIconComponent {
+  /* Inputs */
   icon = input<string>();
   name = input<string>('');
   color = input<string>('#0082c4');

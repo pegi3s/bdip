@@ -1,6 +1,4 @@
 import { TermStanza } from './TermStanza';
-/*import { Readable } from 'node:stream';
-import * as readline from 'node:readline';*/
 
 export class Ontology {
   // Required header tags
@@ -26,12 +24,7 @@ export class Ontology {
   private stanzas: TermStanza[] = [];
 
   constructor(obo: string) {
-    /*const reader = readline.createInterface({ input: Readable.from(obo) });
-    reader.on('line', (input) => {
-      console.log(input);
-    });*/
     this.parseObo(obo);
-    console.log(this);
   }
 
   public getAllOntologyTerms() {

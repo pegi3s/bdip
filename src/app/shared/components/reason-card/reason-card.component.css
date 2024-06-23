@@ -14,7 +14,6 @@
   --icon-inner-box-color: hsl(var(--color), 55%, 40%);
 }
 
-
 :host {
   display: block;
 
@@ -44,6 +43,8 @@
   width: 62px;
   height: 62px;
 
+  --rotate: 6deg;
+
   div {
     position: absolute;
     top: 0px;
@@ -56,13 +57,13 @@
   }
 
   .outer-box {
-    transform: rotate(6deg);
+    transform: rotate(var(--rotate));
     border-radius: 24px;
     background-color: var(--icon-outer-box-color);
   }
 
   .inner-box {
-    transform: rotate(-6deg);
+    transform: rotate(calc(var(--rotate) * -1));
     margin: 9px;
     border-radius: 16px;
     background-color: var(--icon-inner-box-color);
@@ -78,8 +79,9 @@
     transform: scale(1.05);
   }
 
-  .outer-box, .inner-box {
-    transform: rotate(0deg);
+  .outer-box,
+  .inner-box {
+    --rotate: 0deg;
   }
 }
 

@@ -9,10 +9,15 @@ import { Component, input, output } from '@angular/core';
   styleUrl: './tabs.component.css'
 })
 export class TabsComponent {
+  /* Input */
   tabs = input.required<Tab[]>();
+  /* Output */
   activeTab = output<string>();
 
-  onSelectTab(tab: Tab) {
+  /**
+   * Emits the ID of the selected tab.
+   */
+  protected onSelectTab(tab: Tab) {
     this.activeTab.emit(tab.id);
   }
 }

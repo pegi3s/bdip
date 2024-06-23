@@ -5,4 +5,4 @@ export type Tutorial = {
   /** The filename of the tutorial markdown file without the `.md` extension */
   filename: string;
   url: string;
-}
+};
