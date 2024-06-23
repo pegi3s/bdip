@@ -17,7 +17,7 @@ export class TabsComponent {
   /**
    * Emits the ID of the selected tab.
    */
-  protected onSelectTab(tab: Tab) {
+  onSelectTab(tab: Tab) {
     this.activeTab.emit(tab.id);
   }
 }

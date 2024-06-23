@@ -13,6 +13,7 @@ describe('LogoMarqueeComponent', () => {
     .compileComponents();
 
     fixture = TestBed.createComponent(LogoMarqueeComponent);
+    fixture.componentRef.setInput('logos', []);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
