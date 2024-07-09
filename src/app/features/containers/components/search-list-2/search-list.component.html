@@ -1,4 +1,4 @@
-@if (matchedContainers().size !== 0) {
+@if (matchedContainers().length !== 0) {
   <app-tabs class="only-icons" [tabs]="[
     { id: 'c', icon: 'view_cozy', active: isCompact()},
     { id: 'd', icon: 'view_agenda', active: !isCompact()}

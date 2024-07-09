@@ -29,7 +29,7 @@ export class SearchListComponent {
   containers = signal<Map<string, Set<string>>>(new Map<string, Set<string>>());
 
   /**
-   * This computed property generates a set of container names that match the current search criteria.
+   * This computed property generates a set of container names that match the current search criteria sorted alphabetically.
    * If a name is provided, it searches for containers by name. If a specific category is selected,
    * it searches for containers within that category. If no specific category is selected, it searches
    * within all root categories. The search results are stored in a unique set to avoid duplicates.
@@ -43,7 +43,7 @@ export class SearchListComponent {
     } else {
       this.getContainersByCategories(this.rootCategories(), matchedContainers);
     }
-    return matchedContainers;
+    return [...matchedContainers].sort();
   });
 
   protected isCompact = signal<boolean>(true);
