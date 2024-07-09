@@ -35,14 +35,14 @@ To build the website for production, run `ng build`. The build artifacts will be
 
 ### Docker
 
-To deploy the website using Docker:
+To deploy the website using Docker, go to the root directory of the project and follow these steps:
 
 1. **Build the Docker image.**
 
    To ensure the Docker build process fetches the latest changes from the repo and does not use any cached layers, use the `--no-cache` option.
 
     ```bash
-    docker build --no-cache -t dockerfiles-website .
+    docker build --no-cache -t dockerfiles-website -f docker/git-clone-and-deploy/Dockerfile .
     ```
 
 2. **Run the Docker container.**
