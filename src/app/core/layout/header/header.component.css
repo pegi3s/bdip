@@ -159,6 +159,7 @@ nav {
   background-color: rgba(var(--slate-400), 15%);
   box-shadow: inset 0 1px 0 0 #ffffff0d;
   transition: background-color 200ms;
+  cursor: pointer;
 }
 
 .search-button > div:hover {

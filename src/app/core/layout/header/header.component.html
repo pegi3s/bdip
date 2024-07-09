@@ -12,8 +12,8 @@
         <a [routerLink]="[link.path]" [queryParams]="link.queryParams" [class.current]="matchPath(link)">{{ link.text }}</a>
       }
     </nav>
-    <div class="search-button" [class.hiding]="searchClicked" [class.hidden]="!showSearch" (click)="onSearchClick()">
-      <div>
+    <div class="search-button" [class.hiding]="searchClicked" [class.hidden]="!showSearch">
+      <div (click)="onSearchClick()">
         <img src="assets/magnifying-glass-tilted-left.svg" alt="search" width="18px">
         <span>Search</span>
       </div>
