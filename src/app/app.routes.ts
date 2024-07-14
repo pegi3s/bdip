@@ -9,7 +9,7 @@ import { GettingStartedComponent } from './features/landing/pages/getting-starte
 export const routes: Routes = [
     {
         path: '',
-        title: 'Bioinformatics Docker Images Project',
+        title: 'pegi3s Bioinformatics Docker Images Project',
         component: LandingComponent,
     },
     {
