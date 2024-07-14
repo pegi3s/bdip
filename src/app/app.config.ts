@@ -6,10 +6,12 @@ import { HttpClient, provideHttpClient, withFetch } from '@angular/common/http';
 import { CLIPBOARD_OPTIONS, ClipboardButtonComponent, provideMarkdown } from 'ngx-markdown';
 import { baseUrl } from 'marked-base-url';
 import markedAlert from 'marked-alert';
+import { provideAngularSvgIcon } from 'angular-svg-icon';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideAnimations(),
+    provideAngularSvgIcon(),
     provideHttpClient(withFetch()),
     provideMarkdown({
       loader: HttpClient,

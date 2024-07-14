@@ -242,8 +242,12 @@ table th {
   background-color: rgba(var(--main-font-color), 0.1);
 }
 
-.info .links a img {
-  height: 1rem;
+.info .links a svg-icon {
+  display: contents;
+
+  svg {
+    height: 1rem;
+  }
 }
 
 .info .links a span {
