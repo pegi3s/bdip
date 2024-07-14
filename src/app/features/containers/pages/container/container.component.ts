@@ -10,6 +10,7 @@ import { ClipboardButtonComponent } from '../../../../shared/components/clipboar
 import { TabsComponent } from "../../../../shared/components/tabs/tabs.component";
 import { BytesToSizePipe } from "../../../../shared/pipes/bytes-to-size/bytes-to-size.pipe";
 import { SvgIconComponent } from 'angular-svg-icon';
+import { LoadingComponent } from "../../../../shared/components/loading/loading.component";
 
 @Component({
   selector: 'app-container',
@@ -17,7 +18,7 @@ import { SvgIconComponent } from 'angular-svg-icon';
   templateUrl: './container.component.html',
   styleUrls: ['./container.component.css', '../../../../shared/styles/markdown-body.css'],
   host: { '[class.dark]': 'isDarkTheme' },
-  imports: [DatePipe, SlicePipe, MarkdownModule, TabsComponent, BytesToSizePipe, ClipboardButtonComponent, SvgIconComponent]
+  imports: [DatePipe, SlicePipe, MarkdownModule, TabsComponent, BytesToSizePipe, ClipboardButtonComponent, SvgIconComponent, LoadingComponent]
 })
 export class ContainerComponent {
   /* Services */
