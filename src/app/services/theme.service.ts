@@ -11,15 +11,17 @@ export class ThemeService {
   private darkTheme: BehaviorSubject<boolean>;
 
   constructor() {
-    const theme = localStorage.getItem('theme');
+    const localTheme = localStorage.getItem('theme');
     // If the user has set a theme, use it. Otherwise, use the system theme.
-    this._theme = theme ?
-      theme as Theme :
-      window.matchMedia('(prefers-color-scheme: dark)').matches ? Theme.DARK : Theme.LIGHT;
+    this._theme = localTheme ?
+      localTheme as Theme :
+      //window.matchMedia('(prefers-color-scheme: dark)').matches ? Theme.DARK : Theme.LIGHT;
+      Theme.SYSTEM;
 
+    const finalTheme = this._theme === Theme.SYSTEM ? window.matchMedia('(prefers-color-scheme: dark)').matches ? Theme.DARK : Theme.LIGHT : this._theme;
     // Add data-theme attribute to the host element
-    document.body.setAttribute('data-theme', this._theme);
-    this.darkTheme = new BehaviorSubject<boolean>(this._theme === Theme.DARK);
+    document.body.setAttribute('data-theme', finalTheme);
+    this.darkTheme = new BehaviorSubject<boolean>(finalTheme === Theme.DARK);
     this.theme = new BehaviorSubject<Theme>(this._theme);
 
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
