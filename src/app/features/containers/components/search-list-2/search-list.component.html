@@ -6,14 +6,15 @@
 }
 <div class="category-container" [class.compact]="isCompact()">
   @for (container of matchedContainers(); track container) {
+    @let containerMetadata = getContainerMetadataByName(container) | async;
     <a class="container-item" [routerLink]="['/container', container]">
       <div class="header">
         <span>{{ container }}</span>
-        <app-container-icon [name]="container" [icon]="(getContainerMetadataByName(container) | async)?.icon" [color]="isDarkTheme()? 'white' : '#0082c4'"/>
+        <app-container-icon [name]="container" [icon]="containerMetadata?.icon" [color]="isDarkTheme()? 'white' : '#0082c4'"/>
       </div>
       @if (!isCompact()) {
         <p class="description">
-          {{ (getContainerMetadataByName(container) | async)?.description }}
+          {{ containerMetadata?.description }}
         </p>
       }
     </a>
