@@ -2,8 +2,8 @@
     <div>
       <h2>Getting started</h2>
       <app-tabs (activeTab)="onTabSelectedGettingStarted($event)" [tabs]="[
-        { id: OS.WINDOWS, label: OS.WINDOWS, icon: 'assets/Windows11.svg', active: gettingStartedOS === OS.WINDOWS },
-        { id: OS.LINUX, label: OS.LINUX, icon: 'assets/linux.svg', active: gettingStartedOS === OS.LINUX }
+        { id: OS.WINDOWS, label: OS.WINDOWS, icon: 'assets/icons/logos/Windows11.svg', active: gettingStartedOS === OS.WINDOWS },
+        { id: OS.LINUX, label: OS.LINUX, icon: 'assets/icons/logos/linux.svg', active: gettingStartedOS === OS.LINUX }
       ]" />
       @if (gettingStartedOS === OS.WINDOWS) {
         <p class="lead">

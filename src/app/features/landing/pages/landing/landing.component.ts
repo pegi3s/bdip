@@ -32,12 +32,12 @@ export class LandingComponent {
   authors: Contributor[];
   contributors: Contributor[];
   supporters: string[] = [
-    'assets/images/logo-cresc_algarve_2020.png',
-    'assets/images/logo-lisboa_2020.webp',
-    'assets/images/logo-norte_2020.png',
-    'assets/images/logo-portugal_2020.png',
-    'assets/images/logo-uniao_europeia_fundos_europeus.png',
-    'assets/images/logo-fct.png',
+    'assets/images/supporters/logo-cresc_algarve_2020.png',
+    'assets/images/supporters/logo-lisboa_2020.webp',
+    'assets/images/supporters/logo-norte_2020.png',
+    'assets/images/supporters/logo-portugal_2020.png',
+    'assets/images/supporters/logo-uniao_europeia_fundos_europeus.png',
+    'assets/images/supporters/logo-fct.png',
   ];
   features = [
     {
