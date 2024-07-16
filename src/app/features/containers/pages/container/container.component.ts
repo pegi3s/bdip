@@ -4,7 +4,7 @@ import { DockerHubTag } from '../../../../models/docker-hub-tag';
 import { ActivatedRoute } from '@angular/router';
 import { ContainerService } from '../../../../services/container.service';
 import { MarkdownModule } from 'ngx-markdown';
-import { DatePipe, SlicePipe } from '@angular/common';
+import { AsyncPipe, DatePipe, SlicePipe } from '@angular/common';
 import { ThemeService } from '../../../../services/theme.service';
 import { ClipboardButtonComponent } from '../../../../shared/components/clipboard-button/clipboard-button.component';
 import { TabsComponent } from "../../../../shared/components/tabs/tabs.component";
@@ -18,7 +18,7 @@ import { LoadingComponent } from "../../../../shared/components/loading/loading.
   templateUrl: './container.component.html',
   styleUrls: ['./container.component.css', '../../../../shared/styles/markdown-body.css'],
   host: { '[class.dark]': 'isDarkTheme' },
-  imports: [DatePipe, SlicePipe, MarkdownModule, TabsComponent, BytesToSizePipe, ClipboardButtonComponent, SvgIconComponent, LoadingComponent]
+  imports: [AsyncPipe, DatePipe, SlicePipe, MarkdownModule, TabsComponent, BytesToSizePipe, ClipboardButtonComponent, SvgIconComponent, LoadingComponent]
 })
 export class ContainerComponent {
   /* Services */
@@ -55,5 +55,9 @@ export class ContainerComponent {
 
   onTabSelectedGettingStarted(tab: string) {
     this.showReadme = tab === 'readme';
+  }
+
+  getContainerMetadataByName(name: string) {
+    return this.containerService.getContainerMetadata(name);
   }
 }
