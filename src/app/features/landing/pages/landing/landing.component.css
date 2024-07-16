@@ -573,6 +573,133 @@ p {
   transform: scale(1.1) rotate(-7deg);
 }
 
+/* Get in touch */
+
+.get-in-touch h2 + div {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 48px;
+  
+  @media (width > 768px) {
+    grid-template-columns: 1fr 2fr;
+  }
+
+  p {
+    margin: 0;
+  }
+}
+
+.get-in-touch .socials {
+  display: flex;
+  gap: 16px;
+  flex-direction: column;
+
+  a {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    padding: 24px;
+    border-radius: 14px;
+    background-color: rgb(var(--slate-100));
+    line-height: 0;
+  }
+
+  svg {
+    width: 32px;
+    height: 32px;
+  }
+
+  div > p:first-child {
+    font-weight: 600;
+    font-size: 1rem;
+    line-height: 1.5rem;
+  }
+
+  div > p:nth-child(2) {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+
+:host-context(.dark) .get-in-touch .socials a {
+  background-color: rgba(var(--slate-800), 0.6);
+}
+
+.get-in-touch .mail-form {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+
+  > p {
+    margin: 0;
+  }
+
+  button {
+    padding: 0.75rem 1.25rem;
+    font-family: inherit;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    font-weight: 600;
+    text-align: center;
+    color: white;
+    border-radius: 8px;
+    background-color: rgba(var(--picton-blue-600), 0.9);
+    border: none;
+    transition: background-color 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  button:hover {
+    background-color: rgba(var(--picton-blue-700), 0.9); /* hover:bg-primary-800 */
+  }
+}
+
+:host-context(.dark) .get-in-touch button {
+  background-color: rgba(var(--picton-blue-500), 1);
+
+  &:hover {
+    background-color: rgba(var(--picton-blue-600), 1);
+  }
+}
+
+.get-in-touch .mail-form > div {
+  label {
+    display: block;
+    margin-bottom: 10px;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    font-weight: 600;
+  }
+  
+  input, textarea {
+    display: block;
+    padding: 0.75rem;
+    width: 100%;
+    font-family: inherit;
+    font-size: 1rem;
+    line-height: 1.5rem;
+    color: rgb(var(--main-font-color));
+    background-color: #f9fafb;
+    border-radius: 0.5rem;
+    border: 1px solid #d1d5db;
+  }
+
+  &.message {
+    flex: 1;
+  }
+
+  textarea {
+    resize: vertical;
+    height: calc(100% - 30px);
+    min-height: 150px;
+  }
+}
+
+:host-context(.dark) .get-in-touch .mail-form > div input, 
+:host-context(.dark) .get-in-touch .mail-form > div textarea {
+  background-color: rgba(var(--slate-700), 0.15);
+  border: 1px solid rgba(255,255,255, 0.05);
+}
+
 /* Funding */
 
 .funding > div {
