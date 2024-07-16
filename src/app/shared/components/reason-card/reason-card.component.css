@@ -85,9 +85,15 @@
   }
 }
 
-.material-symbols-rounded {
+svg-icon {
+  display: contents;
+}
+
+svg {
   z-index: 1;
-  color: white;
+  fill: white;
+  width: 24px;
+  height: 24px;
 }
 
 .title {

@@ -175,10 +175,6 @@ img ~ div {
     padding: 8px;
     line-height: 0;
 
-    .material-symbols-rounded {
-      font-size: var(--icon-size);
-    }
-
     img,
     svg {
       width: var(--icon-size);
@@ -198,6 +194,14 @@ a:has(> span:nth-child(2)) {
   border-radius: 24px;
   font-size: 0.8125rem;
   line-height: 1.125rem;
+
+  svg-icon {
+    display: contents;
+  }
+
+  svg {
+    padding: 1px;
+  }
 
   span:nth-child(2) {
     display: none;

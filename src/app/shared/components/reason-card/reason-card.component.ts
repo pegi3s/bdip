@@ -1,10 +1,11 @@
 import { Component, inject, input } from '@angular/core';
 import { ThemeService } from '../../../services/theme.service';
+import { SvgIconComponent } from 'angular-svg-icon';
 
 @Component({
   selector: 'app-reason-card',
   standalone: true,
-  imports: [],
+  imports: [SvgIconComponent],
   templateUrl: './reason-card.component.html',
   styleUrl: './reason-card.component.css',
   host: {'[class.dark]':'isDarkTheme'}
