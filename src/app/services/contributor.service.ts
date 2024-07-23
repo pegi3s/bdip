@@ -79,13 +79,14 @@ export class ContributorService {
       description: 'Since 2021',
       photo: 'https://github.com/Dannyzimmer.png',
       contactInfo: {
+        orcid: '0000-0002-8110-3567',
         github: 'Dannyzimmer',
       },
       organizations: [Organization.IISGS],
     },
     {
       name: 'Jorge Vázquez García',
-      description: 'Since 2024. Main developer of the ngs_pipeliner docker image',
+      description: 'Since 2024. Co-developer of the ngs_pipeliner docker image.',
       photo: 'https://media.licdn.com/dms/image/D4E03AQGoto7knZNGmw/profile-displayphoto-shrink_200_200/0/1694502590468?e=2147483647&v=beta&t=oMMkjA20tJjnRxkJdsbKHkyEziMbQ2kq_TbMp4KOSW8',
       contactInfo: {
         orcid: '0000-0002-9204-4013',
@@ -102,6 +103,33 @@ export class ContributorService {
         github: 'albanogueira',
       },
       organizations: [Organization.SING],
+    },
+    {
+      name: 'Diogo José Adão',
+      description: 'Since 2023. Co-developer of the docker-manager and pegi3sdocnrun docker images.',
+      photo: 'https://dozer.i3s.up.pt/fileupload/downloadfile/viewimgnewtab/21f2cca1e5b319b0cdb1c5ff78f219e7',
+      contactInfo: {
+        email: 'diogoa@i3s.up.pt',
+      },
+      organizations: [],
+    },
+    {
+      name: 'Miguel Pinto',
+      description: 'Since 2023. Co-developer of the auto-phylo docker image.',
+      photo: 'https://dozer.i3s.up.pt/fileupload/downloadfile/viewimgnewtab/d821bfb69dc651a025e9dcdc85fd9',
+      contactInfo: {
+        email: 'mjpinto@i3s.up.pt',
+      },
+      organizations: [],
+    },
+    {
+      name: 'Mariana Cerqueira Barros',
+      description: 'Since 2023. Co-developer of the auto-p2docking docker image.',
+      photo: 'https://dozer.i3s.up.pt/fileupload/downloadfile/viewimgnewtab/a05cff4fb3a8996c972ec3e95257d96',
+      contactInfo: {
+        email: 'mariana.barros@i3s.up.pt',
+      },
+      organizations: [],
     },
     {
       name: 'Pablo González González',
