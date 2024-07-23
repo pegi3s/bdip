@@ -14,16 +14,13 @@
 }
 
 /* Icons */
-.material-symbols-rounded {
-  font-variation-settings:
-    "FILL" 0,
-    "wght" 300,
-    "GRAD" 0,
-    "opsz" 24;
-}
-
 svg {
   fill: rgb(var(--main-font-color));
+}
+
+svg.thick path {
+  stroke: rgb(var(--main-font-color));
+  stroke-width: 0.25px;
 }
 
 /* Page */
@@ -81,7 +78,7 @@ svg {
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 10px;
 
   @media (width < 1280px) {
     flex-direction: row;
@@ -92,6 +89,10 @@ svg {
     display: flex;
     align-items: center;
     gap: 8px;
+  }
+
+  svg {
+    height: 22px;
   }
 }
 
@@ -108,8 +109,10 @@ svg {
   border-radius: 6px;
   padding: 16px;
 
-  span {
+  svg {
     grid-area: icon;
+    height: 24px;
+    width: 24px;
   }
 
   p {
@@ -243,14 +246,7 @@ table th {
 }
 
 .info .links a svg-icon {
-  display: contents;
-
   svg {
     height: 1rem;
   }
-}
-
-.info .links a span {
-  font-size: 1rem;
-  line-height: 1.5rem;
 }

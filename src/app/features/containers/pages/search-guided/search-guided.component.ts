@@ -5,6 +5,7 @@ import { TermStanza } from '../../../../obo/TermStanza';
 import { SearchListComponent } from "../../components/search-list-2/search-list.component";
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { ThemeService } from '../../../../services/theme.service';
 
 @Component({
   selector: 'app-search-guided',
@@ -12,6 +13,7 @@ import { ActivatedRoute, Router } from '@angular/router';
   imports: [FormsModule, SearchListComponent],
   templateUrl: './search-guided.component.html',
   styleUrl: './search-guided.component.css',
+  host: { '[class.dark]': 'isDarkTheme' },
   animations: [
     trigger('fadeIn', [
       transition(':enter', [
@@ -27,6 +29,8 @@ export class SearchGuidedComponent {
   private activatedRoute: ActivatedRoute = inject(ActivatedRoute);
   private envInjector: EnvironmentInjector = inject(EnvironmentInjector);
   private containerService: ContainerService = inject(ContainerService);
+  private themeService: ThemeService = inject(ThemeService);
+  isDarkTheme: boolean = false;
 
   /** The root categories of the ontology. */
   rootCategories = signal<TermStanza[]>([]);
@@ -45,7 +49,9 @@ export class SearchGuidedComponent {
   /** Whether to show all containers. */
   showAll = signal<boolean>(false);
 
-  constructor() { }
+  constructor() {
+    this.themeService.isDarkTheme().subscribe(isDark => this.isDarkTheme = isDark);
+  }
 
   ngOnInit() {
     // Load the ontology and set the root categories

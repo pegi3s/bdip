@@ -1,13 +1,14 @@
 import { ChangeDetectionStrategy, Component, ElementRef, Renderer2, signal } from '@angular/core';
 import { NavigationEnd, RouterLink, Router } from '@angular/router';
 import { ThemeService } from '../../../services/theme.service';
+import { SvgIconComponent } from 'angular-svg-icon';
 
 @Component({
     selector: 'app-header',
     standalone: true,
     templateUrl: './header.component.html',
     styleUrl: './header.component.css',
-    imports: [RouterLink],
+    imports: [RouterLink, SvgIconComponent],
     host: {'[class.dark]':'isDarkTheme'},
 })
 export class HeaderComponent {

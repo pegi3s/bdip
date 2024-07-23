@@ -3,7 +3,7 @@
   <header [class.transitions-enabled]="enableTransitions" [class.scrolled]="scrolled">
     <div class="header-logo">
       <a routerLink="/">
-        <img src="assets/dockerfiles-logo-simplified.svg" alt="logo">
+        <svg-icon src="assets/dockerfiles-logo-simplified.svg" svgAriaLabel="logo" />
         <p class="title">pegi3s Bioinformatics Docker Images Project</p>
       </a>
     </div>
@@ -14,12 +14,12 @@
     </nav>
     <div class="search-button" [class.hiding]="searchClicked" [class.hidden]="!showSearch">
       <div (click)="onSearchClick()">
-        <img src="assets/icons/magnifying-glass-tilted-left.svg" alt="search" width="18px">
+        <svg-icon src="assets/icons/magnifying-glass-tilted-left.svg" svgAriaLabel="search" />
         <span>Search</span>
       </div>
     </div>
     <div class="menu-button">
-      <p class="material-symbols-rounded" (click)="toggleMenu()">menu</p>
+      <svg-icon src="assets/icons/fluent-icons/ic_fluent_navigation_24_filled.svg" (click)="toggleMenu()" />
     </div>
   </header>
   <nav class="nav-links-menu">

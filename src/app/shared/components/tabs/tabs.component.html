@@ -4,7 +4,7 @@
   <label class="tab" [for]="tab.id">
     @if (tab.icon) {
       @if (tab.icon.endsWith('.svg')) {
-        <img [src]="tab.icon" [alt]="tab.label" />
+        <svg-icon [src]="tab.icon" [svgAriaLabel]="tab.label" />
       } @else {
         <span class="material-symbols-rounded">{{ tab.icon }}</span>
       }
