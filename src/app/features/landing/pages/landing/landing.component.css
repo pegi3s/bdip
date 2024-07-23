@@ -191,7 +191,7 @@ section > div {
   .halo-container.clicked > .halo {
     width: max(150vw, 150vh);
     animation: spin 2s linear infinite reverse;
-    fill: rgb(37 60 234);
+    fill: rgb(0 123 255);
   }
 
   .search {
@@ -255,6 +255,10 @@ section > div {
 
 :host-context(.dark) .intro > div .halo {
   fill: rgba(255, 255, 255, 0.1);
+}
+
+:host-context(.dark) .intro > div .halo-container.clicked > .halo {
+  fill: rgba(23 29 207);
 }
 
 .about-project > div {

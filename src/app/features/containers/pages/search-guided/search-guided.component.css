@@ -11,7 +11,7 @@
   flex-direction: column;
   gap: 10svh;
   transition: all 400ms cubic-bezier(0.57, 0, 0, 1);
-  background-color: rgb(37 60 234);
+  background-color: rgb(0 123 255);
   padding: 24px;
   padding-inline: var(--horizontal-main-margin);
   padding-top: calc(24px + 115px);
@@ -23,6 +23,10 @@
   @media (height < 768px) {
     gap: 5svh;
   }
+}
+
+:host-context(.dark) .search-container {
+  background-color: rgb(23 29 207);
 }
 
 .search-container:is(.active, .collapsed) {
