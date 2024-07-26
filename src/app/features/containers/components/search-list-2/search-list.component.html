@@ -1,7 +1,7 @@
 @if (matchedContainers().length !== 0) {
   <app-tabs class="only-icons" [tabs]="[
-    { id: 'c', icon: 'view_cozy', active: isCompact()},
-    { id: 'd', icon: 'view_agenda', active: !isCompact()}
+    { id: 'c', icon: 'assets/icons/fluent-icons/ic_fluent_grid_24_filled.svg', active: isCompact()},
+    { id: 'd', icon: 'assets/icons/fluent-icons/ic_fluent_apps_list_detail_24_filled.svg', active: !isCompact()}
   ]" (activeTab)="onTabSelectedGridView($event)" />
 }
 <div class="category-container" [class.compact]="isCompact()">

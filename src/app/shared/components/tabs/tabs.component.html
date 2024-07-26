@@ -5,12 +5,10 @@
     @if (tab.icon) {
       @if (tab.icon.endsWith('.svg')) {
         <svg-icon [src]="tab.icon" [svgAriaLabel]="tab.label" />
-      } @else {
-        <span class="material-symbols-rounded">{{ tab.icon }}</span>
       }
     }
     @if (tab.label) {
-      {{ tab.label | titlecase }}
+      <span>{{ tab.label | titlecase }}</span>
     }
   </label>
 }
