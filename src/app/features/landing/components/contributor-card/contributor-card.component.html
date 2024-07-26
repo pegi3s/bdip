@@ -17,6 +17,9 @@
         </div>
       </div>
       <hr />
+      @if (contributor().description) {
+        <p class="description">{{ contributor().description }}</p>
+      }
       <div class="contact-info">
         @if (contributor().contactInfo.email) {
         <a [href]="'mailto:' + contributor().contactInfo.email">

@@ -76,7 +76,7 @@ export class ContributorService {
   contributors: Contributor[] = [
     {
       name: 'Daniel Pérez Rodríguez',
-      description: 'Since 2021',
+      description: 'Since 2021.',
       photo: 'https://github.com/Dannyzimmer.png',
       contactInfo: {
         orcid: '0000-0002-8110-3567',
@@ -95,7 +95,7 @@ export class ContributorService {
     },
     {
       name: 'Alba Nogueira Rodríguez',
-      description: 'Since 2024',
+      description: 'Since 2024.',
       photo: 'https://polydeep.org/assets/img/team/alba.png',
       contactInfo: {
         email: 'alnogueira@uvigo.gal',

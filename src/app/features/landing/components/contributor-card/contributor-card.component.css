@@ -158,6 +158,16 @@ img ~ div {
   flex-grow: 1;
 }
 
+.description {
+  margin-block: 8px;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+
+  @media (width <= 576px) {
+    text-align: center;
+  }
+}
+
 .contact-info {
   display: flex;
   flex-wrap: wrap;
