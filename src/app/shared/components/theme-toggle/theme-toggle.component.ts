@@ -2,11 +2,12 @@ import { Component, inject } from '@angular/core';
 import { ThemeService } from '../../../services/theme.service';
 import { map } from 'rxjs';
 import { Theme } from '../../enums/theme';
+import { SvgIconComponent } from 'angular-svg-icon';
 
 @Component({
   selector: 'app-theme-toggle',
   standalone: true,
-  imports: [],
+  imports: [SvgIconComponent],
   templateUrl: './theme-toggle.component.html',
   styleUrl: './theme-toggle.component.css',
   host: { '[class.dark]': 'isDarkTheme' }
@@ -30,11 +31,11 @@ export class ThemeToggleComponent {
 
   getThemeIcon(theme: Theme): void {
     if (theme === Theme.LIGHT) {
-      this.themeIcon = 'light_mode';
+      this.themeIcon = 'assets/icons/material-symbols/light_mode_24dp_E8EAED_FILL1_wght400_GRAD0_opsz24.svg';
     } else if (theme === Theme.DARK) {
-      this.themeIcon = 'dark_mode';
+      this.themeIcon = 'assets/icons/material-symbols/dark_mode_24dp_E8EAED_FILL1_wght400_GRAD0_opsz24.svg';
     } else {
-      this.themeIcon = 'desktop_windows';
+      this.themeIcon = 'assets/icons/material-symbols/desktop_windows_24dp_E8EAED_FILL1_wght400_GRAD0_opsz24.svg';
     }
   }
 }

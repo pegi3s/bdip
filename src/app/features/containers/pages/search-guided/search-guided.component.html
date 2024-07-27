@@ -3,7 +3,9 @@
     <div class="search-by-category" @fadeIn>
       <p>
         @if (categorySelectionStack().length > 0) {
-          <span class="material-symbols-rounded arrow-back" (click)="clearSearch()">arrow_back</span>
+          <span class="arrow-back" (click)="clearSearch()">
+            <svg-icon src="assets/icons/fluent-icons/ic_fluent_arrow_left_24_filled.svg" />
+          </span>
         }
         Ready to explore? Choose a category!
       </p>
@@ -13,7 +15,9 @@
             @if (last) {
               <div>
                 {{ category.name?.replaceAll("_", " ") }}
-                <button class="material-symbols-rounded" (click)="goUpLevel()">close_small</button>
+                <button (click)="goUpLevel()">
+                  <svg-icon src="assets/icons/material-symbols/close_small_24dp_E8EAED_FILL1_wght400_GRAD0_opsz24.svg" />
+                </button>
               </div>
             } @else {
               <div (click)="goToLevel($index)">
@@ -43,7 +47,9 @@
       <div>
         <input placeholder="Search" type="text" maxlength="200" [(ngModel)]="searchTerm" @fadeIn/>
         @if (this.searchTerm().length > 0) {
-          <button class="material-symbols-rounded" (click)="clearSearch()">close_small</button>
+          <button (click)="clearSearch()">
+            <svg-icon src="assets/icons/material-symbols/close_small_24dp_E8EAED_FILL1_wght400_GRAD0_opsz24.svg" />
+          </button>
         }
       </div>
     </div>

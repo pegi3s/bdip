@@ -6,11 +6,12 @@ import { SearchListComponent } from "../../components/search-list-2/search-list.
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ThemeService } from '../../../../services/theme.service';
+import { SvgIconComponent } from 'angular-svg-icon';
 
 @Component({
   selector: 'app-search-guided',
   standalone: true,
-  imports: [FormsModule, SearchListComponent],
+  imports: [FormsModule, SearchListComponent, SvgIconComponent],
   templateUrl: './search-guided.component.html',
   styleUrl: './search-guided.component.css',
   host: { '[class.dark]': 'isDarkTheme' },
