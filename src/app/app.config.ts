@@ -7,6 +7,7 @@ import { CLIPBOARD_OPTIONS, ClipboardButtonComponent, provideMarkdown } from 'ng
 import { baseUrl } from 'marked-base-url';
 import markedAlert from 'marked-alert';
 import { provideAngularSvgIcon } from 'angular-svg-icon';
+import { provideClientHydration } from '@angular/platform-browser';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -48,6 +49,6 @@ export const appConfig: ApplicationConfig = {
         anchorScrolling: 'enabled',
       })
     ),
-    provideZoneChangeDetection({ eventCoalescing: true })
+    provideZoneChangeDetection({ eventCoalescing: true }), provideClientHydration()
   ]
 };

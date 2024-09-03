@@ -29,7 +29,13 @@
             ],
             "scripts": [
               "node_modules/clipboard/dist/clipboard.min.js"
-            ]
+            ],
+            "server": "src/main.server.ts",
+            "ssr": false,
+            "prerender": {
+              "discoverRoutes": false,
+              "routesFile": "prerendered-routes.txt"
+            }
           },
           "configurations": {
             "production": {

@@ -1,4 +1,4 @@
-import { Component, ElementRef, effect, viewChild } from '@angular/core';
+import { Component, ElementRef, afterNextRender, effect, viewChild } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { HeaderComponent } from './core/layout/header/header.component';
 import { FooterComponent } from './core/layout/footer/footer.component';
@@ -22,16 +22,18 @@ export class AppComponent {
       this.headerHeight = this.appHeaderElem()?.nativeElement.offsetHeight;
     });
 
-    /* Do it this way or hardcode it in CSS? */
-    const offsetHeight$ = fromEvent(window, 'resize').pipe(
-      map(() => {
-        const style = getComputedStyle(this.appHeaderElem()?.nativeElement);
-        return this.getHeaderHeight(style);
-      })
-    );
+    afterNextRender(() => {
+      /* Do it this way or hardcode it in CSS? */
+      const offsetHeight$ = fromEvent(window, 'resize').pipe(
+        map(() => {
+          const style = getComputedStyle(this.appHeaderElem()?.nativeElement);
+          return this.getHeaderHeight(style);
+        })
+      );
 
-    offsetHeight$.subscribe(height => {
-      this.headerHeight = height;
+      offsetHeight$.subscribe(height => {
+        this.headerHeight = height;
+      });
     });
   }
 
