@@ -1,11 +1,7 @@
 /* You can add global styles to this file, and also import other style files */
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap");
-
 :root {
-  font-style: normal;
-  font-family: "Inter", sans-serif;
-  font-optical-sizing: auto;
-  font-variation-settings: "slnt" 0;
+  font-family: Inter, sans-serif;
+  font-feature-settings: 'liga' 1, 'calt' 1; /* fix for Chrome */
 
   /* Blink: "position: fixed" does not respect "scrollbar-gutter: stable" */
   /* https://issues.chromium.org/issues/40792788 */
@@ -14,6 +10,10 @@
   @media (min-width: 640px) {
     --horizontal-main-margin: 72px;
   }
+}
+
+@supports (font-variation-settings: normal) {
+  :root { font-family: InterVariable, sans-serif; }
 }
 
 :root {

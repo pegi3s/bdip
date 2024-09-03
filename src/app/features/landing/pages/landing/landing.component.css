@@ -350,7 +350,8 @@ blockquote {
 }
 
 blockquote::before, blockquote::after {
-  font-size: 4.5rem;
+  font-size: 4.75rem;
+  font-feature-settings: 'liga' 1, 'calt' 1, 'ss03' 1; /* ss03 Round quotes & comma */
   position: absolute;
   color: rgba(var(--slate-800), 0.8);
 }
@@ -362,13 +363,13 @@ blockquote::before, blockquote::after {
 blockquote::before {
   content: "“";
   top: 6px;
-  left: -22px;
+  left: -14px;
 }
 
 blockquote::after {
   content: "”";
-  bottom: -31px;
-  right: 0px;
+  bottom: -30px;
+  right: -3px;
 }
 
 blockquote app-clipboard-button {
