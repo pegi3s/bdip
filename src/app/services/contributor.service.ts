@@ -12,7 +12,7 @@ export class ContributorService {
       description: '',
       photo: 'https://dozer.i3s.up.pt/fileupload/downloadfile/viewimgnewtab/1bafd91f456215e50e9fb655dfd256fb',
       contactInfo: {
-        email: 'jbvieira@ibmc.up.pt',
+        email: 'jbvieira@i3s.up.pt',
         orcid: '0000-0001-7032-5220',
         github: 'Jorge-Vieira',
       },
@@ -45,7 +45,7 @@ export class ContributorService {
       description: '',
       photo: 'https://dozer.i3s.up.pt/fileupload/downloadfile/viewimgnewtab/848187f5fbc1dbe9beae6709edbc60b8',
       contactInfo: {
-        email: 'cgvieira@ibmc.up.pt',
+        email: 'cgvieira@i3s.up.pt',
         orcid: '0000-0002-7139-2107',
       },
       organizations: [Organization.i3S, Organization.IBMC],
