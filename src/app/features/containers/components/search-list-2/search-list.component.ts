@@ -46,7 +46,10 @@ export class SearchListComponent {
     return [...matchedContainers].sort();
   });
 
-  protected isCompact = signal<boolean>(true);
+  /**
+   * Level of detail for the container list. If true, the list is compact.
+   */
+  protected isCompact = signal<boolean>(false);
 
   constructor() {
     this.containerService.getContainersMap().subscribe((containers) => {
@@ -76,9 +79,9 @@ export class SearchListComponent {
   }
 
   /**
-   * Filters containers by checking if any container's name includes the specified 
+   * Filters containers by checking if any container's name includes the specified
    * name (case-insensitive) and adds matching containers to a set.
-   * 
+   *
    * @param {string} name - The name to search for within container names.
    * @param {Set<string>} matchedContainers - The set to add matching containers to.
    */
