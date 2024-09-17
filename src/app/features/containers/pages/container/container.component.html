@@ -1,4 +1,4 @@
-@if (container != null) {
+@if (status === Status.LOADED && container != undefined) {
   @let containerMetadata = getContainerMetadataByName(container.name) | async;
   <div class="info">
     <div class="title">
@@ -58,12 +58,17 @@
         [clipboardButtonComponent]="clipboardButton"
         class="markdown-body"
         [data]="container.full_description" />
-    } @else if (containerTags != null) {
+    } @else if (containerTags != undefined) {
       <div class="tags">
         @for (tag of containerTags; track $index) {
-          <div class="tag">
-            <h3>{{ tag.name }}</h3>
-            <p>Last pushed {{ tag.tag_last_pushed | date }}</p>
+          <div class="tag" [class.recommended]="tag.name === containerMetadata?.recommended">
+            <div class="version">
+              <h3>{{ tag.name }}</h3>
+              @if (tag.name === containerMetadata?.recommended) {
+                <p class="chip recommended">Recommended</p>
+              }
+            </div>
+            <p class="last-pushed">Last pushed {{ tag.tag_last_pushed | date }}</p>
             <code class="install">
               docker pull {{ container.namespace }}/{{ container.name }}:{{ tag.name }}
               <app-clipboard-button [text]="'docker pull ' + container.namespace + '/' + container.name + ':' + tag.name" />
@@ -95,8 +100,8 @@
       </div>
     }
   </div>
-} @else if (container == null && httpResponseCode === 102) {
+} @else if (status === Status.LOADING) {
   <app-loading />
-} @else if (httpResponseCode === 404) {
+} @else if (status === Status.ERROR_NOT_FOUND) {
   <h2>Container not found</h2>
 }

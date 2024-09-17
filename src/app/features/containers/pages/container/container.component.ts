@@ -29,7 +29,7 @@ export class ContainerComponent {
 
   readonly clipboardButton = ClipboardButtonComponent;
 
-  httpResponseCode: number = 102;
+  status: Status = Status.LOADING;
   container?: DockerHubImage;
   containerTags?: DockerHubTag[];
 
@@ -42,9 +42,16 @@ export class ContainerComponent {
       const containerName = this.activatedRoute.snapshot.params['name'];
       this.containerService.getContainerInfo(containerName).subscribe({
         next: (container) => {
-          this.container = container
+          this.container = container;
+          this.status = Status.LOADED;
         },
-        error: (error) => this.httpResponseCode = error.status,
+        error: (error) => {
+          if (error.status === 404) {
+            this.status = Status.ERROR_NOT_FOUND;
+          } else {
+            this.status = Status.ERROR_SERVER;
+          }
+        },
       });
       this.containerService.getContainerTags(containerName).subscribe(
         containerTags => this.containerTags = containerTags,
@@ -60,4 +67,13 @@ export class ContainerComponent {
   getContainerMetadataByName(name: string) {
     return this.containerService.getContainerMetadata(name);
   }
+
+  protected readonly Status = Status;
+}
+
+enum Status {
+  LOADING,
+  LOADED,
+  ERROR_NOT_FOUND,
+  ERROR_SERVER,
 }

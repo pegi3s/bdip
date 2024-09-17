@@ -169,15 +169,46 @@ app-clipboard-button {
   }
 }
 
-.tag h3 {
-  grid-area: name;
-  margin-bottom: 8px;
-  font-weight: 600;
-  font-size: 1.5rem;
-  line-height: 2rem;
+.tag.recommended {
+  border-color: rgba(var(--green-500), 0.6);
+  background-color: rgba(var(--green-300), 0.2);
 }
 
-.tag p {
+:host-context(.dark) .tag.recommended {
+  border-color: rgba(var(--green-700), 0.6);
+  background-color: rgba(var(--green-900), 0.3);
+}
+
+.tag .version {
+  grid-area: name;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+
+  h3 {
+    font-weight: 600;
+    font-size: 1.5rem;
+    line-height: 2rem;
+  }
+}
+
+.tag .version .chip {
+  border-radius: 1rem;
+  padding: 6px 10px;
+  font-size: 0.75rem;
+  line-height: 1rem;
+}
+
+.chip.recommended {
+  background-color: rgba(var(--green-300), 0.75);
+}
+
+:host-context(.dark) .chip.recommended {
+  background-color: rgba(var(--green-700), 0.4);
+}
+
+.tag .last-pushed {
   grid-area: last-update;
   margin-bottom: 16px;
 }
