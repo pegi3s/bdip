@@ -132,7 +132,7 @@
     "test_invocation_specific": "",
     "test_data_url": "",
     "test_results_url": "",
-    "icon":""
+    "icon":"https://deepmind.google/static/icons/google_deepmind_48dp.5b470587fe7d.svg"
   },
 {
     "name": "alter",
@@ -213,7 +213,7 @@
     "test_invocation_specific": "",
     "test_data_url": "",
     "test_results_url": "",
-    "icon":""
+    "icon":"https://raw.githubusercontent.com/sing-group/BDBM/master/bdbm-logo.png"
   },
 {
     "name": "bedtools",
@@ -240,7 +240,7 @@
     "test_invocation_specific": "",
     "test_data_url": "",
     "test_results_url": "",
-    "icon":""
+    "icon":"https://bedtools.readthedocs.io/en/latest/_static/bedtools.swiss.png"
   },
 {
     "name": "bioconvert",
@@ -267,7 +267,7 @@
     "test_invocation_specific": "",
     "test_data_url": "",
     "test_results_url": "",
-    "icon":""
+    "icon":"https://bioconvert.pasteur.cloud/static/images/logo.png"
   },
 {
     "name": "blast",
@@ -3778,7 +3778,7 @@
     "test_invocation_specific": "",
     "test_data_url": "",
     "test_results_url": "",
-    "icon":""
+    "icon":"https://raw.githubusercontent.com/biopython/biopython/master/Doc/images/biopython_logo.svg"
   },
 {
     "name": "docker-manager",
