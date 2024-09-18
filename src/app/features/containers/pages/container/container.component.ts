@@ -11,6 +11,8 @@ import { TabsComponent } from "../../../../shared/components/tabs/tabs.component
 import { BytesToSizePipe } from "../../../../shared/pipes/bytes-to-size/bytes-to-size.pipe";
 import { SvgIconComponent } from 'angular-svg-icon';
 import { LoadingComponent } from "../../../../shared/components/loading/loading.component";
+import { ImageMetadata } from "../../../../models/image-metadata";
+import { Observable } from "rxjs";
 
 @Component({
   selector: 'app-container',
@@ -64,11 +66,29 @@ export class ContainerComponent {
     this.showReadme = tab === 'readme';
   }
 
-  getContainerMetadataByName(name: string) {
+  getContainerMetadataByName(name: string): Observable<ImageMetadata | undefined> {
     return this.containerService.getContainerMetadata(name);
   }
 
+  getVersionStatus(tag: DockerHubTag, containerMetadata: ImageMetadata): VersionStatus | undefined {
+    if (tag.name === containerMetadata.recommended) {
+      return VersionStatus.RECOMMENDED;
+    } else if (tag.name === containerMetadata.latest) {
+      return VersionStatus.LATEST;
+    } else if (containerMetadata.useful.includes(tag.name)) {
+      return VersionStatus.USEFUL;
+    } else if (containerMetadata.bug_found.includes(tag.name)) {
+      return VersionStatus.BUG_FOUND;
+    } else if (containerMetadata.not_working.includes(tag.name)) {
+      return VersionStatus.NOT_WORKING;
+    } else if (containerMetadata.no_longer_tested.includes(tag.name)) {
+      return VersionStatus.NO_LONGER_TESTED;
+    }
+    return undefined;
+  }
+
   protected readonly Status = Status;
+  protected readonly VersionStatus = VersionStatus;
 }
 
 enum Status {
@@ -76,4 +96,13 @@ enum Status {
   LOADED,
   ERROR_NOT_FOUND,
   ERROR_SERVER,
+}
+
+enum VersionStatus {
+  RECOMMENDED,
+  LATEST,
+  USEFUL,
+  BUG_FOUND,
+  NOT_WORKING,
+  NO_LONGER_TESTED
 }

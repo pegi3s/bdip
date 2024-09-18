@@ -179,6 +179,26 @@ app-clipboard-button {
   background-color: rgba(var(--green-900), 0.3);
 }
 
+.tag.bug-found {
+  border-color: rgba(var(--amber-500), 0.6);
+  background-color: rgba(var(--amber-300), 0.2);
+}
+
+:host-context(.dark) .tag.bug-found {
+  border-color: rgba(var(--amber-700), 0.6);
+  background-color: rgba(var(--amber-900), 0.3);
+}
+
+.tag.not-working {
+  border-color: rgba(var(--red-500), 0.6);
+  background-color: rgba(var(--red-300), 0.2);
+}
+
+:host-context(.dark) .tag.not-working {
+  border-color: rgba(var(--red-700), 0.6);
+  background-color: rgba(var(--red-900), 0.3);
+}
+
 .tag .version {
   grid-area: name;
   display: flex;
@@ -206,6 +226,30 @@ app-clipboard-button {
 
 :host-context(.dark) .chip.recommended {
   background-color: rgba(var(--green-700), 0.4);
+}
+
+.chip.bug-found {
+  background-color: rgba(var(--amber-300), 0.75);
+}
+
+:host-context(.dark) .chip.bug-found {
+  background-color: rgba(var(--amber-700), 0.4);
+}
+
+.chip.not-working {
+  background-color: rgba(var(--red-300), 0.75);
+}
+
+:host-context(.dark) .chip.not-working {
+  background-color: rgba(var(--red-700), 0.4);
+}
+
+.chip.no-longer-tested {
+  background-color: rgba(var(--main-font-color), 0.1);
+}
+
+:host-context(.dark) .chip.no-longer-tested {
+  background-color: rgba(var(--main-font-color), 0.17);
 }
 
 .tag .last-pushed {

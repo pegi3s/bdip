@@ -61,11 +61,26 @@
     } @else if (containerTags != undefined) {
       <div class="tags">
         @for (tag of containerTags; track $index) {
-          <div class="tag" [class.recommended]="tag.name === containerMetadata?.recommended">
+          @let versionStatus = containerMetadata ? getVersionStatus(tag, containerMetadata) : undefined;
+          <div class="tag"
+               [class.recommended]="versionStatus === VersionStatus.RECOMMENDED"
+               [class.bug-found]="versionStatus === VersionStatus.BUG_FOUND"
+               [class.not-working]="versionStatus === VersionStatus.NOT_WORKING">
             <div class="version">
               <h3>{{ tag.name }}</h3>
-              @if (tag.name === containerMetadata?.recommended) {
-                <p class="chip recommended">Recommended</p>
+              @switch (versionStatus) {
+                @case (VersionStatus.RECOMMENDED) {
+                  <p class="chip recommended">Recommended</p>
+                }
+                @case (VersionStatus.BUG_FOUND) {
+                  <p class="chip bug-found">Bug found</p>
+                }
+                @case (VersionStatus.NOT_WORKING) {
+                  <p class="chip not-working">Not working</p>
+                }
+                @case (VersionStatus.NO_LONGER_TESTED) {
+                  <p class="chip no-longer-tested">No longer tested</p>
+                }
               }
             </div>
             <p class="last-pushed">Last pushed {{ tag.tag_last_pushed | date }}</p>
