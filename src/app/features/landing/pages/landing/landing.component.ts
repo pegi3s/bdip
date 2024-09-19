@@ -1,15 +1,16 @@
-import { Component, ElementRef, inject, viewChild } from '@angular/core';
-import { NgOptimizedImage } from '@angular/common';
+import { ChangeDetectionStrategy, Component, ElementRef, inject, viewChild } from "@angular/core";
+import { AsyncPipe, NgOptimizedImage } from "@angular/common";
 import { ContributorCardComponent } from "../../components/contributor-card/contributor-card.component";
-import { ContributorService } from '../../../../services/contributor.service';
-import { Contributor } from '../../models/contributor.model';
+import { ContributorService } from "../../../../services/contributor.service";
+import { Contributor } from "../../models/contributor.model";
 import { LogoMarqueeComponent } from "../../../../shared/components/logo-marquee/logo-marquee.component";
-import { Router, RouterLink } from '@angular/router';
-import { ThemeService } from '../../../../services/theme.service';
-import { TabsComponent } from '../../../../shared/components/tabs/tabs.component';
+import { Router, RouterLink } from "@angular/router";
+import { ThemeService } from "../../../../services/theme.service";
+import { TabsComponent } from "../../../../shared/components/tabs/tabs.component";
 import { ClipboardButtonComponent } from "../../../../shared/components/clipboard-button/clipboard-button.component";
 import { ReasonCardComponent } from "../../../../shared/components/reason-card/reason-card.component";
-import { SvgIconComponent } from 'angular-svg-icon';
+import { SvgIconComponent } from "angular-svg-icon";
+import { Observable } from "rxjs";
 
 @Component({
     selector: 'app-landing',
@@ -17,7 +18,8 @@ import { SvgIconComponent } from 'angular-svg-icon';
     templateUrl: './landing.component.html',
     styleUrl: './landing.component.css',
     host: { '[class.dark]': 'isDarkTheme' },
-    imports: [NgOptimizedImage, TabsComponent, ContributorCardComponent, LogoMarqueeComponent, ClipboardButtonComponent, RouterLink, ReasonCardComponent, SvgIconComponent]
+    imports: [NgOptimizedImage, TabsComponent, ContributorCardComponent, LogoMarqueeComponent, ClipboardButtonComponent, RouterLink, ReasonCardComponent, SvgIconComponent, AsyncPipe],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LandingComponent {
   /* Services */
@@ -30,8 +32,6 @@ export class LandingComponent {
   citingQuoteElem = viewChild<ElementRef>('citingQuote');
 
   /* Data */
-  authors: Contributor[];
-  contributors: Contributor[];
   supporters: string[] = [
     'assets/images/supporters/logo-cresc_algarve_2020.png',
     'assets/images/supporters/logo-lisboa_2020.webp',
@@ -71,8 +71,6 @@ export class LandingComponent {
   searchClicked: boolean = false;
 
   constructor() {
-    this.authors = this.contributorService.getAuthors();
-    this.contributors = this.contributorService.getContributors();
     this.themeService.isDarkTheme().subscribe(isDark => {
       this.isDarkTheme = isDark;
     });
@@ -83,5 +81,13 @@ export class LandingComponent {
     setTimeout(() => {
       this.router.navigate(['/search']);
     }, 600);
+  }
+
+  getAuthors(): Observable<Contributor[]> {
+    return this.contributorService.getAuthors();
+  }
+
+  getContributors(): Observable<Contributor[]> {
+    return this.contributorService.getContributors();
   }
 }

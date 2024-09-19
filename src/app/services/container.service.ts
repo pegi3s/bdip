@@ -150,7 +150,7 @@ export class ContainerService {
 
   /**
    * Fetches and processes container metadata from a specified URL.
-   * 
+   *
    * This method retrieves an array of `ImageMetadata` objects from the specified `urlJson`.
    * It then processes this array to create a `Map` where each key is the container's name and the value is its metadata.
    * The resulting `Map` is then emitted through `containersMetadataSubject`.
@@ -171,7 +171,7 @@ export class ContainerService {
       }),
       tap(data => this.containersMetadataSubject.next(data)),
       catchError(error => {
-        console.error('Error loading tutorials:', error);
+        console.error('Error loading metadata:', error);
         return [];
       })
     ).subscribe();
@@ -179,7 +179,7 @@ export class ContainerService {
 
   /**
    * Retrieves the metadata for the specified container.
-   * 
+   *
    * @param {string} name The name of the container to retrieve metadata for.
    * @returns {Observable<ImageMetadata | undefined>} An Observable that emits the metadata of the specified container if found, otherwise undefined.
    */

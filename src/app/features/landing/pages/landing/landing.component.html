@@ -194,7 +194,7 @@
     <h2>Authors</h2>
     @defer (on idle) {
       <div class="authors">
-        @for (author of authors; track $index) {
+        @for (author of (getAuthors() | async); track $index) {
           <app-contributor-card [contributor]="author" />
         }
       </div>
@@ -206,7 +206,7 @@
     <h2>Contributors</h2>
     @defer (on idle) {
       <div class="authors">
-        @for (contributor of contributors; track $index) {
+        @for (contributor of (getContributors() | async); track $index) {
           <app-contributor-card [contributor]="contributor" />
         }
       </div>
