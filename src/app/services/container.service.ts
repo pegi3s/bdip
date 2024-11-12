@@ -16,8 +16,7 @@ export class ContainerService {
   private readonly baseMetadataURL = `https://raw.githubusercontent.com/${githubInfo.owner}/${githubInfo.repository}/master/metadata/`;
   private readonly urlObo = `${this.baseMetadataURL}/dio.obo`;
   private readonly urlDiaf = `${this.baseMetadataURL}/dio.diaf`;
-  //private readonly urlJson = `${this.baseMetadataURL}/metadata.json`;
-  private readonly urlJson = `assets/metadata.json`;
+  private readonly urlJson = `${this.baseMetadataURL}/metadata.json`;
   //private baseURLDockerHub = 'https://hub.docker.com/v2/namespaces/pegi3s/repositories';
   private readonly proxyServerURL = `http://${window.location.hostname}:8080/`;
   private readonly baseDockerHubEndpoint = '/v2/namespaces/pegi3s/repositories';

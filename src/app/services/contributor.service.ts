@@ -4,12 +4,14 @@ import * as Organization from "../models/organization";
 import { Observable, ReplaySubject } from "rxjs";
 import { catchError, map, tap } from "rxjs/operators";
 import { HttpClient } from "@angular/common/http";
+import { githubInfo } from "../core/constants/github-info";
 
 @Injectable({
   providedIn: "root"
 })
 export class ContributorService {
-  private readonly urlContributors = `assets/contributors.json`;
+  private readonly baseMetadataURL = `https://raw.githubusercontent.com/${githubInfo.owner}/${githubInfo.repository}/master/metadata/`;
+  private readonly urlContributors = `${this.baseMetadataURL}/contributors.json`;
 
   private http: HttpClient = inject(HttpClient);
 
