@@ -1,4 +1,4 @@
-import { Component, ElementRef, inject, signal } from '@angular/core';
+import { Component, ElementRef, inject, Signal, signal } from "@angular/core";
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { MarkdownModule } from 'ngx-markdown';
 import { TutorialService } from '../../../../services/tutorial.service';
@@ -13,7 +13,7 @@ import { ViewportScroller } from '@angular/common';
   imports: [RouterLink, MarkdownModule],
   templateUrl: './tutorial.component.html',
   styleUrls: ['./tutorial.component.css', '../../../../shared/styles/markdown-body.css'],
-  host: {'[class.dark]':'isDarkTheme'}
+  host: {'[class.dark]':'isDarkTheme()'}
 })
 export class TutorialComponent {
   /* Services */
@@ -22,7 +22,7 @@ export class TutorialComponent {
   private elementRef: ElementRef<HTMLElement> = inject(ElementRef);
   private tutorialService: TutorialService = inject(TutorialService);
   private themeService: ThemeService = inject(ThemeService);
-  isDarkTheme: boolean = false;
+  isDarkTheme: Signal<boolean>;
 
   readonly clipboardButton = ClipboardButtonComponent;
 
@@ -41,9 +41,7 @@ export class TutorialComponent {
       });
     });
     this.viewportScroller.setOffset([0, 150]);
-    this.themeService.isDarkTheme().subscribe(isDark => {
-      this.isDarkTheme = isDark;
-    });
+    this.isDarkTheme = this.themeService.isDarkTheme();
   }
 
   /**

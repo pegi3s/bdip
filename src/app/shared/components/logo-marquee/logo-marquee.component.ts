@@ -1,5 +1,5 @@
 import { NgOptimizedImage } from '@angular/common';
-import { Component, inject, input } from '@angular/core';
+import { Component, inject, input, Signal } from "@angular/core";
 import { ThemeService } from '../../../services/theme.service';
 
 @Component({
@@ -8,7 +8,7 @@ import { ThemeService } from '../../../services/theme.service';
   imports: [NgOptimizedImage],
   templateUrl: './logo-marquee.component.html',
   styleUrl: './logo-marquee.component.css',
-  host: { '[class.dark]': 'isDarkTheme' },
+  host: { '[class.dark]': 'isDarkTheme()' },
 })
 export class LogoMarqueeComponent {
   /* Inputs */
@@ -16,9 +16,9 @@ export class LogoMarqueeComponent {
 
   /* Services */
   private themeService: ThemeService = inject(ThemeService);
-  isDarkTheme: boolean = false;
+  isDarkTheme: Signal<boolean>;
 
   constructor() {
-    this.themeService.isDarkTheme().subscribe(isDark => this.isDarkTheme = isDark);
+    this.isDarkTheme = this.themeService.isDarkTheme();
   }
 }

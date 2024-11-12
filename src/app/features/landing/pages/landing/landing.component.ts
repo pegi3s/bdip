@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, ElementRef, inject, viewChild } from "@angular/core";
+import { ChangeDetectionStrategy, Component, ElementRef, inject, Signal, viewChild } from "@angular/core";
 import { AsyncPipe, NgOptimizedImage } from "@angular/common";
 import { ContributorCardComponent } from "../../components/contributor-card/contributor-card.component";
 import { ContributorService } from "../../../../services/contributor.service";
@@ -17,7 +17,7 @@ import { Observable } from "rxjs";
     standalone: true,
     templateUrl: './landing.component.html',
     styleUrl: './landing.component.css',
-    host: { '[class.dark]': 'isDarkTheme' },
+    host: { '[class.dark]': 'isDarkTheme()' },
     imports: [NgOptimizedImage, TabsComponent, ContributorCardComponent, LogoMarqueeComponent, ClipboardButtonComponent, RouterLink, ReasonCardComponent, SvgIconComponent, AsyncPipe],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -25,7 +25,7 @@ export class LandingComponent {
   /* Services */
   private router: Router = inject(Router);
   private themeService: ThemeService = inject(ThemeService);
-  isDarkTheme: boolean = false;
+  isDarkTheme: Signal<boolean>;
   private contributorService: ContributorService = inject(ContributorService);
 
   /* HTML Elements */
@@ -71,9 +71,7 @@ export class LandingComponent {
   searchClicked: boolean = false;
 
   constructor() {
-    this.themeService.isDarkTheme().subscribe(isDark => {
-      this.isDarkTheme = isDark;
-    });
+    this.isDarkTheme = this.themeService.isDarkTheme();
   }
 
   onSearchClick() {

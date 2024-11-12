@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, Signal, signal } from "@angular/core";
 import { OS } from '../../../../models/os';
 import { UtilsService } from '../../../../services/utils.service';
 import { TabsComponent } from '../../../../shared/components/tabs/tabs.component';
@@ -11,12 +11,13 @@ import { ThemeService } from '../../../../services/theme.service';
   styleUrl: './getting-started.component.css',
   imports: [TabsComponent],
   host: { '[class.dark]': 'isDarkTheme' },
+  host: { '[class.dark]': 'isDarkTheme()' },
 })
 export class GettingStartedComponent {
   /* Services */
   private utilsService: UtilsService = inject(UtilsService);
   private themeService: ThemeService = inject(ThemeService);
-  isDarkTheme: boolean = false;
+  isDarkTheme: Signal<boolean>;
 
   /* State */
   gettingStartedOS: OS;
@@ -26,9 +27,7 @@ export class GettingStartedComponent {
 
   constructor() {
     this.gettingStartedOS = this.utilsService.getOS() as OS;
-    this.themeService.isDarkTheme().subscribe(isDark => {
-      this.isDarkTheme = isDark;
-    });
+    this.isDarkTheme = this.themeService.isDarkTheme();
   }
 
   onTabSelectedGettingStarted(os: string) {

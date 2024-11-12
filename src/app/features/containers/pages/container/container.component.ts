@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, Signal } from "@angular/core";
 import { DockerHubImage } from '../../../../models/docker-hub-image';
 import { DockerHubTag } from '../../../../models/docker-hub-tag';
 import { ActivatedRoute } from '@angular/router';
@@ -19,7 +19,7 @@ import { Observable } from "rxjs";
   standalone: true,
   templateUrl: './container.component.html',
   styleUrls: ['./container.component.css', '../../../../shared/styles/markdown-body.css'],
-  host: { '[class.dark]': 'isDarkTheme' },
+  host: { '[class.dark]': 'isDarkTheme()' },
   imports: [AsyncPipe, DatePipe, SlicePipe, MarkdownModule, TabsComponent, BytesToSizePipe, ClipboardButtonComponent, SvgIconComponent, LoadingComponent]
 })
 export class ContainerComponent {
@@ -27,7 +27,7 @@ export class ContainerComponent {
   private activatedRoute: ActivatedRoute = inject(ActivatedRoute);
   private containerService: ContainerService = inject(ContainerService);
   private themeService: ThemeService = inject(ThemeService);
-  isDarkTheme: boolean = false;
+  isDarkTheme: Signal<boolean>;
 
   readonly clipboardButton = ClipboardButtonComponent;
 
@@ -37,7 +37,9 @@ export class ContainerComponent {
 
   showReadme = true;
 
-  constructor() {}
+  constructor() {
+    this.isDarkTheme = this.themeService.isDarkTheme();
+  }
 
   ngOnInit() {
     this.activatedRoute.params.subscribe(params => {
@@ -59,7 +61,6 @@ export class ContainerComponent {
         containerTags => this.containerTags = containerTags,
       );
     });
-    this.themeService.isDarkTheme().subscribe(isDark => this.isDarkTheme = isDark);
   }
 
   onTabSelectedGettingStarted(tab: string) {

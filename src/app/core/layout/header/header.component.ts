@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, ElementRef, Renderer2, signal } from '@angular/core';
+import { Component, ElementRef, Renderer2, Signal, signal } from "@angular/core";
 import { NavigationEnd, RouterLink, Router } from '@angular/router';
 import { ThemeService } from '../../../services/theme.service';
 import { SvgIconComponent } from 'angular-svg-icon';
@@ -9,7 +9,7 @@ import { SvgIconComponent } from 'angular-svg-icon';
     templateUrl: './header.component.html',
     styleUrl: './header.component.css',
     imports: [RouterLink, SvgIconComponent],
-    host: {'[class.dark]':'isDarkTheme'},
+    host: {'[class.dark]':'isDarkTheme()'},
 })
 export class HeaderComponent {
   /* Disable transitions on first load to prevent the header from sliding in */
@@ -22,7 +22,7 @@ export class HeaderComponent {
   protected showSearch = true;
 
   searchClicked: boolean = false;
-  isDarkTheme: boolean = false;
+  isDarkTheme: Signal<boolean>;
   currentSection = signal<string>('');
 
   private documentClickListener: Function | null = null;
@@ -40,7 +40,7 @@ export class HeaderComponent {
     private elementRef: ElementRef,
     private renderer: Renderer2,
   ) {
-    this.themeService.isDarkTheme().subscribe(isDark => this.isDarkTheme = isDark);
+    this.isDarkTheme = this.themeService.isDarkTheme();
   }
 
   ngOnInit() {

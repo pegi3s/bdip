@@ -1,4 +1,4 @@
-import { Component, EnvironmentInjector, computed, effect, inject, runInInjectionContext, signal } from '@angular/core';
+import { Component, EnvironmentInjector, computed, effect, inject, runInInjectionContext, signal, Signal } from "@angular/core";
 import { trigger, transition, style, animate } from '@angular/animations';
 import { ContainerService } from '../../../../services/container.service';
 import { TermStanza } from '../../../../obo/TermStanza';
@@ -14,7 +14,7 @@ import { SvgIconComponent } from 'angular-svg-icon';
   imports: [FormsModule, SearchListComponent, SvgIconComponent],
   templateUrl: './search-guided.component.html',
   styleUrl: './search-guided.component.css',
-  host: { '[class.dark]': 'isDarkTheme' },
+  host: { '[class.dark]': 'isDarkTheme()' },
   animations: [
     trigger('fadeIn', [
       transition(':enter', [
@@ -31,7 +31,7 @@ export class SearchGuidedComponent {
   private envInjector: EnvironmentInjector = inject(EnvironmentInjector);
   private containerService: ContainerService = inject(ContainerService);
   private themeService: ThemeService = inject(ThemeService);
-  isDarkTheme: boolean = false;
+  isDarkTheme: Signal<boolean>;
 
   /** The root categories of the ontology. */
   rootCategories = signal<TermStanza[]>([]);
@@ -51,7 +51,7 @@ export class SearchGuidedComponent {
   showAll = signal<boolean>(false);
 
   constructor() {
-    this.themeService.isDarkTheme().subscribe(isDark => this.isDarkTheme = isDark);
+    this.isDarkTheme = this.themeService.isDarkTheme();
   }
 
   ngOnInit() {

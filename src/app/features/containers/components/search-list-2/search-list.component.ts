@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, inject, input, signal } from "@angular/core";
+import { ChangeDetectionStrategy, Component, computed, inject, input, Signal, signal } from "@angular/core";
 import { RouterLink } from "@angular/router";
 import { ContainerService } from "../../../../services/container.service";
 import { TermStanza } from "../../../../obo/TermStanza";
@@ -23,7 +23,7 @@ export class SearchListComponent {
   name = input<string>('');
 
   private themeService: ThemeService = inject(ThemeService);
-  protected isDarkTheme = signal<boolean>(false);
+  protected isDarkTheme: Signal<boolean>;
 
   private containerService: ContainerService = inject(ContainerService);
   containers = signal<Map<string, Set<string>>>(new Map<string, Set<string>>());
@@ -55,9 +55,7 @@ export class SearchListComponent {
     this.containerService.getContainersMap().subscribe((containers) => {
       this.containers.set(containers);
     });
-    this.themeService.isDarkTheme().subscribe((isDark) => {
-      this.isDarkTheme.set(isDark);
-    });
+    this.isDarkTheme = this.themeService.isDarkTheme();
   }
 
   getContainersByCategories(categories: TermStanza[], matchedContainers: Set<string>) {
