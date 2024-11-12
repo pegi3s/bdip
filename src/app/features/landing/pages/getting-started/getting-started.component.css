@@ -4,6 +4,10 @@ section {
   max-inline-size: 2048px;
 }
 
+app-stepper {
+  margin-bottom: 24px;
+}
+
 /* Page title */
 h2 {
   margin-block: 0 24px;
@@ -87,7 +91,7 @@ p {
   content: "";
 }
 
-/* When enabling optimization, Angular Compiler does not prefix keyframes-name from the 
+/* When enabling optimization, Angular Compiler does not prefix keyframes-name from the
    second animation onwards unless the spec order for the shorthand is used */
 /* https://github.com/angular/angular/issues/49068 */
 /* https://www.w3.org/TR/css-animations-1/#animation */
@@ -167,6 +171,7 @@ pre code {
   border-radius: 6px;
   background: #fff8c5e6;
   padding: 15px;
+  overflow: auto;
 
   pre {
     margin-bottom: 0;
@@ -176,6 +181,22 @@ pre code {
 :host-context(.dark) .note {
   border-left: 5px solid #d29922;
   background: #9a670060;
+}
+
+#docker-manager-img {
+  float: right;
+  margin-left: 48px;
+  max-width: min(50%, 752px);
+  max-height: 310px;
+  filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
+
+  @media (width < 1280px) {
+    float: none;
+    margin: 36px auto;
+    max-width: 100%;
+    max-height: initial;
+    display: block;
+  }
 }
 
 @keyframes revealOpacity {
