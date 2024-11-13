@@ -3,7 +3,7 @@
   [style.--url]="'url(' + contributor().photo + ')'"
 >
   <div class="inner-container">
-    <img [src]="contributor().photo" alt="" />
+    <img [ngSrc]="contributor().photo" alt="" width="68" height="68" />
     <div>
       <div class="name">
         <p>{{ contributor().name }}</p>

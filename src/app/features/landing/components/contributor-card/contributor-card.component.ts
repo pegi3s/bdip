@@ -1,5 +1,5 @@
-import { Component, inject, input } from '@angular/core';
 import { Component, inject, input, Signal } from "@angular/core";
+import { NgOptimizedImage } from '@angular/common';
 import { Contributor } from '../../models/contributor.model';
 import { ThemeService } from '../../../../services/theme.service';
 import { SvgIconComponent } from 'angular-svg-icon';
@@ -7,7 +7,7 @@ import { SvgIconComponent } from 'angular-svg-icon';
 @Component({
   selector: 'app-contributor-card',
   standalone: true,
-  imports: [SvgIconComponent],
+  imports: [NgOptimizedImage, SvgIconComponent],
   templateUrl: './contributor-card.component.html',
   styleUrl: './contributor-card.component.css',
   host: { '[class.dark]': 'isDarkTheme()' },
