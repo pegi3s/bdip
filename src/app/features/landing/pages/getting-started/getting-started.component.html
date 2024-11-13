@@ -1,21 +1,6 @@
 <section class="getting-started">
-  <app-stepper [(currentStep)]="currentStep" [steps]="[
-    { name: 'Install Docker', icon: 'assets/icons/logos/docker-mark-blue.svg' },
-    { name: 'Manage Docker Images', icon: 'assets/icons/octicons/container-24.svg' },
-    { name: 'Run commands', icon: 'assets/icons/fluent-icons/ic_fluent_window_console_20_filled.svg' }
-  ]" />
-
-  @switch (currentStep()) {
-    @case (0) {
-      <ng-container *ngTemplateOutlet="installDocker"/>
-    }
-    @case (1) {
-      <ng-container *ngTemplateOutlet="dockerManager"/>
-    }
-    @case (2) {
-      <ng-container *ngTemplateOutlet="runCommands"/>
-    }
-  }
+  <app-stepper [(currentStep)]="currentStep" [steps]="steps" />
+  <div #container></div>
 </section>
 
 <ng-template #installDocker>
