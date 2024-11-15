@@ -10,7 +10,7 @@ import { githubInfo } from "../core/constants/github-info";
   providedIn: "root"
 })
 export class ContributorService {
-  private readonly baseMetadataURL = `https://raw.githubusercontent.com/${githubInfo.owner}/${githubInfo.repository}/master/metadata/`;
+  private readonly baseMetadataURL = `https://raw.githubusercontent.com/${githubInfo.owner}/${githubInfo.repository}/${githubInfo.branch}/metadata/`;
   private readonly urlContributors = `${this.baseMetadataURL}/contributors.json`;
 
   private http: HttpClient = inject(HttpClient);

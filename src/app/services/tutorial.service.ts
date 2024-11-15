@@ -11,7 +11,7 @@ export class TutorialService {
   private githubTutorialDirUrl: string = `https://api.github.com/repos/${githubInfo.owner}/${githubInfo.repository}/contents/tutorials`;
 
   private tutorials: Tutorial[] = [];
-  
+
   private tutorialsSubject = new ReplaySubject<Tutorial[]>(1);
   tutorials$: Observable<Tutorial[]> = this.tutorialsSubject.asObservable();
 
@@ -21,16 +21,16 @@ export class TutorialService {
 
   /**
    * Loads the list of tutorials from the server.
-   * 
+   *
    * This method first fetches the list of tutorial files from the server. It filters out any items that are not files.
-   * 
+   *
    * For each tutorial file, it creates a tutorial object with the following properties:
    * - `name`: the name of the tutorial, derived from the filename by removing the '.md' extension, replacing hyphens with spaces, and capitalizing the first letter of each word
    * - `filename`: the filename of the tutorial, derived from the filename by removing the '.md' extension
    * - `url`: the URL to download the tutorial file
-   * 
+   *
    * After creating the tutorial objects, it updates the `tutorials` property and emits the new list of tutorials through the `tutorialsSubject`.
-   * 
+   *
    * Finally, it calls `loadAditionalInfoTutorials` to load additional information for each tutorial.
    */
   private loadTutorials(): void {
@@ -55,9 +55,9 @@ export class TutorialService {
 
   /**
    * Loads additional information for each tutorial.
-   * 
+   *
    * This method performs three main tasks:
-   * 
+   *
    * 1. Fetches the Markdown content for each tutorial. It extracts the first line of the content and sets it as the tutorial description.
    * 2. Retrieves tutorial images from the server and associates them with the corresponding tutorial.
    * 3. Assigns a placeholder image to tutorials without an image.
@@ -98,7 +98,7 @@ export class TutorialService {
    * Fetches the list of tutorial files from the GitHub repository.
    */
   private getTutorialListing(): Observable<GithubListingItem[]> {
-    return this.http.get<GithubListingItem[]>(this.githubTutorialDirUrl);
+    return this.http.get<GithubListingItem[]>(`${this.githubTutorialDirUrl}?ref=${githubInfo.branch}`);
   }
 
   /**
@@ -115,7 +115,7 @@ export class TutorialService {
    * Fetches the list of tutorial images from the GitHub repository.
    */
   private getTutorialImages(): Observable<GithubListingItem[]> {
-    return this.http.get<GithubListingItem[]>(`${this.githubTutorialDirUrl}/images`);
+    return this.http.get<GithubListingItem[]>(`${this.githubTutorialDirUrl}/images?ref=${githubInfo.branch}`);
   }
 
   /**

@@ -13,7 +13,7 @@ import { ImageMetadata } from '../models/image-metadata';
   providedIn: 'root',
 })
 export class ContainerService {
-  private readonly baseMetadataURL = `https://raw.githubusercontent.com/${githubInfo.owner}/${githubInfo.repository}/master/metadata/`;
+  private readonly baseMetadataURL = `https://raw.githubusercontent.com/${githubInfo.owner}/${githubInfo.repository}/${githubInfo.branch}/metadata/`;
   private readonly urlObo = `${this.baseMetadataURL}/dio.obo`;
   private readonly urlDiaf = `${this.baseMetadataURL}/dio.diaf`;
   private readonly urlJson = `${this.baseMetadataURL}/metadata.json`;
