@@ -25,6 +25,32 @@
         <p>Last updated {{ container.last_updated | date }}</p>
       </div>
     </div>
+    <div class="features">
+      <div>
+        <svg-icon src="assets/icons/fluent-icons/ic_fluent_task_list_square_24_regular_ltr.svg" />
+        <p>Features</p>
+      </div>
+      <div>
+        <span class="chip"
+              [class.compatible]="containerMetadata?.gui"
+              [class.not-compatible]="containerMetadata?.gui === false">
+            GUI
+          @if (containerMetadata?.gui) {
+            <svg-icon src="assets/icons/fluent-icons/ic_fluent_checkmark_circle_12_filled.svg" />
+          } @else {
+            <svg-icon src="assets/icons/fluent-icons/ic_fluent_dismiss_circle_12_filled.svg" />
+          }
+        </span>
+        @for (programs of [{ type: 'Podman', status: containerMetadata?.podman }, { type: 'Singularity', status: containerMetadata?.singularity }]; track programs.type) {
+          @if (programs.status === 'tested') {
+            <span class="chip compatible">
+              {{ programs.type }}
+              <svg-icon src="assets/icons/fluent-icons/ic_fluent_checkmark_circle_12_filled.svg" />
+            </span>
+          }
+        }
+      </div>
+    </div>
     @if (showReadme) {
       <div class="install">
         <svg-icon src="assets/icons/fluent-icons/ic_fluent_window_console_20_filled.svg" />
@@ -84,7 +110,7 @@
               }
             </div>
             <p class="last-pushed">Last pushed {{ tag.tag_last_pushed | date }}</p>
-            <code class="install">
+            <code class="command">
               docker pull {{ container.namespace }}/{{ container.name }}:{{ tag.name }}
               <app-clipboard-button [text]="'docker pull ' + container.namespace + '/' + container.name + ':' + tag.name" />
             </code>

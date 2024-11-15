@@ -96,6 +96,64 @@ svg.thick path {
   }
 }
 
+.features {
+  border: 1px solid rgba(var(--main-font-color), 0.2);
+  border-radius: 6px;
+  padding: 16px;
+
+  > div:first-child {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding-right: 8px;
+
+    &:not(:last-child) {
+      margin-right: 8px;
+    }
+
+    svg {
+      height: 1rem;
+      fill: var(--icon-color);
+    }
+  }
+
+  .chip.compatible {
+    background-color: rgba(var(--green-300), 0.5);
+    --icon-color: rgba(var(--green-500), 1);
+  }
+
+  .chip.not-compatible {
+    background-color: rgba(var(--red-300), 0.5);
+    --icon-color: rgba(var(--red-500), 1);
+  }
+
+  .chip.unknown {
+    background-color: rgba(var(--main-font-color), 0.1);
+    --icon-color: rgba(var(--main-font-color), 0.6);
+  }
+}
+
+:host-context(.dark) .features .chip {
+  .compatible {
+    background-color: rgba(var(--green-900), 0.3);
+  }
+
+  .not-compatible {
+    background-color: rgba(var(--red-900), 0.3);
+  }
+
+  .unknown {
+    --icon-color: rgba(var(--main-font-color), 0.7);
+  }
+}
+
 .install {
   display: grid;
   grid-template-columns: min-content 1fr;
@@ -213,7 +271,7 @@ app-clipboard-button {
   }
 }
 
-.tag .version .chip {
+.chip {
   border-radius: 1rem;
   padding: 6px 10px;
   font-size: 0.75rem;
@@ -257,7 +315,7 @@ app-clipboard-button {
   margin-bottom: 16px;
 }
 
-.tag .install {
+.tag .command {
   display: flex;
   grid-area: code;
   align-items: center;
@@ -268,7 +326,7 @@ app-clipboard-button {
   padding: 16px;
 }
 
-:host-context(.dark) .tag .install {
+:host-context(.dark) .tag .command {
   border: 1px solid #30363d;
   background-color: #0d1117;
 }
