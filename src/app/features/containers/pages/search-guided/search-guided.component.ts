@@ -35,7 +35,7 @@ export class SearchGuidedComponent {
 
   /** The root categories of the ontology. */
   rootCategories = signal<TermStanza[]>([]);
-  /** The current cantegories between which the user can navigate. */
+  /** The current categories between which the user can navigate. */
   categories = computed(() => {
     if (this.getSelectedCategory()) {
       return this.getSelectedCategory()!.getChildren();

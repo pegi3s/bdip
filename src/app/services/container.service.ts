@@ -177,6 +177,15 @@ export class ContainerService {
   }
 
   /**
+   * Retrieves the metadata for all containers.
+   *
+   * @returns {Observable<Map<string, ImageMetadata>>} An Observable that emits a Map where the key is the container's name and the value is its metadata.
+   */
+  getAllContainersMetadata(): Observable<Map<string, ImageMetadata>> {
+    return this.containersMetadata$;
+  }
+
+  /**
    * Retrieves the metadata for the specified container.
    *
    * @param {string} name The name of the container to retrieve metadata for.

@@ -40,7 +40,7 @@
   }
 
   @if (this.categorySelectionStack().length === 0) {
-    <div class="search-by-text" @fadeIn> 
+    <div class="search-by-text" @fadeIn>
       <p>
         Unleash the power of our advanced search!
       </p>
@@ -55,7 +55,7 @@
     </div>
   }
 </section>
-<app-search-list 
-  [name]="searchTerm()"
+<app-search-list
+  [searchQuery]="searchTerm()"
   [rootCategories]="showAll() ? rootCategories() : []"
   [selectedCategory]="getSelectedCategory()" />

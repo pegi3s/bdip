@@ -3,14 +3,14 @@ import { RouterLink } from "@angular/router";
 import { ContainerService } from "../../../../services/container.service";
 import { TermStanza } from "../../../../obo/TermStanza";
 import { ThemeService } from "../../../../services/theme.service";
-import { AsyncPipe } from "@angular/common";
 import { TabsComponent } from "../../../../shared/components/tabs/tabs.component";
 import { ContainerIconComponent } from "../container-icon/container-icon.component";
+import { ImageMetadata } from "../../../../models/image-metadata";
 
 @Component({
   selector: 'app-search-list',
   standalone: true,
-  imports: [RouterLink, AsyncPipe, TabsComponent, ContainerIconComponent],
+  imports: [RouterLink, TabsComponent, ContainerIconComponent],
   templateUrl: './search-list.component.html',
   styleUrl: './search-list.component.css',
   host: { '[class.dark]': 'isDarkTheme()' },
@@ -20,24 +20,25 @@ export class SearchListComponent {
   /* Inputs */
   rootCategories = input<TermStanza[]>([]);
   selectedCategory = input<TermStanza>();
-  name = input<string>('');
+  searchQuery = input<string>('');
 
   private themeService: ThemeService = inject(ThemeService);
   protected isDarkTheme: Signal<boolean>;
 
   private containerService: ContainerService = inject(ContainerService);
   containers = signal<Map<string, Set<string>>>(new Map<string, Set<string>>());
+  containersMetadata = signal<Map<string, ImageMetadata>>(new Map<string, ImageMetadata>());
 
   /**
    * This computed property generates a set of container names that match the current search criteria sorted alphabetically.
-   * If a name is provided, it searches for containers by name. If a specific category is selected,
+   * If a name is provided, it searches for containers by name or description. If a specific category is selected,
    * it searches for containers within that category. If no specific category is selected, it searches
    * within all root categories. The search results are stored in a unique set to avoid duplicates.
    */
   matchedContainers = computed(() => {
     const matchedContainers = new Set<string>();
-    if (this.name().length > 0) {
-      this.getContainersByName(this.name(), matchedContainers);
+    if (this.searchQuery().length > 0) {
+      this.getContainersByNameOrDescription(this.searchQuery(), matchedContainers);
     } else if (this.selectedCategory() !== undefined) {
       this.getContainersByCategory(this.selectedCategory()!, matchedContainers);
     } else {
@@ -54,6 +55,9 @@ export class SearchListComponent {
   constructor() {
     this.containerService.getContainersMap().subscribe((containers) => {
       this.containers.set(containers);
+    });
+    this.containerService.getAllContainersMetadata().subscribe((metadata) => {
+      this.containersMetadata.set(metadata);
     });
     this.isDarkTheme = this.themeService.isDarkTheme();
   }
@@ -77,24 +81,30 @@ export class SearchListComponent {
   }
 
   /**
-   * Filters containers by checking if any container's name includes the specified
-   * name (case-insensitive) and adds matching containers to a set.
+   * Filters containers by checking if any container's name or description includes
+   * the specified name (case-insensitive) and adds matching containers to a set.
    *
-   * @param {string} name - The name to search for within container names.
+   * @param {string} searchQuery - The query to search for in container names or descriptions.
    * @param {Set<string>} matchedContainers - The set to add matching containers to.
    */
-  getContainersByName(name: string, matchedContainers: Set<string>) {
+  getContainersByNameOrDescription(searchQuery: string, matchedContainers: Set<string>) {
+    const queryLowerCase = searchQuery.toLowerCase();
     this.containers().forEach((containerSet) => {
       containerSet.forEach((container) => {
-        if (container.toLowerCase().includes(name.toLowerCase())) {
+        if (container.toLowerCase().includes(queryLowerCase)) {
           matchedContainers.add(container);
         }
       });
     });
+    this.containersMetadata().forEach((metadata) => {
+      if (metadata.description.toLowerCase().includes(queryLowerCase)) {
+        matchedContainers.add(metadata.name);
+      }
+    });
   }
 
-  getContainerMetadataByName(name: string) {
-    return this.containerService.getContainerMetadata(name);
+  getContainerMetadataByName(name: string): ImageMetadata | undefined {
+    return this.containersMetadata().get(name);
   }
 
   onTabSelectedGridView(view: string) {
