@@ -18,7 +18,7 @@ import { Observable } from "rxjs";
   selector: 'app-container',
   standalone: true,
   templateUrl: './container.component.html',
-  styleUrls: ['./container.component.css', '../../../../shared/styles/markdown-body.css'],
+  styleUrl: './container.component.css',
   host: { '[class.dark]': 'isDarkTheme()' },
   imports: [AsyncPipe, DatePipe, SlicePipe, MarkdownModule, TabsComponent, BytesToSizePipe, ClipboardButtonComponent, SvgIconComponent, LoadingComponent]
 })

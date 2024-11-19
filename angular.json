@@ -25,7 +25,8 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.css"
+              "src/styles.css",
+              "src/app/shared/styles/markdown-body.css"
             ],
             "scripts": [
               "node_modules/clipboard/dist/clipboard.min.js"
@@ -86,7 +87,8 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.css"
+              "src/styles.css",
+              "src/app/shared/styles/markdown-body.css"
             ],
             "scripts": [],
             "karmaConfig": "karma.conf.js"

@@ -12,7 +12,7 @@ import { ViewportScroller } from '@angular/common';
   standalone: true,
   imports: [RouterLink, MarkdownModule],
   templateUrl: './tutorial.component.html',
-  styleUrls: ['./tutorial.component.css', '../../../../shared/styles/markdown-body.css'],
+  styleUrl: './tutorial.component.css',
   host: {'[class.dark]':'isDarkTheme()'}
 })
 export class TutorialComponent {
