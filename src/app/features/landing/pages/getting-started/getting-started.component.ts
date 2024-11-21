@@ -5,13 +5,16 @@ import { TabsComponent } from '../../../../shared/components/tabs/tabs.component
 import { ThemeService } from '../../../../services/theme.service';
 import { StepperComponent } from "../../../../shared/components/stepper/stepper.component";
 import { ActivatedRoute, Router } from "@angular/router";
+import { MarkdownComponent } from "ngx-markdown";
+import { ClipboardButtonComponent } from "../../../../shared/components/clipboard-button/clipboard-button.component";
+import { githubInfo } from "../../../../core/constants/github-info";
 
 @Component({
   selector: 'app-getting-started',
   standalone: true,
   templateUrl: './getting-started.component.html',
   styleUrl: './getting-started.component.css',
-  imports: [TabsComponent, StepperComponent],
+  imports: [TabsComponent, StepperComponent, MarkdownComponent],
   host: { '[class.dark]': 'isDarkTheme()' },
 })
 export class GettingStartedComponent {
@@ -27,11 +30,16 @@ export class GettingStartedComponent {
   @ViewChild('installDocker') installDockerTemplate!: TemplateRef<any>;
   @ViewChild('dockerManager') dockerManagerTemplate!: TemplateRef<any>;
   @ViewChild('runCommands') runCommandsTemplate!: TemplateRef<any>;
+  @ViewChild('commonIssues') commonIssuesTemplate!: TemplateRef<any>;
   protected steps = [
     { fragmentName: 'install-docker', name: 'Install Docker', icon: 'assets/icons/logos/docker-mark-blue.svg' },
     { fragmentName: 'manage-docker-images', name: 'Manage Docker Images', icon: 'assets/icons/octicons/container-24.svg' },
-    { fragmentName: 'run-commands', name: 'Run commands', icon: 'assets/icons/fluent-icons/ic_fluent_window_console_20_filled.svg' }
+    { fragmentName: 'run-commands', name: 'Run commands', icon: 'assets/icons/fluent-icons/ic_fluent_window_console_20_filled.svg' },
+    { fragmentName: 'common-issues', name: 'Common issues', icon: 'assets/icons/fluent-icons/ic_fluent_error_circle_24_filled.svg' }
   ];
+  readonly commonIssuesUrl = `https://raw.githubusercontent.com/${githubInfo.owner}/${githubInfo.repository}/${githubInfo.branch}/metadata/web/getting_started/common_issues.md`;
+
+  readonly clipboardButton = ClipboardButtonComponent;
 
   /* State */
   currentStep = signal(0);
@@ -71,6 +79,9 @@ export class GettingStartedComponent {
         break;
       case 'run-commands':
         this.containerRef.createEmbeddedView(this.runCommandsTemplate);
+        break;
+      case 'common-issues':
+        this.containerRef.createEmbeddedView(this.commonIssuesTemplate);
         break;
       default:
         // Default to the first template if fragment is unrecognized

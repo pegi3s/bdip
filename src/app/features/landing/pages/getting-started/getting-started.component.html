@@ -141,3 +141,12 @@
 
   </div>
 </ng-template>
+
+<ng-template #commonIssues>
+  <markdown
+    clipboard
+    [clipboardButtonComponent]="clipboardButton"
+    class="markdown-body"
+    [src]="commonIssuesUrl"
+  />
+</ng-template>
