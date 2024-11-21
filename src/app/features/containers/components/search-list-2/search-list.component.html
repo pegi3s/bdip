@@ -6,7 +6,9 @@
 }
 <div class="category-container" [class.compact]="isCompact()">
   @for (container of matchedContainers(); track container) {
-    <a class="container-item" [routerLink]="['/container', container]">
+    <a class="container-item" [routerLink]="['/container', container]"
+       [class.updated]="wasContainerRecentlyUpdated(container)"
+       [class.new]="isContainerNew(container)">
       @let containerMetadata = getContainerMetadataByName(container);
       <div class="header">
         <span>{{ container }}</span>

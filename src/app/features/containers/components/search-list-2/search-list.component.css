@@ -54,9 +54,46 @@ app-tabs {
   transition: transform 0.4s ease, box-shadow 0.4s ease;
   /* Hack: The transition to scale down the card blurs a bit the element. When the transition finishes,
   the blur effect is removed and the renders again to adapt to the new size. This causes a flicker effect.
-  To avoid this, the will-change property is added to the element. This property makes the element keep the  
+  To avoid this, the will-change property is added to the element. This property makes the element keep the
   blur effect. As it's just doing it on hover, IMO it's better to keep the blur than the flicker effect. */
   will-change: transform;
+
+  &.new {
+    --tint: 150;
+    --alpha: 6;
+    background: linear-gradient(to top, hsl(var(--tint) 100% 97% / 0.8), white);
+
+    &::after {
+      content: 'New';
+    }
+  }
+
+  &.updated {
+    --tint: 275;
+    --alpha: 6;
+    background: linear-gradient(to top, hsl(var(--tint) 100% 97% / 0.6), white);
+
+    &::after {
+      content: 'Updated';
+    }
+  }
+
+  &:is(.new, .updated)::after {
+    position: absolute;
+    bottom: -5px;
+    right: -5px;
+    background-color: hsl(var(--tint) 100% 85%);
+    padding: 4px 8px;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    line-height: 1rem;
+    font-weight: 600;
+    box-shadow: 0 2px 6px hsl(var(--tint) 75% 30% / 0.4), 0 0 0 1px hsl(var(--tint) 100% 90%);
+  }
+
+  &:is(.new, .updated):hover {
+    --alpha: 8;
+  }
 
   .header {
     display: flex;
@@ -77,6 +114,17 @@ app-tabs {
     font-size: 1rem;
     line-height: 1.5rem;
   }
+}
+
+:host-context(.dark) .container-item.new,
+:host-context(.dark) .container-item.updated {
+  background: linear-gradient(to top, hsl(var(--tint) 100% 70% / 0.15), rgba(var(--slate-700), 0.4) 75%);
+}
+
+:host-context(.dark) .container-item.new::after,
+:host-context(.dark) .container-item.updated::after {
+  background-color: hsl(var(--tint) 100% 25%);
+  box-shadow: 0 2px 6px hsl(var(--tint) 75% 30% / 0.4), 0 0 0 1px hsl(var(--tint) 100% 30%);
 }
 
 .compact .container-item {

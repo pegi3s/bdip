@@ -6,6 +6,7 @@ import { ThemeService } from "../../../../services/theme.service";
 import { TabsComponent } from "../../../../shared/components/tabs/tabs.component";
 import { ContainerIconComponent } from "../container-icon/container-icon.component";
 import { ImageMetadata } from "../../../../models/image-metadata";
+import { DockerHubImage } from "../../../../models/docker-hub-image";
 
 @Component({
   selector: 'app-search-list',
@@ -28,6 +29,7 @@ export class SearchListComponent {
   private containerService: ContainerService = inject(ContainerService);
   containers = signal<Map<string, Set<string>>>(new Map<string, Set<string>>());
   containersMetadata = signal<Map<string, ImageMetadata>>(new Map<string, ImageMetadata>());
+  containersInfo = signal<Map<string, DockerHubImage>>(new Map<string, DockerHubImage>());
 
   /**
    * This computed property generates a set of container names that match the current search criteria sorted alphabetically.
@@ -58,6 +60,9 @@ export class SearchListComponent {
     });
     this.containerService.getAllContainersMetadata().subscribe((metadata) => {
       this.containersMetadata.set(metadata);
+    });
+    this.containerService.getAllContainersInfo().subscribe((containersInfo) => {
+      this.containersInfo.set(containersInfo);
     });
     this.isDarkTheme = this.themeService.isDarkTheme();
   }
@@ -105,6 +110,18 @@ export class SearchListComponent {
 
   getContainerMetadataByName(name: string): ImageMetadata | undefined {
     return this.containersMetadata().get(name);
+  }
+
+  isContainerNew(name: string): boolean {
+    const creationDate = Date.parse(this.containersInfo().get(name)?.date_registered ?? '0');
+    const daysSinceCreation = Math.floor((Date.now() - creationDate) / (1000 * 60 * 60 * 24));
+    return daysSinceCreation <= 30;
+  }
+
+  wasContainerRecentlyUpdated(name: string): boolean {
+    const creationDate = Date.parse(this.containersInfo().get(name)?.last_updated ?? '0');
+    const daysSinceCreation = Math.floor((Date.now() - creationDate) / (1000 * 60 * 60 * 24));
+    return daysSinceCreation <= 30;
   }
 
   onTabSelectedGridView(view: string) {
