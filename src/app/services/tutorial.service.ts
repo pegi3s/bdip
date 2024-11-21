@@ -8,7 +8,7 @@ import { githubInfo } from '../core/constants/github-info';
   providedIn: 'root'
 })
 export class TutorialService {
-  private githubTutorialDirUrl: string = `https://api.github.com/repos/${githubInfo.owner}/${githubInfo.repository}/contents/tutorials`;
+  private githubTutorialDirUrl: string = `https://api.github.com/repos/${githubInfo.owner}/${githubInfo.repository}/contents/metadata/web/tutorials`;
 
   private tutorials: Tutorial[] = [];
 
