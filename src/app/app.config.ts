@@ -16,9 +16,9 @@ export const appConfig: ApplicationConfig = {
     provideMarkdown({
       loader: HttpClient,
       markedExtensions: [
-        baseUrl('https://raw.githubusercontent.com/pegi3s/dockerfiles/master/tutorials/'),
+        baseUrl('https://raw.githubusercontent.com/pegi3s/dockerfiles/master/metadata/web/tutorials/'),
         markedAlert(),
-        /* marked-gfm-heading-id wont work due DomSanitizer removing them */
+        /* marked-gfm-heading-id won't work due DomSanitizer removing them */
       ],
       clipboardOptions: {
         provide: CLIPBOARD_OPTIONS,
