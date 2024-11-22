@@ -3,11 +3,10 @@ import { Component, input, output } from '@angular/core';
 import { SvgIconComponent } from 'angular-svg-icon';
 
 @Component({
-  selector: 'app-tabs',
-  standalone: true,
-  imports: [TitleCasePipe, SvgIconComponent],
-  templateUrl: './tabs.component.html',
-  styleUrl: './tabs.component.css'
+    selector: 'app-tabs',
+    imports: [TitleCasePipe, SvgIconComponent],
+    templateUrl: './tabs.component.html',
+    styleUrl: './tabs.component.css'
 })
 export class TabsComponent {
   /* Input */

@@ -14,12 +14,11 @@ import { Observable } from "rxjs";
 
 @Component({
     selector: 'app-landing',
-    standalone: true,
     templateUrl: './landing.component.html',
     styleUrl: './landing.component.css',
     host: { '[class.dark]': 'isDarkTheme()' },
     imports: [NgOptimizedImage, TabsComponent, ContributorCardComponent, LogoMarqueeComponent, ClipboardButtonComponent, RouterLink, ReasonCardComponent, SvgIconComponent, AsyncPipe],
-    changeDetection: ChangeDetectionStrategy.OnPush,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LandingComponent {
   /* Services */

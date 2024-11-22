@@ -10,12 +10,11 @@ import { ClipboardButtonComponent } from "../../../../shared/components/clipboar
 import { githubInfo } from "../../../../core/constants/github-info";
 
 @Component({
-  selector: 'app-getting-started',
-  standalone: true,
-  templateUrl: './getting-started.component.html',
-  styleUrl: './getting-started.component.css',
-  imports: [TabsComponent, StepperComponent, MarkdownComponent],
-  host: { '[class.dark]': 'isDarkTheme()' },
+    selector: 'app-getting-started',
+    templateUrl: './getting-started.component.html',
+    styleUrl: './getting-started.component.css',
+    imports: [TabsComponent, StepperComponent, MarkdownComponent],
+    host: { '[class.dark]': 'isDarkTheme()' }
 })
 export class GettingStartedComponent {
   /* Services */

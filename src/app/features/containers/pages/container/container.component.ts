@@ -15,12 +15,11 @@ import { ImageMetadata } from "../../../../models/image-metadata";
 import { Observable } from "rxjs";
 
 @Component({
-  selector: 'app-container',
-  standalone: true,
-  templateUrl: './container.component.html',
-  styleUrl: './container.component.css',
-  host: { '[class.dark]': 'isDarkTheme()' },
-  imports: [AsyncPipe, DatePipe, SlicePipe, MarkdownModule, TabsComponent, BytesToSizePipe, ClipboardButtonComponent, SvgIconComponent, LoadingComponent]
+    selector: 'app-container',
+    templateUrl: './container.component.html',
+    styleUrl: './container.component.css',
+    host: { '[class.dark]': 'isDarkTheme()' },
+    imports: [AsyncPipe, DatePipe, SlicePipe, MarkdownModule, TabsComponent, BytesToSizePipe, ClipboardButtonComponent, SvgIconComponent, LoadingComponent]
 })
 export class ContainerComponent {
   /* Services */

@@ -3,12 +3,11 @@ import { Component, inject, input, Signal } from "@angular/core";
 import { ThemeService } from '../../../services/theme.service';
 
 @Component({
-  selector: 'app-logo-marquee',
-  standalone: true,
-  imports: [NgOptimizedImage],
-  templateUrl: './logo-marquee.component.html',
-  styleUrl: './logo-marquee.component.css',
-  host: { '[class.dark]': 'isDarkTheme()' },
+    selector: 'app-logo-marquee',
+    imports: [NgOptimizedImage],
+    templateUrl: './logo-marquee.component.html',
+    styleUrl: './logo-marquee.component.css',
+    host: { '[class.dark]': 'isDarkTheme()' }
 })
 export class LogoMarqueeComponent {
   /* Inputs */

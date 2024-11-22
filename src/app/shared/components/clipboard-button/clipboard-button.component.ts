@@ -3,11 +3,10 @@ import { SvgIconComponent } from 'angular-svg-icon';
 import ClipboardJS from 'clipboard';
 
 @Component({
-  selector: 'app-clipboard-button',
-  standalone: true,
-  imports: [SvgIconComponent],
-  templateUrl: './clipboard-button.component.html',
-  styleUrl: './clipboard-button.component.css'
+    selector: 'app-clipboard-button',
+    imports: [SvgIconComponent],
+    templateUrl: './clipboard-button.component.html',
+    styleUrl: './clipboard-button.component.css'
 })
 export class ClipboardButtonComponent {
   /* Input */

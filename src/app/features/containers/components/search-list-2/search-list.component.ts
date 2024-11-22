@@ -9,13 +9,12 @@ import { ImageMetadata } from "../../../../models/image-metadata";
 import { DockerHubImage } from "../../../../models/docker-hub-image";
 
 @Component({
-  selector: 'app-search-list',
-  standalone: true,
-  imports: [RouterLink, TabsComponent, ContainerIconComponent],
-  templateUrl: './search-list.component.html',
-  styleUrl: './search-list.component.css',
-  host: { '[class.dark]': 'isDarkTheme()' },
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'app-search-list',
+    imports: [RouterLink, TabsComponent, ContainerIconComponent],
+    templateUrl: './search-list.component.html',
+    styleUrl: './search-list.component.css',
+    host: { '[class.dark]': 'isDarkTheme()' },
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SearchListComponent {
   /* Inputs */

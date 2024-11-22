@@ -8,12 +8,11 @@ import { ClipboardButtonComponent } from '../../../../shared/components/clipboar
 import { ViewportScroller } from '@angular/common';
 
 @Component({
-  selector: 'app-tutorial',
-  standalone: true,
-  imports: [RouterLink, MarkdownModule],
-  templateUrl: './tutorial.component.html',
-  styleUrl: './tutorial.component.css',
-  host: {'[class.dark]':'isDarkTheme()'}
+    selector: 'app-tutorial',
+    imports: [RouterLink, MarkdownModule],
+    templateUrl: './tutorial.component.html',
+    styleUrl: './tutorial.component.css',
+    host: { '[class.dark]': 'isDarkTheme()' }
 })
 export class TutorialComponent {
   /* Services */

@@ -4,11 +4,10 @@ import { RouterLink } from '@angular/router';
 import { SvgIconComponent } from 'angular-svg-icon';
 
 @Component({
-  selector: 'app-footer',
-  standalone: true,
-  imports: [RouterLink, SvgIconComponent, ThemeToggleComponent],
-  templateUrl: './footer.component.html',
-  styleUrl: './footer.component.css'
+    selector: 'app-footer',
+    imports: [RouterLink, SvgIconComponent, ThemeToggleComponent],
+    templateUrl: './footer.component.html',
+    styleUrl: './footer.component.css'
 })
 export class FooterComponent {
 

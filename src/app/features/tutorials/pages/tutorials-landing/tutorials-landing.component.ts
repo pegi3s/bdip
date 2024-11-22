@@ -5,12 +5,11 @@ import { Tutorial } from '../../../../models/tutorial';
 import { ThemeService } from '../../../../services/theme.service';
 
 @Component({
-  selector: 'app-tutorials-landing',
-  standalone: true,
-  imports: [RouterLink],
-  templateUrl: './tutorials-landing.component.html',
-  styleUrl: './tutorials-landing.component.css',
-  host: {'[class.dark]':'isDarkTheme()'}
+    selector: 'app-tutorials-landing',
+    imports: [RouterLink],
+    templateUrl: './tutorials-landing.component.html',
+    styleUrl: './tutorials-landing.component.css',
+    host: { '[class.dark]': 'isDarkTheme()' }
 })
 export class TutorialsLandingComponent {
   /* Services */

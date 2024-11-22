@@ -6,12 +6,11 @@ import { LandingComponent } from './features/landing/pages/landing/landing.compo
 import { fromEvent, map } from 'rxjs';
 
 @Component({
-  selector: 'app-root',
-  standalone: true,
-  imports: [RouterOutlet, HeaderComponent, FooterComponent, LandingComponent],
-  templateUrl: './app.component.html',
-  styleUrl: './app.component.css',
-  host: { '[style.--header-height]': 'headerHeight+"px"' }
+    selector: 'app-root',
+    imports: [RouterOutlet, HeaderComponent, FooterComponent, LandingComponent],
+    templateUrl: './app.component.html',
+    styleUrl: './app.component.css',
+    host: { '[style.--header-height]': 'headerHeight+"px"' }
 })
 export class AppComponent {
   private appHeaderElem = viewChild(HeaderComponent, {read: ElementRef});

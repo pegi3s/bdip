@@ -5,12 +5,11 @@ import { ThemeService } from '../../../../services/theme.service';
 import { SvgIconComponent } from 'angular-svg-icon';
 
 @Component({
-  selector: 'app-contributor-card',
-  standalone: true,
-  imports: [NgOptimizedImage, SvgIconComponent],
-  templateUrl: './contributor-card.component.html',
-  styleUrl: './contributor-card.component.css',
-  host: { '[class.dark]': 'isDarkTheme()' },
+    selector: 'app-contributor-card',
+    imports: [NgOptimizedImage, SvgIconComponent],
+    templateUrl: './contributor-card.component.html',
+    styleUrl: './contributor-card.component.css',
+    host: { '[class.dark]': 'isDarkTheme()' }
 })
 export class ContributorCardComponent {
   /* Services */

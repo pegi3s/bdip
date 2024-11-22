@@ -9,20 +9,19 @@ import { ThemeService } from '../../../../services/theme.service';
 import { SvgIconComponent } from 'angular-svg-icon';
 
 @Component({
-  selector: 'app-search-guided',
-  standalone: true,
-  imports: [FormsModule, SearchListComponent, SvgIconComponent],
-  templateUrl: './search-guided.component.html',
-  styleUrl: './search-guided.component.css',
-  host: { '[class.dark]': 'isDarkTheme()' },
-  animations: [
-    trigger('fadeIn', [
-      transition(':enter', [
-        style({ opacity: 0 }),
-        animate('400ms', style({ opacity: 1 })),
-      ]),
-    ]),
-  ],
+    selector: 'app-search-guided',
+    imports: [FormsModule, SearchListComponent, SvgIconComponent],
+    templateUrl: './search-guided.component.html',
+    styleUrl: './search-guided.component.css',
+    host: { '[class.dark]': 'isDarkTheme()' },
+    animations: [
+        trigger('fadeIn', [
+            transition(':enter', [
+                style({ opacity: 0 }),
+                animate('400ms', style({ opacity: 1 })),
+            ]),
+        ]),
+    ]
 })
 export class SearchGuidedComponent {
   /* Services */

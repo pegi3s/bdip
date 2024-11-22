@@ -5,11 +5,10 @@ import { SvgIconComponent } from 'angular-svg-icon';
 
 @Component({
     selector: 'app-header',
-    standalone: true,
     templateUrl: './header.component.html',
     styleUrl: './header.component.css',
     imports: [RouterLink, SvgIconComponent],
-    host: {'[class.dark]':'isDarkTheme()'},
+    host: { '[class.dark]': 'isDarkTheme()' }
 })
 export class HeaderComponent {
   /* Disable transitions on first load to prevent the header from sliding in */

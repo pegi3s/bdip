@@ -2,11 +2,10 @@ import { Component, input, model } from "@angular/core";
 import { SvgIconComponent } from "angular-svg-icon";
 
 @Component({
-  selector: 'app-stepper',
-  standalone: true,
-  imports: [SvgIconComponent],
-  templateUrl: './stepper.component.html',
-  styleUrl: './stepper.component.css'
+    selector: 'app-stepper',
+    imports: [SvgIconComponent],
+    templateUrl: './stepper.component.html',
+    styleUrl: './stepper.component.css'
 })
 export class StepperComponent {
   /* Input */
