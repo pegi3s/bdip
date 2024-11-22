@@ -4,7 +4,7 @@ import (
     "fmt"
     "io"
     "net/http"
-	"net/url"
+	  "net/url"
 )
 
 const port string = ":8080"
@@ -48,6 +48,7 @@ func handleRequest(w http.ResponseWriter, r *http.Request) {
 
     // Add CORS headers to the response
     w.Header().Set("Access-Control-Allow-Origin", "*")
+    w.Header().Set("Access-Control-Allow-Methods", "GET")
 
     // Copy response headers to the client
     for k, vv := range resp.Header {
@@ -69,6 +70,7 @@ func handleRequest(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+    http.HandleFunc("GET /v2/namespaces/pegi3s/repositories", handleRequest)
     http.HandleFunc("GET /v2/namespaces/pegi3s/repositories/", handleRequest)
     fmt.Println("Proxy server listening on", port)
     err := http.ListenAndServe(port, nil)
