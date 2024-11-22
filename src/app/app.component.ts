@@ -2,12 +2,11 @@ import { Component, ElementRef, effect, viewChild } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { HeaderComponent } from './core/layout/header/header.component';
 import { FooterComponent } from './core/layout/footer/footer.component';
-import { LandingComponent } from './features/landing/pages/landing/landing.component';
 import { fromEvent, map } from 'rxjs';
 
 @Component({
     selector: 'app-root',
-    imports: [RouterOutlet, HeaderComponent, FooterComponent, LandingComponent],
+    imports: [RouterOutlet, HeaderComponent, FooterComponent],
     templateUrl: './app.component.html',
     styleUrl: './app.component.css',
     host: { '[style.--header-height]': 'headerHeight+"px"' }

@@ -1,4 +1,4 @@
-import { Component, effect, inject, Signal, signal, TemplateRef, ViewChild, ViewContainerRef } from "@angular/core";
+import { Component, effect, inject, Signal, signal, TemplateRef, ViewContainerRef, viewChild } from "@angular/core";
 import { OS } from '../../../../models/os';
 import { UtilsService } from '../../../../services/utils.service';
 import { TabsComponent } from '../../../../shared/components/tabs/tabs.component';
@@ -25,11 +25,11 @@ export class GettingStartedComponent {
   private router = inject(Router);
 
   /* Fragments */
-  @ViewChild('container', { read: ViewContainerRef, static: true }) containerRef!: ViewContainerRef;
-  @ViewChild('installDocker') installDockerTemplate!: TemplateRef<any>;
-  @ViewChild('dockerManager') dockerManagerTemplate!: TemplateRef<any>;
-  @ViewChild('runCommands') runCommandsTemplate!: TemplateRef<any>;
-  @ViewChild('commonIssues') commonIssuesTemplate!: TemplateRef<any>;
+  readonly containerRef = viewChild.required('container', { read: ViewContainerRef });
+  readonly installDockerTemplate = viewChild.required<TemplateRef<any>>('installDocker');
+  readonly dockerManagerTemplate = viewChild.required<TemplateRef<any>>('dockerManager');
+  readonly runCommandsTemplate = viewChild.required<TemplateRef<any>>('runCommands');
+  readonly commonIssuesTemplate = viewChild.required<TemplateRef<any>>('commonIssues');
   protected steps = [
     { fragmentName: 'install-docker', name: 'Install Docker', icon: 'assets/icons/logos/docker-mark-blue.svg' },
     { fragmentName: 'manage-docker-images', name: 'Manage Docker Images', icon: 'assets/icons/octicons/container-24.svg' },
@@ -67,24 +67,24 @@ export class GettingStartedComponent {
 
   private loadTemplateBasedOnFragment(fragment: string | null) {
     // Clear the current container to avoid duplicate templates
-    this.containerRef.clear();
+    this.containerRef().clear();
 
     switch (fragment) {
       case 'install-docker':
-        this.containerRef.createEmbeddedView(this.installDockerTemplate);
+        this.containerRef().createEmbeddedView(this.installDockerTemplate());
         break;
       case 'manage-docker-images':
-        this.containerRef.createEmbeddedView(this.dockerManagerTemplate);
+        this.containerRef().createEmbeddedView(this.dockerManagerTemplate());
         break;
       case 'run-commands':
-        this.containerRef.createEmbeddedView(this.runCommandsTemplate);
+        this.containerRef().createEmbeddedView(this.runCommandsTemplate());
         break;
       case 'common-issues':
-        this.containerRef.createEmbeddedView(this.commonIssuesTemplate);
+        this.containerRef().createEmbeddedView(this.commonIssuesTemplate());
         break;
       default:
         // Default to the first template if fragment is unrecognized
-        this.containerRef.createEmbeddedView(this.installDockerTemplate);
+        this.containerRef().createEmbeddedView(this.installDockerTemplate());
     }
   }
 

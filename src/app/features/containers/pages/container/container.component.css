@@ -141,15 +141,15 @@ svg.thick path {
 }
 
 :host-context(.dark) .features .chip {
-  .compatible {
+  &.compatible {
     background-color: rgba(var(--green-900), 0.3);
   }
 
-  .not-compatible {
+  &.not-compatible {
     background-color: rgba(var(--red-900), 0.3);
   }
 
-  .unknown {
+  &.unknown {
     --icon-color: rgba(var(--main-font-color), 0.7);
   }
 }

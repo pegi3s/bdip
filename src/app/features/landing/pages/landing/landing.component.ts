@@ -1,12 +1,11 @@
 import { ChangeDetectionStrategy, Component, ElementRef, inject, Signal, viewChild } from "@angular/core";
-import { AsyncPipe, NgOptimizedImage } from "@angular/common";
+import { AsyncPipe } from "@angular/common";
 import { ContributorCardComponent } from "../../components/contributor-card/contributor-card.component";
 import { ContributorService } from "../../../../services/contributor.service";
 import { Contributor } from "../../models/contributor.model";
 import { LogoMarqueeComponent } from "../../../../shared/components/logo-marquee/logo-marquee.component";
 import { Router, RouterLink } from "@angular/router";
 import { ThemeService } from "../../../../services/theme.service";
-import { TabsComponent } from "../../../../shared/components/tabs/tabs.component";
 import { ClipboardButtonComponent } from "../../../../shared/components/clipboard-button/clipboard-button.component";
 import { ReasonCardComponent } from "../../../../shared/components/reason-card/reason-card.component";
 import { SvgIconComponent } from "angular-svg-icon";
@@ -17,7 +16,7 @@ import { Observable } from "rxjs";
     templateUrl: './landing.component.html',
     styleUrl: './landing.component.css',
     host: { '[class.dark]': 'isDarkTheme()' },
-    imports: [NgOptimizedImage, TabsComponent, ContributorCardComponent, LogoMarqueeComponent, ClipboardButtonComponent, RouterLink, ReasonCardComponent, SvgIconComponent, AsyncPipe],
+    imports: [ContributorCardComponent, LogoMarqueeComponent, ClipboardButtonComponent, RouterLink, ReasonCardComponent, SvgIconComponent, AsyncPipe],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LandingComponent {

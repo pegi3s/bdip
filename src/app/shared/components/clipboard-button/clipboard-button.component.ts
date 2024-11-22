@@ -1,4 +1,4 @@
-import { Component, ElementRef, input } from '@angular/core';
+import { Component, ElementRef, input, signal } from "@angular/core";
 import { SvgIconComponent } from 'angular-svg-icon';
 import ClipboardJS from 'clipboard';
 
@@ -14,7 +14,7 @@ export class ClipboardButtonComponent {
   text = input<string>();
 
   /* State */
-  copied: boolean = false;
+  copied = signal<boolean>(false);
 
   /**
    * Copies the content of the element or text to the clipboard.
@@ -28,9 +28,9 @@ export class ClipboardButtonComponent {
       ClipboardJS.copy(this.text()!);
     }
 
-    this.copied = true;
+    this.copied.set(true);
     setTimeout(() => {
-      this.copied = false;
+      this.copied.set(false);
     }, 1000);
   }
 }

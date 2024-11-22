@@ -1,10 +1,9 @@
-import { NgOptimizedImage } from '@angular/common';
 import { Component, inject, input, Signal } from "@angular/core";
 import { ThemeService } from '../../../services/theme.service';
 
 @Component({
     selector: 'app-logo-marquee',
-    imports: [NgOptimizedImage],
+    imports: [],
     templateUrl: './logo-marquee.component.html',
     styleUrl: './logo-marquee.component.css',
     host: { '[class.dark]': 'isDarkTheme()' }
