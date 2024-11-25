@@ -6,10 +6,12 @@
 }
 <div class="category-container" [class.compact]="isCompact()">
   @for (container of matchedContainers(); track container) {
+    @let containerMetadata = getContainerMetadataByName(container);
     <a class="container-item" [routerLink]="['/container', container]"
        [class.updated]="wasContainerRecentlyUpdated(container)"
-       [class.new]="isContainerNew(container)">
-      @let containerMetadata = getContainerMetadataByName(container);
+       [class.new]="isContainerNew(container)"
+       [class.unusable]="containerMetadata?.status === 'Unusable'"
+       [class.not-recommended]="containerMetadata?.status === 'Not_recommended'">
       <div class="header">
         <span>{{ container }}</span>
         <app-container-icon [name]="container" [icon]="containerMetadata?.icon" [color]="isDarkTheme()? 'white' : '#0082c4'"/>

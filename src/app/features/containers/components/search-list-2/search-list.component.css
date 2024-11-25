@@ -78,20 +78,40 @@ app-tabs {
     }
   }
 
-  &:is(.new, .updated)::after {
+  &.not-recommended {
+    --tint: 35;
+    --alpha: 6;
+    background: linear-gradient(to top, hsl(var(--tint) 100% 97% / 0.7), white);
+
+    &::after {
+      content: 'Not recommended';
+    }
+  }
+
+  &.unusable {
+    --tint: 0;
+    --alpha: 6;
+    background: linear-gradient(to top, hsl(var(--tint) 100% 97% / 0.7), white);
+
+    &::after {
+      content: 'Unusable';
+    }
+  }
+
+  &:is(.new, .updated, .unusable, .not-recommended)::after {
     position: absolute;
     bottom: -5px;
     right: -5px;
     background-color: hsl(var(--tint) 100% 85%);
-    padding: 4px 8px;
-    border-radius: 8px;
+    padding: 3px 6px;
+    border-radius: 7px;
     font-size: 0.75rem;
     line-height: 1rem;
     font-weight: 600;
     box-shadow: 0 2px 6px hsl(var(--tint) 75% 30% / 0.4), 0 0 0 1px hsl(var(--tint) 100% 90%);
   }
 
-  &:is(.new, .updated):hover {
+  &:is(.new, .updated, .unusable, .not-recommended)::after {
     --alpha: 8;
   }
 
@@ -117,12 +137,16 @@ app-tabs {
 }
 
 :host-context(.dark) .container-item.new,
-:host-context(.dark) .container-item.updated {
+:host-context(.dark) .container-item.updated,
+:host-context(.dark) .container-item.unusable,
+:host-context(.dark) .container-item.not-recommended {
   background: linear-gradient(to top, hsl(var(--tint) 100% 70% / 0.15), rgba(var(--slate-700), 0.4) 75%);
 }
 
 :host-context(.dark) .container-item.new::after,
-:host-context(.dark) .container-item.updated::after {
+:host-context(.dark) .container-item.updated::after,
+:host-context(.dark) .container-item.unusable::after,
+:host-context(.dark) .container-item.not-recommended::after {
   background-color: hsl(var(--tint) 100% 25%);
   box-shadow: 0 2px 6px hsl(var(--tint) 75% 30% / 0.4), 0 0 0 1px hsl(var(--tint) 100% 30%);
 }
