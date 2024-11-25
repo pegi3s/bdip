@@ -58,16 +58,6 @@ app-tabs {
   blur effect. As it's just doing it on hover, IMO it's better to keep the blur than the flicker effect. */
   will-change: transform;
 
-  &.new {
-    --tint: 150;
-    --alpha: 6;
-    background: linear-gradient(to top, hsl(var(--tint) 100% 97% / 0.8), white);
-
-    &::after {
-      content: 'New';
-    }
-  }
-
   &.updated {
     --tint: 275;
     --alpha: 6;
@@ -75,6 +65,16 @@ app-tabs {
 
     &::after {
       content: 'Updated';
+    }
+  }
+
+  &.new {
+    --tint: 150;
+    --alpha: 6;
+    background: linear-gradient(to top, hsl(var(--tint) 100% 97% / 0.8), white);
+
+    &::after {
+      content: 'New';
     }
   }
 
