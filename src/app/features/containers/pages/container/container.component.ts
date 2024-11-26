@@ -62,6 +62,14 @@ export class ContainerComponent {
     });
   }
 
+  buildDockerPullCommand(container: DockerHubImage, tag?: string | null): string {
+    let command = `docker pull ${container.namespace}/${container.name}`;
+    if (tag)
+      command += `:${tag}`;
+
+    return command;
+  }
+
   onTabSelectedGettingStarted(tab: string) {
     this.showReadme = tab === 'readme';
   }
