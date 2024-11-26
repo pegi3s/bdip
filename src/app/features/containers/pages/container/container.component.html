@@ -31,16 +31,12 @@
         <p>Features</p>
       </div>
       <div>
-        <span class="chip"
-              [class.compatible]="containerMetadata?.gui"
-              [class.not-compatible]="containerMetadata?.gui === false">
+        @if (containerMetadata?.gui) {
+          <span class="chip compatible">
             GUI
-          @if (containerMetadata?.gui) {
             <svg-icon src="assets/icons/fluent-icons/ic_fluent_checkmark_circle_12_filled.svg" />
-          } @else {
-            <svg-icon src="assets/icons/fluent-icons/ic_fluent_dismiss_circle_12_filled.svg" />
-          }
-        </span>
+          </span>
+        }
         @for (programs of [{ type: 'Podman', status: containerMetadata?.podman }, { type: 'Singularity', status: containerMetadata?.singularity }]; track programs.type) {
           @if (programs.status === 'tested') {
             <span class="chip compatible">
