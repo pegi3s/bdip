@@ -4,7 +4,6 @@ export type ImageMetadata = {
   status: string;
   recommended: string;
   latest: string;
-  useful: string[];
   bug_found: string[];
   not_working: string[];
   recommended_last_tested: string;
@@ -17,7 +16,6 @@ export type ImageMetadata = {
   podman: string;
   singularity: string;
   invocation_general: string;
-  invocation_general_comments: string[];
   usual_invocation_specific: string;
   usual_invocation_specific_comments: string[];
   test_invocation_specific: string;

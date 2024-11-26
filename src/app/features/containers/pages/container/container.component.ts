@@ -83,8 +83,6 @@ export class ContainerComponent {
       return VersionStatus.RECOMMENDED;
     } else if (tag.name === containerMetadata.latest) {
       return VersionStatus.LATEST;
-    } else if (containerMetadata.useful.includes(tag.name)) {
-      return VersionStatus.USEFUL;
     } else if (containerMetadata.bug_found.includes(tag.name)) {
       return VersionStatus.BUG_FOUND;
     } else if (containerMetadata.not_working.includes(tag.name)) {
@@ -109,7 +107,6 @@ enum Status {
 enum VersionStatus {
   RECOMMENDED,
   LATEST,
-  USEFUL,
   BUG_FOUND,
   NOT_WORKING,
   NO_LONGER_TESTED
