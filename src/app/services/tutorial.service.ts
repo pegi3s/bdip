@@ -3,6 +3,8 @@ import { Tutorial } from '../models/tutorial';
 import { HttpClient } from '@angular/common/http';
 import { Observable, ReplaySubject, catchError, map } from 'rxjs';
 import { githubInfo } from '../core/constants/github-info';
+import { rxResource } from "@angular/core/rxjs-interop";
+import { VideoTutorial } from "../models/video-tutorial";
 
 @Injectable({
   providedIn: 'root'
@@ -126,6 +128,15 @@ export class TutorialService {
   getTutorials(): Observable<Tutorial[]> {
     return this.tutorials$;
   }
+
+  /**
+   * @returns A resource that contains the list of video tutorials.
+   */
+  readonly videoTutorials = rxResource({
+    loader: () => this.http.get<VideoTutorial[]>(
+      `https://raw.githubusercontent.com/${githubInfo.owner}/${githubInfo.repository}/${githubInfo.branch}/metadata/web/tutorials/video-tutorials.json`
+    ),
+  }).asReadonly();
 }
 
 type GithubListingItem = {

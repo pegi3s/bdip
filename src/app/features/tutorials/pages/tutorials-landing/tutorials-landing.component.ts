@@ -3,6 +3,7 @@ import { RouterLink } from '@angular/router';
 import { TutorialService } from '../../../../services/tutorial.service';
 import { Tutorial } from '../../../../models/tutorial';
 import { ThemeService } from '../../../../services/theme.service';
+import { VideoTutorial } from "../../../../models/video-tutorial";
 
 @Component({
     selector: 'app-tutorials-landing',
@@ -19,9 +20,11 @@ export class TutorialsLandingComponent {
 
   /* Data */
   tutorials = signal<Tutorial[]>([]);
+  videoTutorials: Signal<VideoTutorial[] | undefined>;
 
   constructor() {
     this.isDarkTheme = this.themeService.isDarkTheme();
+    this.videoTutorials = this.tutorialService.videoTutorials.value;
   }
 
   ngOnInit() {

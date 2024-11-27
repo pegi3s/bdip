@@ -7,22 +7,37 @@
     tips, we've got you covered. Click on any tutorial below to begin your
     learning journey.
   </p>
-  <div class="tutorials">
-    @for (tutorial of tutorials(); track $index) {
-      <a [routerLink]="[tutorial.filename]">
-        @if (tutorial.image) {
-          <div class="image" [style.--image-url]="'url(' + tutorial.image + ')'">
-            @if (tutorial.image.includes('assets/')) {
-              <p>{{ tutorial.name }}</p>
-            }
-          </div>
-        } @else {
-          <!-- Avoid broken images placeholder -->
-          <div></div>
-        }
-        <h3>{{ tutorial.name }}</h3>
-        <p>{{ tutorial.description }}</p>
-      </a>
-    }
-  </div>
+  @if (tutorials().length !== 0) {
+    <h3>Text tutorials</h3>
+    <div class="tutorials">
+      @for (tutorial of tutorials(); track $index) {
+        <a [routerLink]="[tutorial.filename]">
+          @if (tutorial.image) {
+            <div class="image" [style.--image-url]="'url(' + tutorial.image + ')'">
+              @if (tutorial.image.includes('assets/')) {
+                <p>{{ tutorial.name }}</p>
+              }
+            </div>
+          } @else {
+            <!-- Avoid broken images placeholder -->
+            <div></div>
+          }
+          <h4>{{ tutorial.name }}</h4>
+          <p>{{ tutorial.description }}</p>
+        </a>
+      }
+    </div>
+  }
+  @if (videoTutorials()?.length) {
+    <h3>Video tutorials</h3>
+    <div class="tutorials">
+      @for (videoTutorial of videoTutorials(); track $index) {
+        <a [href]="[videoTutorial.url]">
+          <div class="image" [style.--image-url]="'url(' + videoTutorial.thumbnail + ')'"></div>
+          <h4>{{ videoTutorial.name }}</h4>
+          <p>{{ videoTutorial.description }}</p>
+        </a>
+      }
+    </div>
+  }
 </section>

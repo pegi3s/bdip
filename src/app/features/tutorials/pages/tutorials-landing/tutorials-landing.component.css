@@ -14,6 +14,11 @@ h2 + p {
   margin-block: 20px;
 }
 
+h3 {
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+}
+
 .tutorials {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(375px, 1fr));
@@ -84,7 +89,7 @@ h2 + p {
     }
 
     /* Title */
-    h3 {
+    h4 {
       margin: 0;
       font-size: 1.5rem;
       line-height: 2rem;
