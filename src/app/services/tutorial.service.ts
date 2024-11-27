@@ -36,7 +36,7 @@ export class TutorialService {
   private loadTutorials(): void {
     // First load the basic tutorial information
     this.getTutorialListing().pipe(
-      map((items: GithubListingItem[]) => items.filter(item => item.type === 'file')),
+      map((items: GithubListingItem[]) => items.filter(item => item.type === 'file' && item.name.endsWith('.md'))),
       catchError(error => {
         console.error('Error loading tutorials:', error);
         return [];
@@ -81,16 +81,18 @@ export class TutorialService {
           tutorial.image = image.download_url!;
         }
       });
+
+      // After images are loaded, assign placeholders to tutorials that don't have an image
+      const numGradients = 3;
+      let gradientIndex = 1;
+      this.tutorials.forEach(tutorial => {
+        if (!tutorial.image) {
+          tutorial.image = `assets/gradients/gradient${gradientIndex}.png`;
+          gradientIndex = (gradientIndex % numGradients) + 1;
+        }
+      });
+
       this.tutorialsSubject.next(this.tutorials);
-    });
-    // Add placeholder image for tutorials without image
-    const numGradients = 3;
-    let gradientIndex = 1;
-    this.tutorials.forEach(tutorial => {
-      if (!tutorial.image) {
-        tutorial.image = `assets/gradients/gradient${gradientIndex}.png`;
-        gradientIndex = (gradientIndex % numGradients) + 1;
-      }
     });
   }
 
