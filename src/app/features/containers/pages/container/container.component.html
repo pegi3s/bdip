@@ -11,6 +11,16 @@
         <span>{{ category.name }}</span>
       }
     </div>
+    <div class="status">
+      @switch (containerMetadata?.status) {
+        @case ('Unusable') {
+          <span class="chip not-working">Unusable</span>
+        }
+        @case ('Not_recommended') {
+          <span class="chip bug-found">Usage not recommended</span>
+        }
+      }
+    </div>
     <div class="stats">
       <div class="pulls">
         <svg-icon src="assets/icons/fluent-icons/ic_fluent_arrow_download_24_regular.svg" svgClass="thick" />
@@ -48,7 +58,9 @@
       </div>
     </div>
     @if (showReadme) {
-      <div class="install">
+      <div class="install"
+           [class.unusable]="containerMetadata?.status === 'Unusable'"
+           [class.not-recommended]="containerMetadata?.status === 'Not_recommended'">
         <svg-icon src="assets/icons/fluent-icons/ic_fluent_window_console_20_filled.svg" />
         <p>Install from the command line</p>
         <code>
@@ -86,8 +98,8 @@
           @let versionStatus = containerMetadata ? getVersionStatus(tag, containerMetadata) : undefined;
           <div class="tag"
                [class.recommended]="versionStatus === VersionStatus.RECOMMENDED"
-               [class.bug-found]="versionStatus === VersionStatus.BUG_FOUND"
-               [class.not-working]="versionStatus === VersionStatus.NOT_WORKING">
+               [class.bug-found]="versionStatus === VersionStatus.BUG_FOUND || versionStatus === VersionStatus.NOT_RECOMMENDED"
+               [class.not-working]="versionStatus === VersionStatus.NOT_WORKING || versionStatus === VersionStatus.UNUSABLE">
             <div class="version">
               <h3>{{ tag.name }}</h3>
               @switch (versionStatus) {

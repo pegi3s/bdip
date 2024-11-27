@@ -79,7 +79,11 @@ export class ContainerComponent {
   }
 
   getVersionStatus(tag: DockerHubTag, containerMetadata: ImageMetadata): VersionStatus | undefined {
-    if (tag.name === containerMetadata.recommended) {
+    if (containerMetadata.status === 'Unusable') {
+      return VersionStatus.UNUSABLE;
+    } else if (containerMetadata.status === 'Not_recommended') {
+      return VersionStatus.NOT_RECOMMENDED;
+    } else if (tag.name === containerMetadata.recommended) {
       return VersionStatus.RECOMMENDED;
     } else if (tag.name === containerMetadata.latest) {
       return VersionStatus.LATEST;
@@ -109,5 +113,8 @@ enum VersionStatus {
   LATEST,
   BUG_FOUND,
   NOT_WORKING,
-  NO_LONGER_TESTED
+  NO_LONGER_TESTED,
+  // Hacky way to avoid writing more code
+  NOT_RECOMMENDED,
+  UNUSABLE
 }
