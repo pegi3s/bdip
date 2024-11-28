@@ -31,9 +31,15 @@
 }
 
 /* Tabs */
-app-tabs {
-  margin-left: auto;
+.listing-options {
+  display: flex;
+  justify-content: flex-end;
+  gap: 16px;
   margin-bottom: 24px;
+
+  app-tabs {
+    margin-bottom: 0;
+  }
 }
 
 /* Grid */

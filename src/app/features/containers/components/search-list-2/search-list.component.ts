@@ -7,10 +7,11 @@ import { TabsComponent } from "../../../../shared/components/tabs/tabs.component
 import { ContainerIconComponent } from "../container-icon/container-icon.component";
 import { ImageMetadata } from "../../../../models/image-metadata";
 import { DockerHubImage } from "../../../../models/docker-hub-image";
+import { DropdownComponent } from "../../../../shared/components/dropdown/dropdown.component";
 
 @Component({
     selector: 'app-search-list',
-    imports: [RouterLink, TabsComponent, ContainerIconComponent],
+  imports: [RouterLink, TabsComponent, ContainerIconComponent, DropdownComponent],
     templateUrl: './search-list.component.html',
     styleUrl: './search-list.component.css',
     host: { '[class.dark]': 'isDarkTheme()' },
@@ -45,13 +46,26 @@ export class SearchListComponent {
     } else {
       this.getContainersByCategories(this.rootCategories(), matchedContainers);
     }
-    return [...matchedContainers].sort();
+
+    if (this.sortOptions[this.selectedSortOption()].value === 'name') {
+      const sortedContainers = [...matchedContainers].sort();
+      return this.sortOptions[this.selectedSortOption()].reverse ? sortedContainers.reverse() : sortedContainers;
+    }
+
+    return [...matchedContainers];
   });
 
   /**
    * Level of detail for the container list. If true, the list is compact.
    */
   protected isCompact = signal<boolean>(false);
+
+  /** Sorting options for the container list. */
+  sortOptions = [
+    { name: 'Name: A-Z', value: 'name', icon: 'assets/icons/fluent-icons/ic_fluent_text_sort_ascending_24_regular.svg' },
+    { name: 'Name: Z-A', value: 'name', reverse: true, icon: 'assets/icons/fluent-icons/ic_fluent_text_sort_descending_24_regular.svg' },
+  ];
+  selectedSortOption = signal<number>(0);
 
   constructor() {
     this.containerService.getContainersMap().subscribe((containers) => {
