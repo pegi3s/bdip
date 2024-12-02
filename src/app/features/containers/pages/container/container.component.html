@@ -57,7 +57,7 @@
         }
       </div>
     </div>
-    @if (showReadme) {
+    @if (selectedTab() !== 'tags') {
       <div class="install"
            [class.unusable]="containerMetadata?.status === 'Unusable'"
            [class.not-recommended]="containerMetadata?.status === 'Not_recommended'">
@@ -84,69 +84,20 @@
   </div>
   <div class="details-container">
     <app-tabs (activeTab)="onTabSelectedGettingStarted($event)" [tabs]="[
-      { id: 'readme', label: 'readme', active: true },
-      { id: 'tags', label: 'tags' }]" />
-    @if (showReadme) {
+        { id: TabName.README, label: 'README', active: true },
+        { id: TabName.TAGS, label: TabName.TAGS },
+        { id: TabName.TEST_DATA, label: 'Test data' }
+      ]" />
+    @if (selectedTab() === 'readme') {
       <markdown
         clipboard
         [clipboardButtonComponent]="clipboardButton"
         class="markdown-body"
         [data]="container.full_description" />
-    } @else if (containerTags != undefined) {
-      <div class="tags">
-        @for (tag of containerTags; track $index) {
-          @let versionStatus = containerMetadata ? getVersionStatus(tag, containerMetadata) : undefined;
-          <div class="tag"
-               [class.recommended]="versionStatus === VersionStatus.RECOMMENDED"
-               [class.bug-found]="versionStatus === VersionStatus.BUG_FOUND || versionStatus === VersionStatus.NOT_RECOMMENDED"
-               [class.not-working]="versionStatus === VersionStatus.NOT_WORKING || versionStatus === VersionStatus.UNUSABLE">
-            <div class="version">
-              <h3>{{ tag.name }}</h3>
-              @switch (versionStatus) {
-                @case (VersionStatus.RECOMMENDED) {
-                  <p class="chip recommended">Recommended</p>
-                }
-                @case (VersionStatus.BUG_FOUND) {
-                  <p class="chip bug-found">Bug found</p>
-                }
-                @case (VersionStatus.NOT_WORKING) {
-                  <p class="chip not-working">Not working</p>
-                }
-                @case (VersionStatus.NO_LONGER_TESTED) {
-                  <p class="chip no-longer-tested">No longer tested</p>
-                }
-              }
-            </div>
-            <p class="last-pushed">Last pushed {{ tag.tag_last_pushed | date }}</p>
-            <code class="command">
-              {{ buildDockerPullCommand(container, tag.name) }}
-              <app-clipboard-button [text]="buildDockerPullCommand(container, tag.name)" />
-            </code>
-            <div>
-              <table>
-                <thead>
-                  <tr>
-                    <th>Digest</th>
-                    <th>OS</th>
-                    <th>Architecture</th>
-                    <th>Size</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  @for (image of tag.images; track $index) {
-                    <tr>
-                      <td>{{ image.digest | slice: 7 : 19 }}</td>
-                      <td>{{ image.os }}</td>
-                      <td>{{ image.architecture }}</td>
-                      <td>{{ image.size | bytesToSize }}</td>
-                    </tr>
-                  }
-                </tbody>
-              </table>
-            </div>
-          </div>
-        }
-      </div>
+    } @else if (selectedTab() === 'tags' && containerTags != undefined) {
+      <ng-container *ngTemplateOutlet="tags; context: { containerTags: containerTags, containerMetadata: containerMetadata }"></ng-container>
+    } @else if (selectedTab() === 'test-data') {
+      <ng-container *ngTemplateOutlet="testData; context: { containerMetadata: containerMetadata }"></ng-container>
     }
   </div>
 } @else if (status === Status.LOADING) {
@@ -154,3 +105,97 @@
 } @else if (status === Status.ERROR_NOT_FOUND) {
   <h2>Container not found</h2>
 }
+
+<ng-template #tags let-containerMetadata="containerMetadata">
+  <div class="tags">
+    @for (tag of containerTags; track $index) {
+      @let versionStatus = containerMetadata ? getVersionStatus(tag, containerMetadata) : undefined;
+      <div class="tag"
+           [class.recommended]="versionStatus === VersionStatus.RECOMMENDED"
+           [class.bug-found]="versionStatus === VersionStatus.BUG_FOUND || versionStatus === VersionStatus.NOT_RECOMMENDED"
+           [class.not-working]="versionStatus === VersionStatus.NOT_WORKING || versionStatus === VersionStatus.UNUSABLE">
+        <div class="version">
+          <h3>{{ tag.name }}</h3>
+          @switch (versionStatus) {
+            @case (VersionStatus.RECOMMENDED) {
+              <p class="chip recommended">Recommended</p>
+            }
+            @case (VersionStatus.BUG_FOUND) {
+              <p class="chip bug-found">Bug found</p>
+            }
+            @case (VersionStatus.NOT_WORKING) {
+              <p class="chip not-working">Not working</p>
+            }
+            @case (VersionStatus.NO_LONGER_TESTED) {
+              <p class="chip no-longer-tested">No longer tested</p>
+            }
+          }
+        </div>
+        <p class="last-pushed">Last pushed {{ tag.tag_last_pushed | date }}</p>
+        <code class="command">
+          {{ buildDockerPullCommand(container!, tag.name) }}
+          <app-clipboard-button [text]="buildDockerPullCommand(container!, tag.name)" />
+        </code>
+        <div>
+          <table>
+            <thead>
+            <tr>
+              <th>Digest</th>
+              <th>OS</th>
+              <th>Architecture</th>
+              <th>Size</th>
+            </tr>
+            </thead>
+            <tbody>
+              @for (image of tag.images; track $index) {
+                <tr>
+                  <td>{{ image.digest | slice: 7 : 19 }}</td>
+                  <td>{{ image.os }}</td>
+                  <td>{{ image.architecture }}</td>
+                  <td>{{ image.size | bytesToSize }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+    }
+  </div>
+</ng-template>
+
+<ng-template #testData let-containerMetadata="containerMetadata">
+  <markdown
+    clipboard
+    [clipboardButtonComponent]="clipboardButton"
+    class="markdown-body"
+    ngPreserveWhitespaces>
+
+    ## Test data
+
+    To test the previous command(s), you can use the test data available [here]({{ containerMetadata.test_data_url }}).
+
+    The results obtained should be similar to the ones [here]({{ containerMetadata.test_results_url }}) provided.
+
+    You can run the following commands to test the image using the provided test data , or alternatively, use the [“docknrun” Docker image](http://bdip.i3s.up.pt/getting-started#run-commands):
+
+    ```bash
+    cd $(mktemp -d "/tmp/test.XXXXXXX")
+
+    mkdir Test_data outputFolder
+
+    cd Test_data
+    wget "{{ containerMetadata.test_data_url }}"
+
+    downloaded_file = $(basename "{{ containerMetadata.test_data_url }}")
+
+    if file "$downloaded_file" | grep -q "Zip archive data"; then
+      unzip "$downloaded_file"
+    fi
+
+    cd ..
+
+    {{ containerMetadata.invocation_general | replaceExampleDir }} {{ containerMetadata.test_invocation_specific }}
+    ```
+
+  </markdown>
+</ng-template>

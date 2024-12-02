@@ -1,10 +1,10 @@
-import { Component, inject, Signal } from "@angular/core";
+import { Component, inject, signal, Signal } from "@angular/core";
 import { DockerHubImage } from '../../../../models/docker-hub-image';
 import { DockerHubTag } from '../../../../models/docker-hub-tag';
 import { ActivatedRoute } from '@angular/router';
 import { ContainerService } from '../../../../services/container.service';
 import { MarkdownModule } from 'ngx-markdown';
-import { AsyncPipe, DatePipe, SlicePipe } from '@angular/common';
+import { AsyncPipe, DatePipe, NgTemplateOutlet, SlicePipe } from "@angular/common";
 import { ThemeService } from '../../../../services/theme.service';
 import { ClipboardButtonComponent } from '../../../../shared/components/clipboard-button/clipboard-button.component';
 import { TabsComponent } from "../../../../shared/components/tabs/tabs.component";
@@ -13,13 +13,14 @@ import { SvgIconComponent } from 'angular-svg-icon';
 import { LoadingComponent } from "../../../../shared/components/loading/loading.component";
 import { ImageMetadata } from "../../../../models/image-metadata";
 import { Observable } from "rxjs";
+import { ReplaceExampleDirPipe } from "../../pipes/replace-example-dir/replace-example-dir.pipe";
 
 @Component({
     selector: 'app-container',
     templateUrl: './container.component.html',
     styleUrl: './container.component.css',
     host: { '[class.dark]': 'isDarkTheme()' },
-    imports: [AsyncPipe, DatePipe, SlicePipe, MarkdownModule, TabsComponent, BytesToSizePipe, ClipboardButtonComponent, SvgIconComponent, LoadingComponent]
+  imports: [AsyncPipe, DatePipe, SlicePipe, MarkdownModule, TabsComponent, BytesToSizePipe, ClipboardButtonComponent, SvgIconComponent, LoadingComponent, NgTemplateOutlet, ReplaceExampleDirPipe]
 })
 export class ContainerComponent {
   /* Services */
@@ -34,7 +35,7 @@ export class ContainerComponent {
   container?: DockerHubImage;
   containerTags?: DockerHubTag[];
 
-  showReadme = true;
+  selectedTab = signal<TabName>(TabName.README);
 
   constructor() {
     this.isDarkTheme = this.themeService.isDarkTheme();
@@ -71,7 +72,7 @@ export class ContainerComponent {
   }
 
   onTabSelectedGettingStarted(tab: string) {
-    this.showReadme = tab === 'readme';
+    this.selectedTab.set(tab as TabName);
   }
 
   getContainerMetadataByName(name: string): Observable<ImageMetadata | undefined> {
@@ -99,6 +100,7 @@ export class ContainerComponent {
 
   protected readonly Status = Status;
   protected readonly VersionStatus = VersionStatus;
+  protected readonly TabName = TabName;
 }
 
 enum Status {
@@ -117,4 +119,10 @@ enum VersionStatus {
   // Hacky way to avoid writing more code
   NOT_RECOMMENDED,
   UNUSABLE
+}
+
+enum TabName {
+  README = 'readme',
+  TAGS = 'tags',
+  TEST_DATA = 'test-data',
 }
