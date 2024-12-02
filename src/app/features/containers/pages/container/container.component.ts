@@ -98,6 +98,10 @@ export class ContainerComponent {
     return undefined;
   }
 
+  removeReadmeOwnershipHeader(readme: string): string {
+    return readme.replace(/# This image belongs to a larger project called Bioinformatics Docker Images Project.*/, '');
+  }
+
   protected readonly Status = Status;
   protected readonly VersionStatus = VersionStatus;
   protected readonly TabName = TabName;

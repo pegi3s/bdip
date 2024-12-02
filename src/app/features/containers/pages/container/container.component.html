@@ -93,7 +93,7 @@
         clipboard
         [clipboardButtonComponent]="clipboardButton"
         class="markdown-body"
-        [data]="container.full_description" />
+        [data]="removeReadmeOwnershipHeader(container.full_description)" />
     } @else if (selectedTab() === 'tags' && containerTags != undefined) {
       <ng-container *ngTemplateOutlet="tags; context: { containerTags: containerTags, containerMetadata: containerMetadata }"></ng-container>
     } @else if (selectedTab() === 'test-data') {
