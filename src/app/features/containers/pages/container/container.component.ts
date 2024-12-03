@@ -13,14 +13,14 @@ import { SvgIconComponent } from 'angular-svg-icon';
 import { LoadingComponent } from "../../../../shared/components/loading/loading.component";
 import { ImageMetadata } from "../../../../models/image-metadata";
 import { Observable } from "rxjs";
-import { ReplaceExampleDirPipe } from "../../pipes/replace-example-dir/replace-example-dir.pipe";
+import { ReplacePipe } from "../../../../shared/pipes/replace/replace.pipe";
 
 @Component({
     selector: 'app-container',
     templateUrl: './container.component.html',
     styleUrl: './container.component.css',
     host: { '[class.dark]': 'isDarkTheme()' },
-  imports: [AsyncPipe, DatePipe, SlicePipe, MarkdownModule, TabsComponent, BytesToSizePipe, ClipboardButtonComponent, SvgIconComponent, LoadingComponent, NgTemplateOutlet, ReplaceExampleDirPipe]
+  imports: [AsyncPipe, DatePipe, SlicePipe, MarkdownModule, TabsComponent, BytesToSizePipe, ClipboardButtonComponent, SvgIconComponent, LoadingComponent, NgTemplateOutlet, ReplacePipe]
 })
 export class ContainerComponent {
   /* Services */

@@ -194,7 +194,9 @@
 
     cd ..
 
-    {{ containerMetadata.invocation_general | replaceExampleDir }} {{ containerMetadata.test_invocation_specific }}
+    {{ containerMetadata.invocation_general + ' ' + containerMetadata.test_invocation_specific
+       | replace:'/your/data/dir':'$(pwd)'
+       | replace:buildDockerPullCommand(container!).replace('docker pull ', ""):buildDockerPullCommand(container!, containerMetadata.recommended).replace('docker pull ', "") }}
     ```
 
   </markdown>
