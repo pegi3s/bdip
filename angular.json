@@ -26,10 +26,13 @@
             ],
             "styles": [
               "src/styles.css",
-              "src/app/shared/styles/markdown-body.css"
+              "src/app/shared/styles/markdown-body.css",
+              "src/app/shared/styles/prism-coldark.css"
             ],
             "scripts": [
-              "node_modules/clipboard/dist/clipboard.min.js"
+              "node_modules/clipboard/dist/clipboard.min.js",
+              "node_modules/prismjs/prism.js",
+              "node_modules/prismjs/components/prism-bash.min.js"
             ]
           },
           "configurations": {
