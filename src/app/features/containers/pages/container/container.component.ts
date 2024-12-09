@@ -84,11 +84,11 @@ export class ContainerComponent {
       return VersionStatus.UNUSABLE;
     } else if (containerMetadata.status === 'Not_recommended') {
       return VersionStatus.NOT_RECOMMENDED;
-    } else if (tag.name === containerMetadata.recommended) {
+    } else if (containerMetadata.recommended.find(recommended => recommended.version === tag.name)) {
       return VersionStatus.RECOMMENDED;
     } else if (tag.name === containerMetadata.latest) {
       return VersionStatus.LATEST;
-    } else if (containerMetadata.bug_found.includes(tag.name)) {
+    } else if (containerMetadata.bug_found.find(bug => bug.version === tag.name)) {
       return VersionStatus.BUG_FOUND;
     } else if (containerMetadata.not_working.includes(tag.name)) {
       return VersionStatus.NOT_WORKING;
