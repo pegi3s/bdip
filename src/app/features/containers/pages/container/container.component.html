@@ -86,7 +86,7 @@
     <app-tabs (activeTab)="onTabSelectedGettingStarted($event)" [tabs]="[
         { id: TabName.README, label: 'README', active: true },
         { id: TabName.TAGS, label: TabName.TAGS },
-        { id: TabName.TEST_DATA, label: 'Test data' }
+        { id: TabName.TESTING, label: 'Testing' }
       ]" />
     @if (selectedTab() === 'readme') {
       <markdown
@@ -96,8 +96,8 @@
         [data]="removeReadmeOwnershipHeader(container.full_description)" />
     } @else if (selectedTab() === 'tags' && containerTags != undefined) {
       <ng-container *ngTemplateOutlet="tags; context: { containerTags: containerTags, containerMetadata: containerMetadata }"></ng-container>
-    } @else if (selectedTab() === 'test-data') {
-      <ng-container *ngTemplateOutlet="testData; context: { containerMetadata: containerMetadata }"></ng-container>
+    } @else if (selectedTab() === 'testing') {
+      <ng-container *ngTemplateOutlet="testing; context: { containerMetadata: containerMetadata }"></ng-container>
     }
   </div>
 } @else if (status === Status.LOADING) {
@@ -163,22 +163,97 @@
   </div>
 </ng-template>
 
-<ng-template #testData let-containerMetadata="containerMetadata">
+<ng-template #testing let-containerMetadata="containerMetadata">
+  @if (containerMetadata.gui) {
+    @if (containerMetadata.gui_command.length > 0) {
+      <ng-container *ngTemplateOutlet="testingGUI; context: { containerMetadata: containerMetadata }"></ng-container>
+    } @else {
+      <ng-container *ngTemplateOutlet="testingMissingInstructions; context: { section: 'GUI' }"></ng-container>
+    }
+  }
+  @if (containerMetadata.test_invocation_specific.length > 0 && containerMetadata.test_data_url.length > 0) {
+    <ng-container *ngTemplateOutlet="testingCLI; context: { containerMetadata: containerMetadata }"></ng-container>
+  } @else {
+    <ng-container *ngTemplateOutlet="testingMissingInstructions; context: { section: 'CLI' }"></ng-container>
+  }
+</ng-template>
+
+<ng-template #testingMissingInstructions let-section="section">
+  <markdown
+    class="markdown-body"
+    ngPreserveWhitespaces>
+
+    # {{ section }}
+
+    This image does not provide testing instructions yet.
+
+  </markdown>
+</ng-template>
+
+<ng-template #testingCLI let-containerMetadata="containerMetadata">
   <markdown
     clipboard
     [clipboardButtonComponent]="clipboardButton"
     class="markdown-body"
     ngPreserveWhitespaces>
 
-    ## Test data
+    # CLI
 
-    To test the previous command(s), you can use the test data available [here]({{ containerMetadata.test_data_url }}).
+    To test the image, you can use the test data available [here]({{ containerMetadata.test_data_url }}).
 
     The results obtained should be similar to the ones [here]({{ containerMetadata.test_results_url }}) provided.
 
-    You can run the following commands to test the image using the provided test data , or alternatively, use the [“docknrun” Docker image](http://bdip.i3s.up.pt/getting-started#run-commands):
+    Below you can find several ways of testing the image, according to your level of expertise.
 
-    ```bash
+    ## 1. Using `docknrun`
+
+    You can download the test data and run the Docker image using the [`docknrun` Docker image](http://bdip.i3s.up.pt/getting-started#run-commands).
+
+    ## 2. Manual execution
+
+    You can create a working directory at the desired location, and within the working directory two additional directories
+    named `Test_data` and `outputFolder`, download the test data using the link provided above, copy the file from the `Downloads`
+    folder to the `Test_data` folder, unzip the file (if needed), and then open the command line (Linux) or Ubuntu app (Windows WSL),
+    and run the following command:
+
+    ```sh
+    {{ containerMetadata.invocation_general + ' ' + containerMetadata.test_invocation_specific
+    | replace:buildDockerPullCommand(container!).replace('docker pull ', ""):buildDockerPullCommand(container!, containerMetadata?.recommended?.[0]?.version).replace('docker pull ', "") }}
+    ```
+
+    Where `/your/data/dir` points to the working directory where you have the test data.
+
+    ## 3. Step by step execution
+
+    You can open a command line or Ubuntu app (Windows WSL) and invoke the following commands one by one (lines that start with # are
+    comments and therefore can be skipped as they have no effect). Note that `/your/data/dir` must be replaced by the path to the
+    desired working directory.
+
+    ```sh
+    # Attributes the value of the path to the working directory to the working_dir variable.
+    working_dir="/your/data/dir"
+    # Creates the Test_data and outputFolder directories at the specified location (working dir). The -p option makes sures that any parent folders are created if needed.
+    mkdir -p $working_dir/Test_data $working_dir/outputFolder
+    # Changes the directory to the Test_data directory within the working directory.
+    cd $working_dir/Test_data
+    # Downloads the test data to the Test_data directory
+    wget "{{ containerMetadata.test_data_url }}"
+    # to be executed only if the test data is zipped. It gets the name of the zipped file from the download link and unzips the file.
+    downloaded_file=$(basename "{{ containerMetadata.test_data_url }}") && unzip "$downloaded_file"
+    # Moves the current directory one level up
+    cd ..
+    # Runs the Docker image using the test data
+    {{ containerMetadata.invocation_general + ' ' + containerMetadata.test_invocation_specific
+    | replace:'/your/data/dir':'$(pwd)'
+    | replace:buildDockerPullCommand(container!).replace('docker pull ', ""):buildDockerPullCommand(container!, containerMetadata?.recommended?.[0]?.version).replace('docker pull ', "") }}
+    ```
+
+    ## 4. Advanced execution
+
+    If you want to run a quick test, you can simply copy the following set of commands and paste all of them at once in the command
+    line or Ubuntu app (Windows WSL). The needed directory structure is created under `/tmp` with the name `test.&lt;random_word&gt;`:
+
+    ```sh
     cd $(mktemp -d "/tmp/test.XXXXXXX")
 
     mkdir Test_data outputFolder
@@ -189,15 +264,35 @@
     downloaded_file = $(basename "{{ containerMetadata.test_data_url }}")
 
     if file "$downloaded_file" | grep -q "Zip archive data"; then
-      unzip "$downloaded_file"
+    unzip "$downloaded_file"
     fi
 
     cd ..
 
     {{ containerMetadata.invocation_general + ' ' + containerMetadata.test_invocation_specific
-       | replace:'/your/data/dir':'$(pwd)'
-       | replace:buildDockerPullCommand(container!).replace('docker pull ', ""):buildDockerPullCommand(container!, containerMetadata.recommended).replace('docker pull ', "") }}
+    | replace:'/your/data/dir':'$(pwd)'
+    | replace:buildDockerPullCommand(container!).replace('docker pull ', ""):buildDockerPullCommand(container!, containerMetadata?.recommended?.[0]?.version).replace('docker pull ', "") }}
     ```
+  </markdown>
+</ng-template>
 
+<ng-template #testingGUI let-containerMetadata="containerMetadata">
+  <markdown
+    clipboard
+    [clipboardButtonComponent]="clipboardButton"
+    class="markdown-body"
+    ngPreserveWhitespaces>
+
+    # GUI
+
+    To test the image, you can use the test data available [here]({{ containerMetadata.test_data_url }}).
+
+    The results obtained should be similar to the ones [here]({{ containerMetadata.test_results_url }}) provided.
+
+    You can run the following command to open the GUI (note that your current working directory will be available at `/data`):
+
+    ```sh
+    docker run --rm -ti -e USERID=$UID -e USER=$USER -e DISPLAY=$DISPLAY -v /var/db:/var/db:Z -v /tmp/.X11-unix:/tmp/.X11-unix -v $HOME/.Xauthority:/home/developer/.Xauthority -v "$(pwd):/data" -v /var/run/docker.sock:/var/run/docker.sock -v /tmp:/tmp pegi3s/{{ containerMetadata.name }}:{{ containerMetadata.latest }} {{ containerMetadata.gui_command }}
+    ```
   </markdown>
 </ng-template>

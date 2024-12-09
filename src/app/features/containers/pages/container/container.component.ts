@@ -128,5 +128,5 @@ enum VersionStatus {
 enum TabName {
   README = 'readme',
   TAGS = 'tags',
-  TEST_DATA = 'test-data',
+  TESTING = 'testing',
 }
