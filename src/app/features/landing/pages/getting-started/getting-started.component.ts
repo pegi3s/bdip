@@ -28,12 +28,12 @@ export class GettingStartedComponent {
   readonly containerRef = viewChild.required('container', { read: ViewContainerRef });
   readonly installDockerTemplate = viewChild.required<TemplateRef<any>>('installDocker');
   readonly dockerManagerTemplate = viewChild.required<TemplateRef<any>>('dockerManager');
-  readonly runCommandsTemplate = viewChild.required<TemplateRef<any>>('runCommands');
+  readonly runCommandsGUITemplate = viewChild.required<TemplateRef<any>>('runCommandsGUI');
   readonly commonIssuesTemplate = viewChild.required<TemplateRef<any>>('commonIssues');
   protected steps = [
     { fragmentName: 'install-docker', name: 'Install Docker', icon: 'assets/icons/logos/docker-mark-blue.svg' },
     { fragmentName: 'manage-docker-images', name: 'Manage Docker Images', icon: 'assets/icons/octicons/container-24.svg' },
-    { fragmentName: 'run-commands', name: 'Run commands', icon: 'assets/icons/fluent-icons/ic_fluent_window_console_20_filled.svg' },
+    { fragmentName: 'run-commands-gui', name: 'Run using a GUI', icon: 'assets/icons/fluent-icons/ic_fluent_window_console_20_filled.svg' },
     { fragmentName: 'common-issues', name: 'Common issues', icon: 'assets/icons/fluent-icons/ic_fluent_error_circle_24_filled.svg' }
   ];
   readonly commonIssuesUrl = `https://raw.githubusercontent.com/${githubInfo.owner}/${githubInfo.repository}/${githubInfo.branch}/metadata/web/getting_started/common_issues.md`;
@@ -76,8 +76,8 @@ export class GettingStartedComponent {
       case 'manage-docker-images':
         this.containerRef().createEmbeddedView(this.dockerManagerTemplate());
         break;
-      case 'run-commands':
-        this.containerRef().createEmbeddedView(this.runCommandsTemplate());
+      case 'run-commands-gui':
+        this.containerRef().createEmbeddedView(this.runCommandsGUITemplate());
         break;
       case 'common-issues':
         this.containerRef().createEmbeddedView(this.commonIssuesTemplate());

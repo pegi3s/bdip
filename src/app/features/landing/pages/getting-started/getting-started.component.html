@@ -116,7 +116,7 @@
 <ng-template #dockerManager>
   <div>
     <h2>Manage Docker Images</h2>
-    <img [src]="isDarkTheme() ? 'assets/images/docker-manager-dark.png' : 'assets/images/docker-manager-light.png'" alt="Docker Manager" id="docker-manager-img" />
+    <img [src]="'assets/images/getting-started/manage-docker-images/docker-manager-' + (isDarkTheme() ? 'dark' : 'light') + '.png'" alt="Docker Manager" id="docker-manager-img" />
     <p>After running several Docker images, you may lose track of the images available on a given computer. You may want to delete Docker images that you are not going to use again soon to save hard disk space or erase leftover Docker images that remain after an unexpected restart. All these operations can be managed using the <strong>pegi3s/docker-manager</strong> image, which provides a simple graphical interface for managing Docker images.</p>
 
     <div class="note">
@@ -135,10 +135,108 @@
   </div>
 </ng-template>
 
-<ng-template #runCommands>
-  <div>
-    <h2>Run Docker Commands</h2>
+<ng-template #runCommandsGUI>
+  <div class="markdown-body">
+    <h2>Run commands using a GUI</h2>
+    <p>docknrun is a Docker image that offers a graphical interface (GUI) that facilitates:</p>
+    <ul>
+      <li>The <strong>choice</strong> (through the "Select an Image" button; Figures 1 and 2).</li>
+      <li>The <strong>management</strong> (through the "docker-manager" button that launches an instance of the docker-manager Docker image; Figure 1).</li>
+      <li>The <strong>running</strong> of Docker images (Figure 3).</li>
+    </ul>
+    <p>In the main window, the "pegi3s" button also offers a convenient way to access the web page of the project (<a href="http://bdip.i3s.up.pt/">http://bdip.i3s.up.pt/</a>), and informative videos are displayed.</p>
 
+    <h2>Main Window</h2>
+
+    <p>The <strong>"Select an Image"</strong> button allows choosing the desired Docker image using the same ontology information that is implemented at <a href="http://bdip.i3s.up.pt/">http://bdip.i3s.up.pt/</a>. When this is done, buttons are made available to:</p>
+    <ul>
+      <li><strong>Open documentation</strong> for the software of choice ("Open documentation" button).</li>
+      <li>Access information at <a href="http://bdip.i3s.up.pt/">http://bdip.i3s.up.pt/</a> for the selected Docker Image ("Open pegi3s" button).</li>
+      <li>Open the corresponding <strong>GitHub page</strong> ("Open GitHub" button).</li>
+      <li>Access <strong>Test Data</strong> for the selected image ("Test Data" button; test data is already available for most Docker images, and will be soon available for all of them).</li>
+      <li>Access <strong>Test Data Results</strong> ("Test Data Results" button).</li>
+    </ul>
+
+    <p>By selecting the <strong>"Open Run Page"</strong> button, another window is displayed (Figure 3) where the user can make decisions on how to run the desired software.</p>
+
+    <div class="figure-pair">
+      <figure>
+        <img src="assets/images/getting-started/run-commands-gui/image1.png" alt="docknrun main window">
+        <figcaption>Figure 1. docknrun main window</figcaption>
+      </figure>
+      <figure>
+        <img src="assets/images/getting-started/run-commands-gui/image2.png" alt="docknrun main window">
+        <figcaption>Figure 2. docknrun main window showing the selection of the Docker image "clustalomega".</figcaption>
+      </figure>
+    </div>
+
+    <h2>Run Docker Image Window</h2>
+    <p>In the docknrun <strong>"Run Docker Image"</strong> window, the user can:</p>
+    <ul>
+      <li>Check the documentation for the selected image.</li>
+      <li>Choose the image version (e.g., <code>clustalomega:1.2.4</code> in Figure 3; the Docker image version usually matches the software version).</li>
+      <li>Select the <strong>input data</strong> (e.g., "Select a fasta file" button in Figure 3).</li>
+      <li>Specify the <strong>output folder</strong> ("Push" button; the folder will be created if it does not exist).</li>
+      <li>View <strong>Developer Notes</strong> (e.g., bug reports, Singularity/Podman compatibility, last testing date).</li>
+      <li>Add <strong>User Notes</strong> (comments for future reference stored in the <code>Docker_notebook</code> folder in the working directory).</li>
+    </ul>
+
+    <h3>Working Directory Notes</h3>
+    <p>If the user wants to change the working directory, they should copy the <code>Docker_notebook</code> folder to the new location. Otherwise, the user history (comments, saved executable, and latest invocation files) will be lost.</p>
+
+    <h3>Additional Features</h3>
+    <ul>
+      <li><strong>Create executable file</strong>: Generates executable files.</li>
+      <li><strong>Latest invocation</strong>: Loads the latest invocations of the selected image.</li>
+      <li><strong>Test Data Invocation</strong>: Adapts the command in the "Run command" box to use test data (test data must be downloaded first).</li>
+    </ul>
+
+    <p>By selecting the <strong>"Run"</strong> button, a new window opens to display the operations underway and the time it took to complete the requested analysis (Figure 4). If the selected image does not need to be pulled, nothing may be shown in the "running" box.</p>
+
+    <div class="figure-pair">
+      <figure>
+        <img [src]="'assets/images/getting-started/run-commands-gui/image3-' + (isDarkTheme() ? 'dark' : 'light') + '.png'" alt="docknrun Run Docker Image window">
+        <figcaption>Figure 3. docknrun "Run Docker Image" window.</figcaption>
+      </figure>
+      <figure>
+        <img src="assets/images/getting-started/run-commands-gui/image4.png" alt="docknrun Running Docker Image secondary window">
+        <figcaption>Figure 4. docknrun "Run Docker Image" secondary window.</figcaption>
+      </figure>
+    </div>
+
+    <markdown
+      clipboard
+      [clipboardButtonComponent]="clipboardButton"
+      class="markdown-body"
+      ngPreserveWhitespaces>
+
+      ## Running docknrun Docker Image
+
+      To run this Docker image, you must have a file named `config` in the working directory. This file declares the location of the files to be processed, such as:
+
+      ```bash
+      dir="/your/data/dir"
+      ```
+
+      Then, adapt and run the following command (you may need to invoke `xhost +` first):
+
+      ```bash
+      docker run --rm -ti \
+      -e USERID=$UID \
+      -e USER=$USER \
+      -e DISPLAY=$DISPLAY \
+      -v /var/db:/var/db:Z \
+      -v /tmp/.X11-unix:/tmp/.X11-unix \
+      -v $HOME/.Xauthority:/home/developer/.Xauthority \
+      -v /var/run/docker.sock:/var/run/docker.sock \
+      -v /tmp:/tmp \
+      -v /your/data/dir:/data \
+      pegi3s/docknrun
+      ```
+
+      Where `/your/data/dir` points to the directory containing the config file.
+
+    </markdown>
   </div>
 </ng-template>
 
