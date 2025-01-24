@@ -64,8 +64,8 @@
         <svg-icon src="assets/icons/fluent-icons/ic_fluent_window_console_20_filled.svg" />
         <p>Install from the command line</p>
         <code>
-          {{ buildDockerPullCommand(container, containerMetadata?.recommended?.[0]?.version) }}
-          <app-clipboard-button [text]="buildDockerPullCommand(container, containerMetadata?.recommended?.[0]?.version)" />
+          {{ buildDockerPullCommand(container, getLatestRecommendedTag(containerMetadata)) }}
+          <app-clipboard-button [text]="buildDockerPullCommand(container, getLatestRecommendedTag(containerMetadata))" />
         </code>
       </div>
     }

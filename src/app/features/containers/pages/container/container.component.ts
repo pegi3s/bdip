@@ -63,6 +63,19 @@ export class ContainerComponent {
     });
   }
 
+  getLatestRecommendedTag(containerMetadata?: ImageMetadata | null): string {
+    if (!containerMetadata) {
+      return '';
+    }
+
+    const latestRecommended = containerMetadata.recommended.find(recommended => recommended.version === containerMetadata.latest);
+    if (latestRecommended) {
+      return latestRecommended.version;
+    }
+    // else
+    return containerMetadata.recommended[containerMetadata.recommended.length - 1].version;
+  }
+
   buildDockerPullCommand(container: DockerHubImage, tag?: string | null): string {
     let command = `docker pull ${container.namespace}/${container.name}`;
     if (tag)
