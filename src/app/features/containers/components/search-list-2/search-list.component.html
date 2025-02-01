@@ -1,5 +1,6 @@
 @if (matchedContainers().length !== 0) {
   <div class="listing-options">
+    <app-icon-dropdown icon="assets/icons/fluent-icons/ic_fluent_filter_24_filled.svg" [items]="filterOptions" [(selected)]="selectedFilterOption"/>
     <app-dropdown [items]="sortOptions" [(selected)]="selectedSortOption"/>
     <app-tabs class="only-icons" [tabs]="[
         { id: 'c', icon: 'assets/icons/fluent-icons/ic_fluent_grid_24_filled.svg', active: isCompact()},
@@ -7,7 +8,10 @@
       ]" (activeTab)="onTabSelectedGridView($event)" />
   </div>
 }
-<div class="category-container" [class.compact]="isCompact()">
+<div class="category-container" [class.compact]="isCompact()"
+     [class.show-new]="selectedFilterOption() !== -1 && filterOptions[selectedFilterOption()].value === 'new'"
+     [class.show-updated]="selectedFilterOption() !== -1 && filterOptions[selectedFilterOption()].value === 'updated'"
+     [class.hide-unusable]="selectedFilterOption() !== -1 && filterOptions[selectedFilterOption()].value === 'hide-unusable'">
   @for (container of matchedContainers(); track container) {
     @let containerMetadata = getContainerMetadataByName(container);
     <a class="container-item" [routerLink]="['/container', container]"

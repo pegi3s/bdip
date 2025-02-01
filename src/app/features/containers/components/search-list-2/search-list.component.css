@@ -50,6 +50,20 @@
   row-gap: 14px;
 }
 
+.category-container {
+  &.show-new > :not(.new) {
+    display: none;
+  }
+
+  &.show-updated > :not(.updated) {
+    display: none;
+  }
+
+  &.hide-unusable > .unusable {
+    display: none;
+  }
+}
+
 .container-item {
   display: grid;
   grid-template-rows: min-content 1fr;

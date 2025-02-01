@@ -8,10 +8,11 @@ import { ContainerIconComponent } from "../container-icon/container-icon.compone
 import { ImageMetadata } from "../../../../models/image-metadata";
 import { DockerHubImage } from "../../../../models/docker-hub-image";
 import { DropdownComponent } from "../../../../shared/components/dropdown/dropdown.component";
+import { IconDropdownComponent } from "../../../../shared/components/icon-dropdown/icon-dropdown.component";
 
 @Component({
     selector: 'app-search-list',
-  imports: [RouterLink, TabsComponent, ContainerIconComponent, DropdownComponent],
+  imports: [RouterLink, TabsComponent, ContainerIconComponent, DropdownComponent, IconDropdownComponent],
     templateUrl: './search-list.component.html',
     styleUrl: './search-list.component.css',
     host: { '[class.dark]': 'isDarkTheme()' },
@@ -66,6 +67,14 @@ export class SearchListComponent {
     { name: 'Name: Z-A', value: 'name', reverse: true, icon: 'assets/icons/fluent-icons/ic_fluent_text_sort_descending_24_regular.svg' },
   ];
   selectedSortOption = signal<number>(0);
+
+  /** Filter options for the container list. */
+  filterOptions = [
+    { name: 'Only show new', value: 'new' },
+    { name: 'Only show updated', value: 'updated' },
+    { name: 'Hide unusable', value: 'hide-unusable' },
+  ];
+  selectedFilterOption = signal<number>(-1);
 
   constructor() {
     this.containerService.getContainersMap().subscribe((containers) => {

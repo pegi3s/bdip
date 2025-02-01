@@ -1,0 +1,14 @@
+<button class="dropdown-button" [class.active]="selected() !== -1" (click)="toggleDropdown()">
+  <svg-icon [src]="icon()"/>
+</button>
+
+@if (isDropdownOpen()) {
+  <div class="dropdown-menu">
+    @for (item of items(); track item.name; let index = $index) {
+      <div class="dropdown-item" [class.selected]="selected() === index" (click)="selectItem(index)">
+<!--        <svg-icon [src]="item.icon"/>-->
+        <span class="dropdown-name">{{ item.name }}</span>
+      </div>
+    }
+  </div>
+}
