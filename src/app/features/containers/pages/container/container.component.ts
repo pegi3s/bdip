@@ -64,7 +64,7 @@ export class ContainerComponent {
   }
 
   getLatestRecommendedTag(containerMetadata?: ImageMetadata | null): string {
-    if (!containerMetadata) {
+    if (!containerMetadata || containerMetadata.recommended.length === 0) {
       return '';
     }
 
