@@ -101,7 +101,17 @@ export class ContainerComponent {
       return VersionStatus.RECOMMENDED;
     } else if (tag.name === containerMetadata.latest) {
       return VersionStatus.LATEST;
-    } else if (containerMetadata.bug_found.find(bug => bug.version === tag.name)) {
+    } else if (containerMetadata.bug_found.some(bug => {
+      // Handle exact match
+      if (bug.version === tag.name) return true;
+
+      // Handle version ranges
+      if (bug.version.includes('<') || bug.version.includes('>')) {
+        return this.isVersionInRange(tag.name, bug.version);
+      }
+
+      return false;
+    })) {
       return VersionStatus.BUG_FOUND;
     } else if (containerMetadata.not_working.includes(tag.name)) {
       return VersionStatus.NOT_WORKING;
@@ -109,6 +119,57 @@ export class ContainerComponent {
       return VersionStatus.NO_LONGER_TESTED;
     }
     return undefined;
+  }
+
+  private isVersionInRange(version: string, range: string): boolean {
+    // Handle special case for "latest"
+    if (version === 'latest') {
+      // Typically "latest" is considered newer than any specific version
+      // So "latest" would be > any version number
+      const operator = range.substring(0, 2).includes('=') ? range.substring(0, 2) : range.substring(0, 1);
+      return operator.includes('>'); // Only true for '>' or '>='
+    }
+
+    // Parse the version and range
+    const cleanVersion = version.replace(/^v/, '');
+    const operator = range.substring(0, 2).includes('=') ? range.substring(0, 2) : range.substring(0, 1);
+    const rangeVersion = range.replace(operator, '').trim();
+
+    // Handle versions with suffixes like "SNAPSHOT"
+    const parsedVersion = cleanVersion.split('-')[0]; // Take only the version part before any suffix
+
+    // Split versions into components
+    const versionParts = parsedVersion.split('.').map(Number);
+    const rangeParts = rangeVersion.split('.').map(Number);
+
+    // Compare version components
+    for (let i = 0; i < Math.max(versionParts.length, rangeParts.length); i++) {
+      const vPart = versionParts[i] || 0;
+      const rPart = rangeParts[i] || 0;
+
+      if (vPart !== rPart) {
+        const comparison = vPart > rPart ? 1 : -1;
+
+        switch (operator) {
+          case '<=': return comparison <= 0;
+          case '>=': return comparison >= 0;
+          case '<': return comparison < 0;
+          case '>': return comparison > 0;
+          default: return false;
+        }
+      }
+    }
+
+    // If we get here, the versions are equal in their numerical parts
+    // For suffixed versions like "1.7.0-SNAPSHOT" compared to "1.7.0":
+    if (cleanVersion.includes('-') && !rangeVersion.includes('-')) {
+      // If the operator is <= or <, pre-release versions are considered lower
+      // If the operator is >= or >, pre-release versions are considered higher
+      return operator.includes('<');
+    }
+
+    // For exact equality
+    return operator.includes('=');
   }
 
   removeReadmeOwnershipHeader(readme: string): string {
