@@ -20,8 +20,7 @@
         comprehensive Docker repository
       </p>
     </div>
-    <!-- <img src="assets/Whale.png" alt="" class="foreground" />
-    <img src="assets/Whale.png" alt="" class="background" /> -->
+    <app-stacked-card-carousel [items]="(recentImages$ | async) ?? []" />
   </div>
 </section>
 <section class="about-project">

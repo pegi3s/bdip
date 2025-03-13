@@ -6,11 +6,9 @@ export type ImageMetadata = {
   latest: string;
   bug_found: BugFound[];
   not_working: string[];
-  recommended_last_tested: string;
   no_longer_tested: string[];
-  pegi3s_url: string;
   manual_url: string;
-  github_url: string;
+  source_url: string;
   comments: string[];
   gui: boolean;
   gui_command: string | undefined;

@@ -9,22 +9,29 @@ import { ThemeService } from "../../../../services/theme.service";
 import { ClipboardButtonComponent } from "../../../../shared/components/clipboard-button/clipboard-button.component";
 import { ReasonCardComponent } from "../../../../shared/components/reason-card/reason-card.component";
 import { SvgIconComponent } from "angular-svg-icon";
-import { Observable } from "rxjs";
+import { forkJoin, map, Observable, of, switchMap } from "rxjs";
+import {
+  StackedCardCarouselComponent
+} from "../../../../shared/components/stacked-card-carousel/stacked-card-carousel.component";
+import { ContainerService } from "../../../../services/container.service";
+import { DockerHubImage } from "../../../../models/docker-hub-image";
+import { shareReplay } from "rxjs/operators";
 
 @Component({
     selector: 'app-landing',
     templateUrl: './landing.component.html',
     styleUrl: './landing.component.css',
     host: { '[class.dark]': 'isDarkTheme()' },
-    imports: [ContributorCardComponent, LogoMarqueeComponent, ClipboardButtonComponent, RouterLink, ReasonCardComponent, SvgIconComponent, AsyncPipe],
+    imports: [ContributorCardComponent, LogoMarqueeComponent, ClipboardButtonComponent, RouterLink, ReasonCardComponent, SvgIconComponent, AsyncPipe, StackedCardCarouselComponent],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LandingComponent {
   /* Services */
-  private router: Router = inject(Router);
-  private themeService: ThemeService = inject(ThemeService);
-  isDarkTheme: Signal<boolean>;
-  private contributorService: ContributorService = inject(ContributorService);
+  private readonly router: Router = inject(Router);
+  private readonly themeService: ThemeService = inject(ThemeService);
+  readonly isDarkTheme: Signal<boolean>;
+  private readonly containerService: ContainerService = inject(ContainerService);
+  private readonly contributorService: ContributorService = inject(ContributorService);
 
   /* HTML Elements */
   citingQuoteElem = viewChild<ElementRef>('citingQuote');
@@ -65,11 +72,14 @@ export class LandingComponent {
     }
   ];
 
+  recentImages$: Observable<{ type: string; image: DockerHubImage; version: string }[]>;
+
   /* State */
   searchClicked: boolean = false;
 
   constructor() {
     this.isDarkTheme = this.themeService.isDarkTheme();
+    this.recentImages$ = this.getMostRecentImages();
   }
 
   onSearchClick() {
@@ -85,5 +95,50 @@ export class LandingComponent {
 
   getContributors(): Observable<Contributor[]> {
     return this.contributorService.getContributors();
+  }
+
+  getMostRecentImages(): Observable<{ type: string; image: DockerHubImage; version: string }[]> {
+    return this.containerService.getAllContainersInfo().pipe(
+      switchMap((containersInfo) => {
+        const sortedImages = [...containersInfo.values()]
+          .sort((a, b) => {
+            const lastUpdatedA = Date.parse(a.last_updated);
+            const lastUpdatedB = Date.parse(b.last_updated);
+            const creationDateA = Date.parse(a.date_registered);
+            const creationDateB = Date.parse(b.date_registered);
+
+            // Compare the most recent of either last_updated or creation_date
+            return Math.max(lastUpdatedB, creationDateB) - Math.max(lastUpdatedA, creationDateA);
+          })
+          .slice(0, 5); // Take the top 5 most recent images
+
+        if (sortedImages.length === 0) {
+          return of([]);
+        }
+
+        // Batch the tag requests
+        const tagRequests = sortedImages.map(image =>
+          this.containerService.getContainerTags(image.name).pipe(
+            map(tags => {
+              const lastUpdatedDate = Date.parse(image.last_updated);
+              const creationDate = Date.parse(image.date_registered);
+              const type = lastUpdatedDate > creationDate ? 'updated' : 'new';
+              let version = '';
+
+              if (type === 'updated') {
+                // Find the most recent tag based on last_updated, excluding tag latest
+                version = tags.filter(tag => tag.name !== 'latest').sort((a, b) => Date.parse(b.last_updated) - Date.parse(a.last_updated))[0].name;
+              }
+
+              return { type, image, version };
+            })
+          )
+        );
+
+        return forkJoin(tagRequests);
+      }),
+      // Add shareReplay to prevent multiple subscriptions from triggering multiple API calls
+      shareReplay(1)
+    );
   }
 }

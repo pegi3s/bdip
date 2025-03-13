@@ -1,0 +1,54 @@
+<div class="carousel-container">
+  <div class="carousel-wrapper">
+    <!-- Cards -->
+    @for (item of items(); track item.image.name; let i = $index) {
+      <div
+        class="card"
+        [class]="[getCardPosition(i), item.type]"
+        [class.animating]="isAnimating()"
+        (click)="onCardClick(i)"
+      >
+        <div class="card-content">
+          <div class="card-header">
+            <span>{{ item.type | titlecase }}</span>
+            <span>{{ (item.type === "new" ? item.image.date_registered : item.image.last_updated) | date }}</span>
+          </div>
+          <p [class]="getCardPosition(i) === 'center' ? 'content-center' : 'content-side'">
+            {{ item.image.name }} {{ item.version }}
+          </p>
+        </div>
+      </div>
+    }
+
+    <!-- Navigation controls -->
+    <button
+      class="nav-button prev"
+      (click)="handlePrev()"
+      [disabled]="isAnimating()"
+      aria-label="Previous card"
+    >
+      <svg-icon src="assets/icons/fluent-icons/ic_fluent_arrow_left_24_filled.svg" />
+    </button>
+    <button
+      class="nav-button next"
+      (click)="handleNext()"
+      [disabled]="isAnimating()"
+      aria-label="Next card"
+    >
+      <svg-icon src="assets/icons/fluent-icons/ic_fluent_arrow_left_24_filled.svg" />
+    </button>
+
+    <!-- Indicators -->
+    <div class="indicators">
+      @for (item of items(); track item.image.name; let i = $index) {
+        <button
+          class="indicator"
+          [class.active]="i === activeIndex()"
+          (click)="goToSlide(i)"
+          [disabled]="isAnimating()"
+          [attr.aria-label]="'Go to card ' + (i + 1)"
+        ></button>
+      }
+    </div>
+  </div>
+</div>
