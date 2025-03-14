@@ -8,6 +8,7 @@ import { DockerHubImage } from '../models/docker-hub-image';
 import { DockerHubTag } from '../models/docker-hub-tag';
 import { githubInfo } from '../core/constants/github-info';
 import { ImageMetadata } from '../models/image-metadata';
+import { environment } from "../../environments/environment";
 
 @Injectable({
   providedIn: 'root',
@@ -18,7 +19,7 @@ export class ContainerService {
   private readonly urlDiaf = `${this.baseMetadataURL}/dio.diaf`;
   private readonly urlJson = `${this.baseMetadataURL}/metadata.json`;
   //private baseURLDockerHub = 'https://hub.docker.com/v2/namespaces/pegi3s/repositories';
-  private readonly proxyServerURL = `http://${window.location.hostname}:8080/`;
+  private readonly proxyServerURL = environment.proxyServerURL;
   private readonly baseDockerHubEndpoint = '/v2/namespaces/pegi3s/repositories';
 
   private ontologyCache?: Observable<Ontology>;
