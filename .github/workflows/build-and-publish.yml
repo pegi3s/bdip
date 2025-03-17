@@ -1,0 +1,39 @@
+# Workflow to check if the Angular app builds successfully and publish it to GitHub Packages
+name: Build and Publish Angular App to GitHub Packages
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+
+    steps:
+      - name: Git Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run ng build
+
+      - name: Log in to GitHub Container Registry
+        if: github.ref == 'refs/heads/main'
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+      - name: Build Docker image
+        if: github.ref == 'refs/heads/main'
+        run: docker build -t ghcr.io/${{ github.repository }}:latest -f docker/deploy-local-build/Dockerfile .
+
+      - name: Push Docker image to GitHub Container Registry
+        if: github.ref == 'refs/heads/main'
+        run: docker push ghcr.io/${{ github.repository }}:latest
