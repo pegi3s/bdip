@@ -16,6 +16,9 @@ else
     echo "Using existing SSL certificates."
 fi
 
+# Set base href
+sed -i "s|<base href=\"[^\"]*\"|<base href=\"${BASE_HREF}\"|g" /usr/share/nginx/html/index.html
+
 # Start nginx
 echo "Starting Nginx..."
 exec nginx -g 'daemon off;'

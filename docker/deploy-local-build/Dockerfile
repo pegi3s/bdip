@@ -6,11 +6,13 @@ COPY dist/dockerfiles-website/browser /usr/share/nginx/html
 COPY docker/deploy-local-build/default.conf /etc/nginx/conf.d/default.conf
 # Create directory for SSL certificates
 RUN mkdir -p /etc/nginx/ssl
+# Set environment variables
+ENV BASE_HREF="/"
 # Expose ports
 EXPOSE 80 443
 
 # Start nginx with a script that generates certificates if needed
-RUN apk add openssl
+RUN apk add --no-cache openssl
 COPY docker/deploy-local-build/start.sh /start.sh
 RUN chmod +x /start.sh
 CMD ["/start.sh"]
