@@ -19,6 +19,11 @@ fi
 # Set base href
 sed -i "s|<base href=\"[^\"]*\"|<base href=\"${BASE_HREF}\"|g" /usr/share/nginx/html/index.html
 
+# Ensure PROXY_BASE_HREF is set, defaulting to BASE_HREF if not provided
+PROXY_BASE_HREF=${PROXY_BASE_HREF:-$BASE_HREF}
+# Set proxy base href
+sed -i "s|/v2/namespaces/pegi3s/repositories|${PROXY_BASE_HREF}v2/namespaces/pegi3s/repositories|g" /usr/share/nginx/html/main*.js
+
 # Start nginx
 echo "Starting Nginx..."
 exec nginx -g 'daemon off;'
