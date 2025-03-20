@@ -1,10 +1,10 @@
 import { Component, inject, signal, Signal } from "@angular/core";
 import { DockerHubImage } from '../../../../models/docker-hub-image';
 import { DockerHubTag } from '../../../../models/docker-hub-tag';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute } from "@angular/router";
 import { ContainerService } from '../../../../services/container.service';
 import { MarkdownModule } from 'ngx-markdown';
-import { AsyncPipe, DatePipe, NgTemplateOutlet, SlicePipe } from "@angular/common";
+import { AsyncPipe, DatePipe, NgTemplateOutlet, SlicePipe, ViewportScroller } from "@angular/common";
 import { ThemeService } from '../../../../services/theme.service';
 import { ClipboardButtonComponent } from '../../../../shared/components/clipboard-button/clipboard-button.component';
 import { TabsComponent } from "../../../../shared/components/tabs/tabs.component";
@@ -25,6 +25,7 @@ import { ReplacePipe } from "../../../../shared/pipes/replace/replace.pipe";
 export class ContainerComponent {
   /* Services */
   private activatedRoute: ActivatedRoute = inject(ActivatedRoute);
+  private viewportScroller = inject(ViewportScroller);
   private containerService: ContainerService = inject(ContainerService);
   private themeService: ThemeService = inject(ThemeService);
   isDarkTheme: Signal<boolean>;
@@ -61,6 +62,14 @@ export class ContainerComponent {
         containerTags => this.containerTags = containerTags,
       );
     });
+    this.viewportScroller.setOffset([0, 150]);
+    this.activatedRoute.fragment.subscribe(fragment => {
+      if (fragment && Object.values(TabName).includes(fragment as TabName)) {
+        this.selectedTab.set(fragment as TabName);
+      } else {
+        this.selectedTab.set(TabName.README);
+      }
+    });
   }
 
   getLatestRecommendedTag(containerMetadata?: ImageMetadata | null): string {
@@ -86,6 +95,7 @@ export class ContainerComponent {
 
   onTabSelectedGettingStarted(tab: string) {
     this.selectedTab.set(tab as TabName);
+    history.pushState(null, "", window.location.pathname + '#' + tab);
   }
 
   getContainerMetadataByName(name: string): Observable<ImageMetadata | undefined> {

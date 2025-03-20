@@ -84,9 +84,9 @@
   </div>
   <div class="details-container">
     <app-tabs (activeTab)="onTabSelectedGettingStarted($event)" [tabs]="[
-        { id: TabName.README, label: 'README', active: true },
-        { id: TabName.TAGS, label: TabName.TAGS },
-        { id: TabName.TESTING, label: 'Testing' }
+        { id: TabName.README, label: 'README', active: selectedTab() === TabName.README },
+        { id: TabName.TAGS, label: TabName.TAGS, active: selectedTab() === TabName.TAGS },
+        { id: TabName.TESTING, label: 'Testing', active: selectedTab() === TabName.TESTING }
       ]" />
     @if (selectedTab() === 'readme') {
       <markdown
