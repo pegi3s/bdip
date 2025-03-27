@@ -1,7 +1,7 @@
-import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { HttpClient, httpResource } from "@angular/common/http";
+import { computed, Injectable, Resource, Signal } from "@angular/core";
 import { concatMap, Observable, of, ReplaySubject } from "rxjs";
-import { catchError, map, shareReplay, tap } from 'rxjs/operators';
+import { catchError, map, shareReplay } from 'rxjs/operators';
 
 import { Ontology } from '../obo/Ontology';
 import { DockerHubImage } from '../models/docker-hub-image';
@@ -23,14 +23,82 @@ export class ContainerService {
   private readonly baseDockerHubEndpoint = '/v2/namespaces/pegi3s/repositories';
 
   private ontologyCache?: Observable<Ontology>;
-  private containersCache?: Observable<Map<string, Set<string>>>;
-  private containersMetadataSubject: ReplaySubject<Map<string, ImageMetadata>> = new ReplaySubject(1);
-  private containersMetadata$: Observable<Map<string, ImageMetadata>> = this.containersMetadataSubject.asObservable();
   private containersInfoSubject: ReplaySubject<Map<string, DockerHubImage>> | null = null;
 
   constructor(private http: HttpClient) {
-    this.getContainersMetadata();
   }
+
+  /* TODO: Replace usage of Observable with Resource */
+  /** Fetches the raw ontology, transforms it into an Ontology instance */
+  private readonly ontology = httpResource.text<Ontology>(
+    () => this.urlObo,
+    { parse: (response: string) => new Ontology(response) }
+  );
+
+  /**
+   * Fetches the raw DIAF file that contains the categories and their corresponding containers.
+   * The data is expected to be in a text format where each line represents a key-value pair,
+   * separated by a tab character.
+   * Then, it's parsed into a Map where:
+   * - The key is the category of the ontology
+   * - The value is a Set of the names of the containers that belong to that category
+   */
+  private readonly containers = httpResource.text<Map<string, Set<string>>>(
+    () => this.urlDiaf,
+    {
+      parse: (response: string) => this.parseContainers(response),
+      defaultValue: new Map<string, Set<string>>()
+    }
+  );
+
+  /**
+   * Fetches the metadata of all containers from a JSON file.*
+   * The metadata is parsed into a Map where:
+   * - The key is the name of the container
+   * - The value is the metadata of the container
+   *
+   * This Map is used to store the metadata of all containers.
+   */
+  private readonly containersMetadata = httpResource<Map<string, ImageMetadata>>(
+    () => this.urlJson,
+    {
+      parse: (response) => {
+        const map = new Map<string, ImageMetadata>();
+        (response as ImageMetadata[]).forEach((item) => {
+          if (map.has(item.name)) {
+            console.error(`Duplicate container name found: ${item.name}`);
+          } else {
+            map.set(item.name, item);
+          }
+        });
+        return map;
+      },
+      defaultValue: new Map<string, ImageMetadata>()
+    }
+  );
+
+  getOntologyRes(): Resource<Ontology | undefined> {
+    return this.ontology.asReadonly();
+  }
+
+  getContainersMapRes(): Resource<Map<string, Set<string>>> {
+    return this.containers.asReadonly();
+  }
+
+  getAllContainersMetadataRes(): Resource<Map<string, ImageMetadata>> {
+    return this.containersMetadata.asReadonly();
+  }
+
+  /** Retrieves the metadata for the specified container */
+  getContainerMetadataRes(name: string): Signal<ImageMetadata | undefined> {
+    return computed(() => this.containersMetadata.value()?.get(name));
+  }
+
+  /** Fetches information about a specific container from Docker Hub */
+  getContainerInfoRes(name: string) {
+    return httpResource<DockerHubImage>(() => new URL(`${this.baseDockerHubEndpoint}/${name}`, this.proxyServerURL).toString());
+  }
+
 
   /**
    * Fetch the OBO file that contains the ontology.
@@ -72,17 +140,6 @@ export class ContainerService {
   }
 
   /**
-   * Fetch the DIAF file that contains the categories and their corresponding containers.
-   * The data is expected to be in a text format where each line represents a key-value pair,
-   * separated by a tab character.
-   *
-   * @returns {Observable<string>} The raw data from the DIAF file.
-   */
-  private getRawContainers(): Observable<string> {
-    return this.http.get(this.urlDiaf, { responseType: 'text' });
-  }
-
-  /**
    * Parse the raw data from the DIAF file into a Map object where the key is the category
    * and the value is a Set of containers.
    *
@@ -103,100 +160,6 @@ export class ContainerService {
       }
     });
     return containers;
-  }
-
-  /**
-   * Retrieve a Map where:
-   * - The key is the category of the ontology
-   * - The value is a Set of the names of the containers that belong to that category
-   *
-   * If the request has already been made, the cached version is returned.
-   *
-   * The returned Observable is shared among multiple subscribers to avoid redundant
-   * network requests. The last emitted value is replayed to new subscribers.
-   *
-   * @returns {Observable<Map<string, Set<string>>>} A Map object where the key is the category and the value is a Set of containers.
-   */
-  getContainersMap(): Observable<Map<string, Set<string>>> {
-    if (this.containersCache) {
-      return this.containersCache;
-    }
-
-    this.containersCache = this.getRawContainers().pipe(
-      map(this.parseContainers),
-      shareReplay(1),
-    );
-
-    return this.containersCache;
-  }
-
-  /**
-   * Retrieve an array with the name of all the containers.
-   *
-   * @returns {Observable<string[]>} An Observable of an array of distinct container names.
-   */
-  getAllContainers(): Observable<string[]> {
-    return this.getContainersMap().pipe(
-      map((containers) => {
-        let containersDistinct = new Set<string>();
-        containers.forEach((value) => {
-          value.forEach((container) => {
-            containersDistinct.add(container);
-          });
-        });
-        return Array.from(containersDistinct);
-      }),
-    );
-  }
-
-  /**
-   * Fetches and processes container metadata from a specified URL.
-   *
-   * This method retrieves an array of `ImageMetadata` objects from the specified `urlJson`.
-   * It then processes this array to create a `Map` where each key is the container's name and the value is its metadata.
-   * The resulting `Map` is then emitted through `containersMetadataSubject`.
-   * In case of an error during the fetching process, it logs the error and returns an empty array.
-   */
-  private getContainersMetadata(): void {
-    this.http.get<ImageMetadata[]>(this.urlJson).pipe(
-      map(data => {
-        const map = new Map<string, ImageMetadata>();
-        data.forEach((item) => {
-          if (map.has(item.name)) {
-            console.error(`Duplicate container name found: ${item.name}`);
-          } else {
-            map.set(item.name, item);
-          }
-        });
-        return map;
-      }),
-      tap(data => this.containersMetadataSubject.next(data)),
-      catchError(error => {
-        console.error('Error loading metadata:', error);
-        return [];
-      })
-    ).subscribe();
-  }
-
-  /**
-   * Retrieves the metadata for all containers.
-   *
-   * @returns {Observable<Map<string, ImageMetadata>>} An Observable that emits a Map where the key is the container's name and the value is its metadata.
-   */
-  getAllContainersMetadata(): Observable<Map<string, ImageMetadata>> {
-    return this.containersMetadata$;
-  }
-
-  /**
-   * Retrieves the metadata for the specified container.
-   *
-   * @param {string} name The name of the container to retrieve metadata for.
-   * @returns {Observable<ImageMetadata | undefined>} An Observable that emits the metadata of the specified container if found, otherwise undefined.
-   */
-  getContainerMetadata(name: string): Observable<ImageMetadata | undefined> {
-    return this.containersMetadata$.pipe(
-      map(containers => containers.get(name)),
-    );
   }
 
   /**

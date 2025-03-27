@@ -4,7 +4,7 @@ import { DockerHubTag } from '../../../../models/docker-hub-tag';
 import { ActivatedRoute } from "@angular/router";
 import { ContainerService } from '../../../../services/container.service';
 import { MarkdownModule } from 'ngx-markdown';
-import { AsyncPipe, DatePipe, NgTemplateOutlet, SlicePipe, ViewportScroller } from "@angular/common";
+import { DatePipe, NgTemplateOutlet, SlicePipe, ViewportScroller } from "@angular/common";
 import { ThemeService } from '../../../../services/theme.service';
 import { ClipboardButtonComponent } from '../../../../shared/components/clipboard-button/clipboard-button.component';
 import { TabsComponent } from "../../../../shared/components/tabs/tabs.component";
@@ -12,7 +12,6 @@ import { BytesToSizePipe } from "../../../../shared/pipes/bytes-to-size/bytes-to
 import { SvgIconComponent } from 'angular-svg-icon';
 import { LoadingComponent } from "../../../../shared/components/loading/loading.component";
 import { ImageMetadata } from "../../../../models/image-metadata";
-import { Observable } from "rxjs";
 import { ReplacePipe } from "../../../../shared/pipes/replace/replace.pipe";
 
 @Component({
@@ -20,7 +19,7 @@ import { ReplacePipe } from "../../../../shared/pipes/replace/replace.pipe";
     templateUrl: './container.component.html',
     styleUrl: './container.component.css',
     host: { '[class.dark]': 'isDarkTheme()' },
-  imports: [AsyncPipe, DatePipe, SlicePipe, MarkdownModule, TabsComponent, BytesToSizePipe, ClipboardButtonComponent, SvgIconComponent, LoadingComponent, NgTemplateOutlet, ReplacePipe]
+  imports: [DatePipe, SlicePipe, MarkdownModule, TabsComponent, BytesToSizePipe, ClipboardButtonComponent, SvgIconComponent, LoadingComponent, NgTemplateOutlet, ReplacePipe]
 })
 export class ContainerComponent {
   /* Services */
@@ -98,8 +97,8 @@ export class ContainerComponent {
     history.pushState(null, "", window.location.pathname + '#' + tab);
   }
 
-  getContainerMetadataByName(name: string): Observable<ImageMetadata | undefined> {
-    return this.containerService.getContainerMetadata(name);
+  getContainerMetadataByName(name: string): Signal<ImageMetadata | undefined> {
+    return this.containerService.getContainerMetadataRes(name);
   }
 
   getVersionStatus(tag: DockerHubTag, containerMetadata: ImageMetadata): VersionStatus | undefined {

@@ -32,7 +32,11 @@ export class Ontology {
   }
 
   public getRootTerms() {
-    return this.stanzas.filter((term) => term.hasParents() === false);
+    return this.stanzas.filter((term) => !term.hasParents());
+  }
+
+  public findTermById(id: string): TermStanza | undefined {
+    return this.stanzas.find((term) => term.id === id);
   }
 
   private addTerm(term: TermStanza) {

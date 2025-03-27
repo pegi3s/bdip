@@ -248,3 +248,55 @@
     [src]="commonIssuesUrl"
   />
 </ng-template>
+
+<ng-template #chooseSoftware>
+  <div class="markdown-body">
+    <h2>Choosing the right software</h2>
+    <p>
+      Many bioinformatics tasks can be performed using different software tools, each with their own advantages and disadvantages. This
+      guide helps you choose the most appropriate tool for your specific needs by providing comparisons and relevant literature.
+    </p>
+
+    @for (section of softwareRecommendations(); track section.section_header) {
+      <details>
+        <summary><b>{{ section.section_header }}</b></summary>
+
+        <div>
+          <p>Ontology categories</p>
+          <ul>
+            @for (category of section.categories; track category.id) {
+              <li>
+                <a [routerLink]="['/search']" [queryParams]="{c: getIdHierarchy(category).join()}">{{ getNameHierarchy(category).join(' -> ') }}</a>
+              </li>
+            }
+          </ul>
+        </div>
+
+        @if (section.also_relevant.length !== 0) {
+          <div>
+            <p>Also relevant</p>
+            <ul>
+              @for (relevantItem of section.also_relevant; track relevantItem) {
+                <li>
+                  <a [routerLink]="['/container', relevantItem | lowercase]">{{ relevantItem }}</a>
+                </li>
+              }
+            </ul>
+          </div>
+        }
+
+        <div>
+          <p>Articles</p>
+          <ul>
+            @for (article of section.articles; track article.url) {
+              <li>
+                <a href="{{ article.url }}" target="_blank">{{ article.short_name }}</a>
+              </li>
+            }
+          </ul>
+        </div>
+      </details>
+    }
+
+  </div>
+</ng-template>

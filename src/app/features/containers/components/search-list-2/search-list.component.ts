@@ -25,11 +25,11 @@ export class SearchListComponent {
   searchQuery = input<string>('');
 
   private themeService: ThemeService = inject(ThemeService);
-  protected isDarkTheme: Signal<boolean>;
+  protected isDarkTheme: Signal<boolean> = this.themeService.isDarkTheme();
 
   private containerService: ContainerService = inject(ContainerService);
-  containers = signal<Map<string, Set<string>>>(new Map<string, Set<string>>());
-  containersMetadata = signal<Map<string, ImageMetadata>>(new Map<string, ImageMetadata>());
+  containers = this.containerService.getContainersMapRes().value;
+  containersMetadata = this.containerService.getAllContainersMetadataRes().value;
   containersInfo = signal<Map<string, DockerHubImage>>(new Map<string, DockerHubImage>());
 
   /**
@@ -77,16 +77,9 @@ export class SearchListComponent {
   selectedFilterOption = signal<number>(-1);
 
   constructor() {
-    this.containerService.getContainersMap().subscribe((containers) => {
-      this.containers.set(containers);
-    });
-    this.containerService.getAllContainersMetadata().subscribe((metadata) => {
-      this.containersMetadata.set(metadata);
-    });
     this.containerService.getAllContainersInfo().subscribe((containersInfo) => {
       this.containersInfo.set(containersInfo);
     });
-    this.isDarkTheme = this.themeService.isDarkTheme();
   }
 
   getContainersByCategories(categories: TermStanza[], matchedContainers: Set<string>) {
