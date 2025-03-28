@@ -6,7 +6,6 @@ import { ThemeService } from "../../../../services/theme.service";
 import { TabsComponent } from "../../../../shared/components/tabs/tabs.component";
 import { ContainerIconComponent } from "../container-icon/container-icon.component";
 import { ImageMetadata } from "../../../../models/image-metadata";
-import { DockerHubImage } from "../../../../models/docker-hub-image";
 import { DropdownComponent } from "../../../../shared/components/dropdown/dropdown.component";
 import { IconDropdownComponent } from "../../../../shared/components/icon-dropdown/icon-dropdown.component";
 
@@ -30,7 +29,7 @@ export class SearchListComponent {
   private containerService: ContainerService = inject(ContainerService);
   containers = this.containerService.getContainersMapRes().value;
   containersMetadata = this.containerService.getAllContainersMetadataRes().value;
-  containersInfo = signal<Map<string, DockerHubImage>>(new Map<string, DockerHubImage>());
+  containersInfo = this.containerService.getAllContainersInfoRes().value;
 
   /**
    * This computed property generates a set of container names that match the current search criteria sorted alphabetically.
@@ -76,11 +75,7 @@ export class SearchListComponent {
   ];
   selectedFilterOption = signal<number>(-1);
 
-  constructor() {
-    this.containerService.getAllContainersInfo().subscribe((containersInfo) => {
-      this.containersInfo.set(containersInfo);
-    });
-  }
+  constructor() { }
 
   getContainersByCategories(categories: TermStanza[], matchedContainers: Set<string>) {
     categories.forEach((category) => {

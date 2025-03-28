@@ -94,8 +94,8 @@
         [clipboardButtonComponent]="clipboardButton"
         class="markdown-body"
         [data]="removeReadmeOwnershipHeader(container.full_description)" />
-    } @else if (selectedTab() === 'tags' && containerTags != undefined) {
-      <ng-container *ngTemplateOutlet="tags; context: { containerTags: containerTags, containerMetadata: containerMetadata }"></ng-container>
+    } @else if (selectedTab() === 'tags' && containerTags() != undefined) {
+      <ng-container *ngTemplateOutlet="tags; context: { containerTags: containerTags(), containerMetadata: containerMetadata }"></ng-container>
     } @else if (selectedTab() === 'testing') {
       <ng-container *ngTemplateOutlet="testing; context: { containerMetadata: containerMetadata }"></ng-container>
     }
@@ -108,7 +108,7 @@
 
 <ng-template #tags let-containerMetadata="containerMetadata">
   <div class="tags">
-    @for (tag of containerTags; track $index) {
+    @for (tag of containerTags(); track $index) {
       @let versionStatus = containerMetadata ? getVersionStatus(tag, containerMetadata) : undefined;
       <div class="tag"
            [class.recommended]="versionStatus === VersionStatus.RECOMMENDED"

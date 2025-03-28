@@ -20,7 +20,7 @@
         comprehensive Docker repository
       </p>
     </div>
-    <app-stacked-card-carousel [items]="(recentImages$ | async) ?? []" />
+    <app-stacked-card-carousel [items]="mostRecentImages()" />
   </div>
 </section>
 <section class="about-project">

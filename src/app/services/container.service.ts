@@ -1,6 +1,6 @@
 import { HttpClient, httpResource } from "@angular/common/http";
-import { computed, Injectable, Resource, Signal } from "@angular/core";
-import { concatMap, Observable, of, ReplaySubject } from "rxjs";
+import { computed, Injectable, Resource, Signal, WritableResource } from "@angular/core";
+import { concatMap, Observable, of } from "rxjs";
 import { catchError, map, shareReplay } from 'rxjs/operators';
 
 import { Ontology } from '../obo/Ontology';
@@ -9,6 +9,7 @@ import { DockerHubTag } from '../models/docker-hub-tag';
 import { githubInfo } from '../core/constants/github-info';
 import { ImageMetadata } from '../models/image-metadata';
 import { environment } from "../../environments/environment";
+import { rxResource } from "@angular/core/rxjs-interop";
 
 @Injectable({
   providedIn: 'root',
@@ -23,12 +24,12 @@ export class ContainerService {
   private readonly baseDockerHubEndpoint = '/v2/namespaces/pegi3s/repositories';
 
   private ontologyCache?: Observable<Ontology>;
-  private containersInfoSubject: ReplaySubject<Map<string, DockerHubImage>> | null = null;
 
   constructor(private http: HttpClient) {
   }
 
-  /* TODO: Replace usage of Observable with Resource */
+  /* ----- Resources ---- */
+
   /** Fetches the raw ontology, transforms it into an Ontology instance */
   private readonly ontology = httpResource.text<Ontology>(
     () => this.urlObo,
@@ -77,6 +78,35 @@ export class ContainerService {
     }
   );
 
+  /**
+   * Retrieves the information stored in Docker Hub for all containers.
+   * @returns A Map where the key is the container's name and the value is its Docker Hub information.
+   */
+  containersInfo = rxResource({
+    loader: () => {
+      const url = new URL(`${this.baseDockerHubEndpoint}?page=1&page_size=100`, this.proxyServerURL).toString();
+      return this.fetchAllPagesContainersInfo(url, []).pipe(
+        map(allResults => {
+          const imageMap = new Map<string, DockerHubImage>();
+          allResults.forEach(image => {
+            if (image.name) {
+              imageMap.set(image.name, image);
+            }
+          });
+          return imageMap;
+        }),
+        catchError(err => {
+          console.error('Error fetching DockerHub images:', err);
+          return of(new Map<string, DockerHubImage>());
+        })
+      );
+    },
+    defaultValue: new Map<string, DockerHubImage>(),
+  });
+
+  /** A map to store the tags of each container */
+  private readonly containersTags: Map<string, WritableResource<DockerHubTag[]>> = new Map<string, WritableResource<DockerHubTag[]>>();
+
   getOntologyRes(): Resource<Ontology | undefined> {
     return this.ontology.asReadonly();
   }
@@ -85,6 +115,7 @@ export class ContainerService {
     return this.containers.asReadonly();
   }
 
+  /** Retrieves the metadata for all containers */
   getAllContainersMetadataRes(): Resource<Map<string, ImageMetadata>> {
     return this.containersMetadata.asReadonly();
   }
@@ -94,11 +125,120 @@ export class ContainerService {
     return computed(() => this.containersMetadata.value()?.get(name));
   }
 
+  /** Retrieves the information for all containers from Docker Hub */
+  getAllContainersInfoRes(): Resource<Map<string, DockerHubImage>> {
+    return this.containersInfo.asReadonly();
+  }
+
   /** Fetches information about a specific container from Docker Hub */
   getContainerInfoRes(name: string) {
     return httpResource<DockerHubImage>(() => new URL(`${this.baseDockerHubEndpoint}/${name}`, this.proxyServerURL).toString());
   }
 
+  /**
+   * Fetches information about the tags of a specific container from Docker Hub
+   * @param {string} name - The name of the Docker container.
+   */
+  getContainerTagsRes(name: string): Resource<DockerHubTag[]> {
+    if (!this.containersTags.has(name)) {
+      const url = new URL(`${this.baseDockerHubEndpoint}/${name}/tags?page_size=100`, this.proxyServerURL).toString();
+      const tagsRes = rxResource({
+        loader: () => this.fetchAllPagesTags(url, []).pipe(
+          map((tags) => tags),
+          catchError(err => {
+            console.error('Error fetching DockerHub tags:', err);
+            return of([]); // Return an empty array if error
+          })
+        ),
+        defaultValue: [],
+      });
+      this.containersTags.set(name, tagsRes);
+    }
+    return this.containersTags.get(name)!.asReadonly();
+  }
+
+  /* ----- Paging ---- */
+
+  /**
+   * Recursively fetches all pages of containers from Docker Hub.
+   *
+   * @param url The URL of the current page to fetch.
+   * @param allResults The array to store all the results from all pages.
+   */
+  private fetchAllPagesContainersInfo(url: string, allResults: DockerHubImage[]): Observable<DockerHubImage[]> {
+    return this.http.get<{ next: string, results: DockerHubImage[] }>(url).pipe(
+      catchError(err => {
+        console.error('Error fetching DockerHub images:', err);
+        return of({ next: null, results: [] }); // Return an empty page if error
+      }),
+      map(response => {
+        // Push the current page's results to the allResults array
+        allResults.push(...response.results);
+
+        // If there is a next page, continue to fetch the next page
+        if (response.next) {
+          const indexEndpoint = response.next.indexOf('/v2');
+          const nextURL = new URL(response.next.substring(indexEndpoint), this.proxyServerURL).toString();
+          return this.fetchAllPagesContainersInfo(nextURL, allResults);
+        } else {
+          // Return the final results once all pages have been fetched
+          return of(allResults);
+        }
+      }),
+      concatMap((finalResults) => finalResults),
+    );
+  }
+
+  private fetchAllPagesTags(url: string, allResults: DockerHubTag[]): Observable<DockerHubTag[]> {
+    return this.http.get<{ next: string, results: DockerHubTag[] }>(url).pipe(
+      catchError(err => {
+        console.error('Error fetching DockerHub tags:', err);
+        return of({ next: null, results: [] }); // Return an empty page if error
+      }),
+      map(response => {
+        // Push the current page's results to the allResults array
+        allResults.push(...response.results);
+
+        // If there is a next page, continue to fetch the next page
+        if (response.next) {
+          const indexEndpoint = response.next.indexOf('/v2');
+          const nextURL = new URL(response.next.substring(indexEndpoint), this.proxyServerURL).toString();
+          return this.fetchAllPagesTags(nextURL, allResults);
+        } else {
+          // Return the final results once all pages have been fetched
+          return of(allResults);
+        }
+      }),
+      concatMap((finalResults) => finalResults),
+    );
+  }
+
+  /* ----- Parsers ---- */
+
+  /**
+   * Parse the raw data from the DIAF file into a Map object where the key is the category
+   * and the value is a Set of containers.
+   *
+   * @param {string} data The raw data from the DIAF file.
+   * @returns {Map<string, Set<string>>} A Map object where the key is the category and the value is a Set of containers.
+   */
+  private parseContainers(data: string): Map<string, Set<string>> {
+    const containers = new Map<string, Set<string>>();
+
+    data.split('\n').forEach((element) => {
+      if (!element) return;
+
+      const [key, value] = element.split('\t');
+      if (!containers.has(key)) {
+        containers.set(key, new Set([value]));
+      } else {
+        containers.get(key)?.add(value);
+      }
+    });
+    return containers;
+  }
+
+  /* ----- Observables ---- */
 
   /**
    * Fetch the OBO file that contains the ontology.
@@ -140,100 +280,6 @@ export class ContainerService {
   }
 
   /**
-   * Parse the raw data from the DIAF file into a Map object where the key is the category
-   * and the value is a Set of containers.
-   *
-   * @param {string} data The raw data from the DIAF file.
-   * @returns {Map<string, Set<string>>} A Map object where the key is the category and the value is a Set of containers.
-   */
-  private parseContainers(data: string): Map<string, Set<string>> {
-    const containers = new Map<string, Set<string>>();
-
-    data.split('\n').forEach((element) => {
-      if (!element) return;
-
-      const [key, value] = element.split('\t');
-      if (!containers.has(key)) {
-        containers.set(key, new Set([value]));
-      } else {
-        containers.get(key)?.add(value);
-      }
-    });
-    return containers;
-  }
-
-  /**
-   * Retrieves the information stored in Docker Hub for all containers.
-   *
-   * @returns {Observable<Map<string, DockerHubImage>>} An Observable that emits a Map where the key is the container's name and the value is its Docker Hub information.
-   */
-  getAllContainersInfo(): Observable<Map<string, DockerHubImage>> {
-    // If cached data exists, return it as an observable (replay last cached value)
-    if (this.containersInfoSubject) {
-      return this.containersInfoSubject.asObservable();
-    }
-
-    const url = new URL(`${this.baseDockerHubEndpoint}?page=1&page_size=100`, this.proxyServerURL).toString();
-
-    // Create a new ReplaySubject for caching
-    this.containersInfoSubject = new ReplaySubject<Map<string, DockerHubImage>>(1);
-
-    // Fetch and cache the data
-    this.fetchAllPagesContainersInfo(url, []).subscribe({
-      next: (allResults) => {
-        // Convert the array of DockerHubImage[] into a Map<string, DockerHubImage>
-        const imageMap = new Map<string, DockerHubImage>();
-        allResults.forEach(image => {
-          if (image.name) {
-            imageMap.set(image.name, image);
-          }
-        });
-
-        // Emit the map to the ReplaySubject
-        this.containersInfoSubject?.next(imageMap);
-      },
-      error: (err) => {
-        console.error('Error fetching DockerHub images:', err);
-        // Reset the cache (so it can be retried) and emit an empty array
-        this.containersInfoSubject = null;  // Reset cache to trigger retry on next call
-      }
-    });
-
-    // Return the ReplaySubject as observable for subscribers
-    return this.containersInfoSubject.asObservable();
-  }
-
-  /**
-   * Recursively fetches all pages of containers from Docker Hub.
-   *
-   * @param url The URL of the current page to fetch.
-   * @param allResults The array to store all the results from all pages.
-   */
-  private fetchAllPagesContainersInfo(url: string, allResults: DockerHubImage[]): Observable<DockerHubImage[]> {
-    return this.http.get<{ next: string, results: DockerHubImage[] }>(url).pipe(
-      catchError(err => {
-        console.error('Error fetching DockerHub images:', err);
-        return of({ next: null, results: [] }); // Return an empty page if error
-      }),
-      map(response => {
-        // Push the current page's results to the allResults array
-        allResults.push(...response.results);
-
-        // If there is a next page, continue to fetch the next page
-        if (response.next) {
-          const indexEndpoint = response.next.indexOf('/v2');
-          const nextURL = new URL(response.next.substring(indexEndpoint), this.proxyServerURL).toString();
-          return this.fetchAllPagesContainersInfo(nextURL, allResults);
-        } else {
-          // Return the final results once all pages have been fetched
-          return of(allResults);
-        }
-      }),
-      concatMap((finalResults) => finalResults),
-    );
-  }
-
-  /**
    * Fetches information about a specific container from Docker Hub.
    *
    * @param {string} name - The name of the Docker container.
@@ -251,10 +297,14 @@ export class ContainerService {
    * @param {string} name - The name of the Docker container.
    * @returns {Observable<DockerHubImage>} An Observable that will emit the information about the tags of the Docker container.
    */
-  getContainerTags(name: string, page: number = 1): Observable<DockerHubTag[]> {
-    return this.http.get<{ results: DockerHubTag[]; }>(
-      new URL(`${this.baseDockerHubEndpoint}/${name}/tags?page=${page}`, this.proxyServerURL).toString(),
-    )
-    .pipe(map((response) => response.results));
+  getContainerTags(name: string): Observable<DockerHubTag[]> {
+    const url = new URL(`${this.baseDockerHubEndpoint}/${name}/tags?page_size=100`, this.proxyServerURL).toString();
+    return this.fetchAllPagesTags(url, []).pipe(
+      map((tags) => tags),
+      catchError(err => {
+        console.error('Error fetching DockerHub tags:', err);
+        return of([]); // Return an empty array if error
+      })
+    );
   }
 }

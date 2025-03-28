@@ -14,7 +14,7 @@
             <span>{{ (item.type === "new" ? item.image.date_registered : item.image.last_updated) | date }}</span>
           </div>
           <p [class]="getCardPosition(i) === 'center' ? 'content-center' : 'content-side'">
-            {{ item.image.name }} {{ item.version }}
+            {{ item.image.name }} {{ item.version | async }}
           </p>
         </div>
       </div>

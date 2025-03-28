@@ -1,4 +1,4 @@
-import { Component, inject, signal, Signal } from "@angular/core";
+import { Component, inject, Injector, runInInjectionContext, signal, Signal } from "@angular/core";
 import { DockerHubImage } from '../../../../models/docker-hub-image';
 import { DockerHubTag } from '../../../../models/docker-hub-tag';
 import { ActivatedRoute } from "@angular/router";
@@ -23,6 +23,7 @@ import { ReplacePipe } from "../../../../shared/pipes/replace/replace.pipe";
 })
 export class ContainerComponent {
   /* Services */
+  private readonly injector = inject(Injector);
   private activatedRoute: ActivatedRoute = inject(ActivatedRoute);
   private viewportScroller = inject(ViewportScroller);
   private containerService: ContainerService = inject(ContainerService);
@@ -33,7 +34,7 @@ export class ContainerComponent {
 
   status: Status = Status.LOADING;
   container?: DockerHubImage;
-  containerTags?: DockerHubTag[];
+  containerTags: Signal<DockerHubTag[]> = signal([]);
 
   selectedTab = signal<TabName>(TabName.README);
 
@@ -57,9 +58,9 @@ export class ContainerComponent {
           }
         },
       });
-      this.containerService.getContainerTags(containerName).subscribe(
-        containerTags => this.containerTags = containerTags,
-      );
+      runInInjectionContext(this.injector, () => {
+        this.containerTags = this.containerService.getContainerTagsRes(containerName).value;
+      });
     });
     this.viewportScroller.setOffset([0, 150]);
     this.activatedRoute.fragment.subscribe(fragment => {

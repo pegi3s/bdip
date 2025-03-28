@@ -1,8 +1,8 @@
 import { Component, signal, inject, input, ChangeDetectionStrategy } from "@angular/core";
 import { CommonModule } from '@angular/common';
-import { interval, Subject } from 'rxjs';
+import { interval, Observable, Subject } from "rxjs";
 import { takeUntil, filter } from 'rxjs/operators';
-import { DockerHubImage } from "../../../models/docker-hub-image";
+import { DockerHubImage } from "../../../../models/docker-hub-image";
 import { SvgIconComponent } from "angular-svg-icon";
 import { Router } from "@angular/router";
 
@@ -21,7 +21,7 @@ export class StackedCardCarouselComponent {
   isAnimating = signal(false);
 
   // Data
-  readonly items = input.required<{ type: string; image: DockerHubImage; version: string }[]>();
+  readonly items = input.required<{ type: string; image: DockerHubImage; version: Observable<string> }[]>();
 
   // For proper cleanup
   private destroy$ = new Subject<void>();
