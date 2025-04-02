@@ -11,12 +11,13 @@ import { githubInfo } from "../../../../core/constants/github-info";
 import { SoftwareRecommendationsService } from "../../../../services/software-recommendations.service";
 import { TermStanza } from "../../../../obo/TermStanza";
 import { LowerCasePipe } from "@angular/common";
+import { httpResource } from "@angular/common/http";
 
 @Component({
     selector: 'app-getting-started',
     templateUrl: './getting-started.component.html',
     styleUrl: './getting-started.component.css',
-  imports: [TabsComponent, StepperComponent, MarkdownComponent, RouterLink, LowerCasePipe],
+    imports: [TabsComponent, StepperComponent, MarkdownComponent, RouterLink, LowerCasePipe],
     host: { '[class.dark]': 'isDarkTheme()' }
 })
 export class GettingStartedComponent {
@@ -42,7 +43,15 @@ export class GettingStartedComponent {
     { fragmentName: 'common-issues', name: 'Common issues', icon: 'assets/icons/fluent-icons/ic_fluent_error_circle_24_filled.svg' },
     { fragmentName: 'choose-software', name: 'Choosing the right software', icon: 'assets/icons/fluent-icons/ic_fluent_apps_24_filled.svg' },
   ];
-  readonly commonIssuesUrl = `https://raw.githubusercontent.com/${githubInfo.owner}/${githubInfo.repository}/${githubInfo.branch}/metadata/web/getting_started/common_issues.md`;
+  readonly gettingStartedMdBaseUrl = `https://raw.githubusercontent.com/${githubInfo.owner}/${githubInfo.repository}/${githubInfo.branch}/metadata/web/getting_started`;
+  readonly runCommandsGUIMd = httpResource.text(
+    () => `${this.gettingStartedMdBaseUrl}/run-commands-gui.md`,
+    { parse: (response: string) => this.setMarkdownBaseUrl(response, this.gettingStartedMdBaseUrl) }
+  );
+  readonly commonIssuesMd = httpResource.text(
+    () => `${this.gettingStartedMdBaseUrl}/common_issues.md`,
+    { parse: (response: string) => this.setMarkdownBaseUrl(response, this.gettingStartedMdBaseUrl) }
+  );
 
   readonly clipboardButton = ClipboardButtonComponent;
 
@@ -124,5 +133,44 @@ export class GettingStartedComponent {
     // Get the hierarchy of the parents
     const parentNames = category.getParents().map(parent => this.getNameHierarchy(parent));
     return parentNames.flat().concat(category.name!.replaceAll("_", " "));
+  }
+
+  setMarkdownBaseUrl(content: string, baseUrl: string): string {
+    // Ensure baseUrl ends with a trailing slash
+    const normalizedBaseUrl = baseUrl.endsWith('/') ? baseUrl : baseUrl + '/';
+
+    // Replace image sources in HTML
+    content = content.replace(/<img\s+[^>]*src\s*=\s*["']([^"']+)["'][^>]*>/gi,
+      (match, src) => match.replace(src, this.convertToAbsoluteUrl(src, normalizedBaseUrl)));
+
+    // Replace href attributes in HTML anchors
+    content = content.replace(/<a\s+[^>]*href\s*=\s*["']([^"']+)["'][^>]*>/gi,
+      (match, href) => match.replace(href, this.convertToAbsoluteUrl(href, normalizedBaseUrl)));
+
+    // Replace image sources in Markdown
+    content = content.replace(/!\[([^\]]*)\]\(([^)]+)\)/gi,
+      (match, alt, src) => `![${alt}](${this.convertToAbsoluteUrl(src, normalizedBaseUrl)})`);
+
+    // Replace links in Markdown
+    content = content.replace(/\[([^\]]+)\]\(([^)]+)\)/gi,
+      (match, text, url) => `[${text}](${this.convertToAbsoluteUrl(url, normalizedBaseUrl)})`);
+
+    return content;
+  };
+
+  private convertToAbsoluteUrl(url: string, baseUrl: string): string {
+    // Skip URLs that are already absolute
+    if (url.startsWith('http://') ||
+      url.startsWith('https://') ||
+      url.startsWith('//') ||
+      url.startsWith('mailto:') ||
+      url.startsWith('tel:') ||
+      url.startsWith('#')) {
+      return url;
+    }
+
+    // Remove leading slash if present
+    const cleanUrl = url.startsWith('/') ? url.substring(1) : url;
+    return baseUrl + cleanUrl;
   }
 }

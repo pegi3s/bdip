@@ -204,32 +204,34 @@ pre code {
   }
 }
 
-.figure-pair {
+:host ::ng-deep .figure-pair {
   display: flex;
   justify-content: space-evenly;
   gap: 40px;
   margin-block: 40px;
+}
 
-  figure {
-    margin: 0;
-  }
-
-  img {
-    background-color: transparent;
-    filter: drop-shadow(0 4px 3px rgb(0 0 0 / 0.09)) drop-shadow(0 2px 2px rgb(0 0 0 / 0.08));
-  }
-
-  figcaption {
-    margin-top: 8px;
-    font-size: 0.875rem;
-    line-height: 1.25rem;
-  }
-
-  @media (width < 1280px) {
+@media (width < 1280px) {
+  :host ::ng-deep .figure-pair {
     flex-direction: column;
     align-items: center;
     gap: 32px;
   }
+}
+
+:host ::ng-deep .figure-pair figure {
+  margin: 0;
+}
+
+:host ::ng-deep .figure-pair img {
+  background-color: transparent;
+  filter: drop-shadow(0 4px 3px rgb(0 0 0 / 0.09)) drop-shadow(0 2px 2px rgb(0 0 0 / 0.08));
+}
+
+:host ::ng-deep .figure-pair figcaption {
+  margin-top: 8px;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
 }
 
 @keyframes revealOpacity {
