@@ -9,5 +9,5 @@ import { SvgIconComponent } from 'angular-svg-icon';
     styleUrl: './footer.component.css'
 })
 export class FooterComponent {
-
+  readonly currentYear: number = new Date().getFullYear();
 }
