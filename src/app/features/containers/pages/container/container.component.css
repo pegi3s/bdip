@@ -55,18 +55,37 @@ svg.thick path {
   word-break: break-word;
 }
 
-.categories {
+.ontology-hierarchy {
   display: flex;
+  flex-direction: column;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 10px;
+  font-size: 0.75rem;
+  line-height: 1rem;
 
-  span {
+  > div {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px;
+  }
+
+  a {
     border-radius: 1rem;
     background-color: rgba(var(--main-font-color), 0.07);
     padding: 6px 10px;
-    font-size: 0.75rem;
-    line-height: 1rem;
+    transition: all 200ms;
   }
+
+  a:hover {
+    background-color: rgba(var(--picton-blue-950), 0.09);
+    color: rgb(var(--picton-blue-900));
+  }
+}
+
+:host-context(.dark) .ontology-hierarchy a:hover {
+  background-color: rgba(var(--picton-blue-300), 0.1);
+  color: rgb(var(--picton-blue-200));
 }
 
 .status {

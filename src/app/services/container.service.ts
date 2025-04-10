@@ -10,6 +10,7 @@ import { githubInfo } from '../core/constants/github-info';
 import { ImageMetadata } from '../models/image-metadata';
 import { environment } from "../../environments/environment";
 import { rxResource } from "@angular/core/rxjs-interop";
+import { TermStanza } from "../obo/TermStanza";
 
 @Injectable({
   providedIn: 'root',
@@ -113,6 +114,29 @@ export class ContainerService {
 
   getContainersMapRes(): Resource<Map<string, Set<string>>> {
     return this.containers.asReadonly();
+  }
+
+  getContainerCategoryHierarchy(name: string): Signal<TermStanza[][]> {
+    return computed(() => {
+      const ontology = this.ontology.value();
+      const containerMap = this.containers.value();
+      const categoryIds = Array.from(containerMap.keys()).filter((category) => containerMap.get(category)?.has(name));
+      const categoryHierarchy: TermStanza[][] = [];
+      categoryIds.forEach((categoryId) => {
+        const category = ontology?.findTermById(categoryId);
+        const hierarchy = [];
+        if (category) {
+          hierarchy.push(category);
+          let parent = category.getParents()[0];
+          while (parent) {
+            hierarchy.unshift(parent);
+            parent = parent.getParents()[0];
+          }
+          categoryHierarchy.push(hierarchy);
+        }
+      });
+      return categoryHierarchy;
+    });
   }
 
   /** Retrieves the metadata for all containers */

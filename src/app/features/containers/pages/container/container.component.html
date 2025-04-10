@@ -6,9 +6,18 @@
       <h2>{{ container.name }}</h2>
     </div>
     <p class="description">{{ container.description }}</p>
-    <div class="categories">
-      @for (category of container.categories; track $index) {
-        <span>{{ category.name }}</span>
+    <div class="ontology-hierarchy">
+      @for (hierarchy of ontologyCategories(); track $index) {
+        <div>
+          @for (category of hierarchy; track $index) {
+            <a [routerLink]="['/search']" [queryParams]="{c: getIdHierarchy(category).join()}">
+              {{ category.name }}
+            </a>
+            @if (!$last) {
+              <span> > </span>
+            }
+          }
+        </div>
       }
     </div>
     <div class="status">
@@ -164,21 +173,24 @@
 </ng-template>
 
 <ng-template #testing let-containerMetadata="containerMetadata">
-  @if (containerMetadata.gui) {
-    @if (containerMetadata.gui_command.length > 0) {
-      <!-- If GUI and has command -->
-      <ng-container *ngTemplateOutlet="testingGUI; context: { containerMetadata: containerMetadata }"></ng-container>
-    } @else {
-      <!-- If GUI and no command -->
-      <ng-container *ngTemplateOutlet="testingMissingInstructions; context: { section: 'GUI' }"></ng-container>
+  @if (containerMetadata) {
+    @if (containerMetadata.gui) {
+      @if (containerMetadata.gui_command.length > 0) {
+        <!-- If GUI and has command -->
+        <ng-container *ngTemplateOutlet="testingGUI; context: { containerMetadata: containerMetadata }"></ng-container>
+      } @else {
+        <!-- If GUI and no command -->
+        <ng-container *ngTemplateOutlet="testingMissingInstructions; context: { section: 'GUI' }"></ng-container>
+      }
     }
-  }
-  @if (containerMetadata.test_invocation_specific.length > 0 && containerMetadata.test_data_url.length > 0) {
-    <!-- Has CLI command -->
-    <ng-container *ngTemplateOutlet="testingCLI; context: { containerMetadata: containerMetadata }"></ng-container>
-  } @else if (!containerMetadata.gui) {
-    <!-- No GUI and no CLI command -->
-    <ng-container *ngTemplateOutlet="testingMissingInstructions; context: { section: 'CLI' }"></ng-container>
+    {{ containerMetadata.test_invocation_specific.length > 0 && containerMetadata.test_data_url.length > 0 }}
+    @if (containerMetadata.test_invocation_specific.length > 0 && containerMetadata.test_data_url.length > 0) {
+      <!-- Has CLI command -->
+      <ng-container *ngTemplateOutlet="testingCLI; context: { containerMetadata: containerMetadata }"></ng-container>
+    } @else if (!containerMetadata.gui) {
+      <!-- No GUI and no CLI command -->
+      <ng-container *ngTemplateOutlet="testingMissingInstructions; context: { section: 'CLI' }"></ng-container>
+    }
   }
 </ng-template>
 

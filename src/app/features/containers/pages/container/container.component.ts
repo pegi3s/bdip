@@ -1,7 +1,7 @@
 import { Component, inject, Injector, runInInjectionContext, signal, Signal } from "@angular/core";
 import { DockerHubImage } from '../../../../models/docker-hub-image';
 import { DockerHubTag } from '../../../../models/docker-hub-tag';
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, RouterLink } from "@angular/router";
 import { ContainerService } from '../../../../services/container.service';
 import { MarkdownModule } from 'ngx-markdown';
 import { DatePipe, NgTemplateOutlet, SlicePipe, ViewportScroller } from "@angular/common";
@@ -13,13 +13,14 @@ import { SvgIconComponent } from 'angular-svg-icon';
 import { LoadingComponent } from "../../../../shared/components/loading/loading.component";
 import { ImageMetadata } from "../../../../models/image-metadata";
 import { ReplacePipe } from "../../../../shared/pipes/replace/replace.pipe";
+import { TermStanza } from "../../../../obo/TermStanza";
 
 @Component({
     selector: 'app-container',
     templateUrl: './container.component.html',
     styleUrl: './container.component.css',
     host: { '[class.dark]': 'isDarkTheme()' },
-  imports: [DatePipe, SlicePipe, MarkdownModule, TabsComponent, BytesToSizePipe, ClipboardButtonComponent, SvgIconComponent, LoadingComponent, NgTemplateOutlet, ReplacePipe]
+    imports: [DatePipe, SlicePipe, MarkdownModule, TabsComponent, BytesToSizePipe, ClipboardButtonComponent, SvgIconComponent, LoadingComponent, NgTemplateOutlet, ReplacePipe, RouterLink]
 })
 export class ContainerComponent {
   /* Services */
@@ -35,6 +36,7 @@ export class ContainerComponent {
   status: Status = Status.LOADING;
   container?: DockerHubImage;
   containerTags: Signal<DockerHubTag[]> = signal([]);
+  ontologyCategories: Signal<TermStanza[][]> = signal([]);
 
   selectedTab = signal<TabName>(TabName.README);
 
@@ -60,6 +62,7 @@ export class ContainerComponent {
       });
       runInInjectionContext(this.injector, () => {
         this.containerTags = this.containerService.getContainerTagsRes(containerName).value;
+        this.ontologyCategories = this.containerService.getContainerCategoryHierarchy(containerName);
       });
     });
     this.viewportScroller.setOffset([0, 150]);
@@ -184,6 +187,17 @@ export class ContainerComponent {
 
   removeReadmeOwnershipHeader(readme: string): string {
     return readme.replace(/# This image belongs to a larger project called Bioinformatics Docker Images Project.*/, '');
+  }
+
+  getIdHierarchy(category: TermStanza): string[] {
+    // Base case: if no parents, return just this ID
+    if (!category.hasParents()) {
+      return [category.id];
+    }
+
+    // Get the hierarchy of the parents
+    const parentIds = category.getParents().map(parent => this.getIdHierarchy(parent));
+    return parentIds.flat().concat(category.id);
   }
 
   protected readonly Status = Status;
