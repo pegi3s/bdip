@@ -227,8 +227,8 @@
     ## 2. Manual execution
 
     You can create a working directory at the desired location, and within the working directory two additional directories
-    named `Test_data` and `outputFolder`, download the test data using the link provided above, copy the file from the `Downloads`
-    folder to the `Test_data` folder, unzip the file (if needed), and then open the command line (Linux) or Ubuntu app (Windows WSL),
+    named `test/data` and `test/results`, download the test data using the link provided above, copy the file from the `Downloads`
+    folder to the `test/data` folder, unzip the file (if needed), and then open the command line (Linux) or Ubuntu app (Windows WSL),
     and run the following command:
 
     ```sh
@@ -247,11 +247,11 @@
     ```sh
     # Attributes the value of the path to the working directory to the working_dir variable.
     working_dir="/your/data/dir"
-    # Creates the Test_data and outputFolder directories at the specified location (working dir). The -p option makes sures that any parent folders are created if needed.
-    mkdir -p $working_dir/Test_data $working_dir/outputFolder
-    # Changes the directory to the Test_data directory within the working directory.
-    cd $working_dir/Test_data
-    # Downloads the test data to the Test_data directory
+    # Creates the test/data and test/results directories at the specified location (working dir). The -p option makes sures that any parent folders are created if needed.
+    mkdir -p $working_dir/test/data $working_dir/test/results
+    # Changes the directory to the test/data directory within the working directory.
+    cd $working_dir/test/data
+    # Downloads the test data to the test/data directory
     wget "{{ containerMetadata.test_data_url }}"
     # to be executed only if the test data is zipped. It gets the name of the zipped file from the download link and unzips the file.
     downloaded_file=$(basename "{{ containerMetadata.test_data_url }}") && unzip "$downloaded_file"
@@ -271,9 +271,9 @@
     ```sh
     cd $(mktemp -d "/tmp/test.XXXXXXX")
 
-    mkdir Test_data outputFolder
+    mkdir test/data test/results
 
-    cd Test_data
+    cd test/data
     wget "{{ containerMetadata.test_data_url }}"
 
     downloaded_file = $(basename "{{ containerMetadata.test_data_url }}")
