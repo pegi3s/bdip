@@ -183,7 +183,6 @@
         <ng-container *ngTemplateOutlet="testingMissingInstructions; context: { section: 'GUI' }"></ng-container>
       }
     }
-    {{ containerMetadata.test_invocation_specific.length > 0 && containerMetadata.test_data_url.length > 0 }}
     @if (containerMetadata.test_invocation_specific.length > 0 && containerMetadata.test_data_url.length > 0) {
       <!-- Has CLI command -->
       <ng-container *ngTemplateOutlet="testingCLI; context: { containerMetadata: containerMetadata }"></ng-container>
