@@ -5,7 +5,7 @@
       <svg-icon src="assets/icons/octicons/container-24.svg" svgClass="thick" />
       <h2>{{ container.name }}</h2>
     </div>
-    <p class="description">{{ container.description }}</p>
+    <p class="description" [innerHTML]=convertPlainTextToLink(container.description)></p>
     <div class="ontology-hierarchy">
       @for (hierarchy of ontologyCategories(); track $index) {
         <div>

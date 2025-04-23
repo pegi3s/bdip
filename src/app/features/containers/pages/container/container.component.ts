@@ -96,6 +96,13 @@ export class ContainerComponent {
     return command;
   }
 
+  convertPlainTextToLink(text: string): string {
+    const urlPattern = /\((https?:\/\/[^\s]+)\)/g; // Captures URL inside parentheses
+    return text.replace(urlPattern, (match, url) => {
+      return `<a href="${url}" target="_blank">${match}</a>`;
+    });
+  }
+
   onTabSelectedGettingStarted(tab: string) {
     this.selectedTab.set(tab as TabName);
     history.pushState(null, "", window.location.pathname + '#' + tab);
