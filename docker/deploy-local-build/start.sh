@@ -68,6 +68,18 @@ sed -i "s|/v2/namespaces/pegi3s/repositories|${PROXY_BASE_HREF}v2/namespaces/peg
 # Set proxy base href
 sed -i "s|/v2/namespaces/pegi3s/repositories|${PROXY_BASE_HREF}v2/namespaces/pegi3s/repositories|g" "$WEB_ROOT"/main*.js
 
+# Set Matomo configuration
+if [ -n "$MATOMO_TRACKER_URL" ] || [ -n "$MATOMO_SITE_ID" ]; then
+  echo "Setting Matomo configuration..."
+  # Set default values if not provided
+  MATOMO_TRACKER_URL=${MATOMO_TRACKER_URL:-'YOUR_MATOMO_URL_HERE'}
+  MATOMO_SITE_ID=${MATOMO_SITE_ID:-'YOUR_MATOMO_SITE_ID_HERE'}
+
+  # Update environment.ts with the provided or default values
+  sed -i "s|matomoTrackerUrl:\"YOUR_MATOMO_URL_HERE\"|matomoTrackerUrl:\"$MATOMO_TRACKER_URL\"|g" "$WEB_ROOT"/main*.js
+  sed -i "s|matomoSiteId:\"YOUR_MATOMO_SITE_ID_HERE\"|matomoSiteId:\"$MATOMO_SITE_ID\"|g" "$WEB_ROOT"/main*.js
+fi
+
 # Start nginx
 echo "Starting Nginx..."
 exec nginx -g 'daemon off;'

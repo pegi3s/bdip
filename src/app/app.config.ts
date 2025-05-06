@@ -7,6 +7,8 @@ import { CLIPBOARD_OPTIONS, ClipboardButtonComponent, provideMarkdown } from 'ng
 import { baseUrl } from 'marked-base-url';
 import markedAlert from 'marked-alert';
 import { provideAngularSvgIcon } from 'angular-svg-icon';
+import { provideMatomo, withRouter } from "ngx-matomo-client";
+import { environment } from "../environments/environment";
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -28,6 +30,13 @@ export const appConfig: ApplicationConfig = {
       },
       sanitize: SecurityContext.NONE,
     }),
+    provideMatomo(
+      {
+        trackerUrl: environment.matomoTrackerUrl,
+        siteId: environment.matomoSiteId,
+      },
+      withRouter(),
+    ),
     provideRouter(
       routes,
       withViewTransitions({
