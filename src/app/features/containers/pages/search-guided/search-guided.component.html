@@ -52,10 +52,18 @@
           </button>
         }
       </div>
+      @if (this.searchTerm().length > 0) {
+        <div>
+          <input type="checkbox" id="searchReadmesCheckbox" [(ngModel)]="searchReadmes" />
+          <label for="searchReadmesCheckbox">Include READMEs</label>
+          <!-- TODO: Add loading indicator -->
+        </div>
+      }
     </div>
   }
 </section>
 <app-search-list
   [searchQuery]="searchTerm()"
+  [searchReadmes]="searchReadmes()"
   [rootCategories]="showAll() ? rootCategories() : []"
   [selectedCategory]="getSelectedCategory()" />

@@ -1,6 +1,6 @@
 import { HttpClient, httpResource } from "@angular/common/http";
 import { computed, Injectable, Resource, Signal, WritableResource } from "@angular/core";
-import { concatMap, Observable, of } from "rxjs";
+import { concatMap, forkJoin, Observable, of, retry, throwError, timer } from "rxjs";
 import { catchError, map, shareReplay } from 'rxjs/operators';
 
 import { Ontology } from '../obo/Ontology';
@@ -108,6 +108,63 @@ export class ContainerService {
   /** A map to store the tags of each container */
   private readonly containersTags: Map<string, WritableResource<DockerHubTag[]>> = new Map<string, WritableResource<DockerHubTag[]>>();
 
+  /** A map to store the READMEs of each container */
+  containersReadmes = rxResource({
+    request: () => this.containersMetadata.value(),
+    loader: ({ request: metadata }) => {
+      const containers = metadata ? Array.from(metadata.keys()) : [];
+
+      const readmeFetchObservables = containers.map((container) => {
+        const url = new URL(`${this.baseDockerHubEndpoint}/${container}`, this.proxyServerURL).toString();
+        return this.http.get<DockerHubImage>(url).pipe(
+          retry({
+            count: Infinity, // Retry indefinitely for 429 errors
+            delay: (error, retryCount) => {
+              if (error.status === 429) { // Too Many Requests
+                // Implement exponential backoff with jitter to avoid thundering herd
+                const baseDelay = 8000; // Start with 8 seconds
+                const maxDelay = 30000; // Cap at 60 seconds
+                const exponentialDelay = Math.min(baseDelay * Math.pow(1.5, retryCount - 1), maxDelay);
+                const jitter = Math.random() * 1000; // Add up to 1 second of jitter
+                const delayMs = exponentialDelay + jitter;
+
+                // Log all available headers for debugging
+                console.log("Rate limit error headers:", error.headers);
+                // TODO: Replace the wait time with the contents of the Retry-After header
+
+                console.warn(
+                  `Container '${container}': API rate limit (429). Retrying with exponential backoff in ~${(delayMs / 1000).toFixed(1)}s. Attempt ${retryCount}.`
+                );
+
+                return timer(delayMs);
+              }
+
+              // For any other error, don't retry, just propagate the error
+              console.error(`Container '${container}': Failed with status ${error.status || 'unknown'}. Not retrying this error.`, error);
+              return throwError(() => error);
+            }
+          })
+        );
+      });
+
+      return forkJoin(readmeFetchObservables).pipe(
+        map(results => {
+          const readmeMap = new Map<string, string>();
+          results.forEach(result => {
+            readmeMap.set(result.name, result.full_description);
+          });
+          console.log(readmeMap);
+          return readmeMap;
+        }),
+        catchError(error => {
+          console.error("Failed to fetch container readmes:", error);
+          return of(new Map<string, string>());
+        })
+      );
+    },
+    defaultValue: new Map<string, string>(),
+  });
+
   getOntologyRes(): Resource<Ontology | undefined> {
     return this.ontology.asReadonly();
   }
@@ -179,6 +236,11 @@ export class ContainerService {
       this.containersTags.set(name, tagsRes);
     }
     return this.containersTags.get(name)!.asReadonly();
+  }
+
+  /** Retrieves the README files for all containers from Docker Hub */
+  getContainersReadmesRes(): Resource<Map<string, string>> {
+    return this.containersReadmes.asReadonly();
   }
 
   /* ----- Paging ---- */

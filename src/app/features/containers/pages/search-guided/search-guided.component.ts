@@ -48,6 +48,8 @@ export class SearchGuidedComponent {
   searchTerm = signal<string>('');
   /** Whether to show all containers. */
   showAll = signal<boolean>(false);
+  /** Search inside READMEs. */
+  searchReadmes = signal<boolean>(false);
 
   constructor() {
     this.isDarkTheme = this.themeService.isDarkTheme();

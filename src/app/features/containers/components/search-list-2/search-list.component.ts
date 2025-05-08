@@ -22,6 +22,7 @@ export class SearchListComponent {
   rootCategories = input<TermStanza[]>([]);
   selectedCategory = input<TermStanza>();
   searchQuery = input<string>('');
+  searchReadmes = input<boolean>(false);
 
   private themeService: ThemeService = inject(ThemeService);
   protected isDarkTheme: Signal<boolean> = this.themeService.isDarkTheme();
@@ -30,6 +31,7 @@ export class SearchListComponent {
   containers = this.containerService.getContainersMapRes().value;
   containersMetadata = this.containerService.getAllContainersMetadataRes().value;
   containersInfo = this.containerService.getAllContainersInfoRes().value;
+  containerReadmes = this.containerService.getContainersReadmesRes().value;
 
   /**
    * This computed property generates a set of container names that match the current search criteria sorted alphabetically.
@@ -116,6 +118,13 @@ export class SearchListComponent {
         matchedContainers.add(metadata.name);
       }
     });
+    if (this.searchReadmes()) {
+      this.containerReadmes().forEach((readme, container) => {
+        if (readme.toLowerCase().includes(queryLowerCase)) {
+          matchedContainers.add(container);
+        }
+      });
+    }
   }
 
   getContainerMetadataByName(name: string): ImageMetadata | undefined {
