@@ -52,10 +52,12 @@
     --color-danger-emphasis: #da3633;
     --color-done-fg: #a371f7;
     --color-done-emphasis: #8957e5;
+    /* Override default theme colors */
+    --color-fg-default: #FFFFFF;
     /* Custom CSS */
     --custom-bg-accordion: rgba(10, 10, 10, 0.6);
     --custom-outline: 1px solid rgba(37, 41, 40, 0.5);
-    --custom-hover-color: rgb(37, 41, 40);
+    --custom-hover-color: rgba(var(--slate-800), 0.8);
     --custom-bg-codeblock: hsla(0, 0%, 4%, 0.6);
     --custom-color-link: rgb(131, 214, 241);
   }
@@ -115,11 +117,13 @@
     --color-danger-emphasis: #cf222e;
     --color-done-fg: #8250df;
     --color-done-emphasis: #8250df;
+    /* Override default theme colors */
+    --color-fg-default: #000000;
     /* Custom CSS */
     --custom-bg-accordion: rgba(255, 255, 255);
-    --custom-outline: 1px solid rgb(222, 226, 226);
-    --custom-hover-color: rgb(238 242 241);
-    --custom-bg-codeblock: hsla(0, 0%, 94%, 0.6);
+    --custom-outline: 1px solid rgb(var(--slate-200));
+    --custom-hover-color: rgb(var(--slate-100));
+    --custom-bg-codeblock: rgb(var(--slate-50));
     --custom-color-link: #0969da; /* --color-accent-fg */
   }
 
