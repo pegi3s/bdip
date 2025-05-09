@@ -53,7 +53,7 @@
         }
       </div>
       @if (this.searchTerm().length > 0) {
-        <div>
+        <div class="checkbox-container">
           <input type="checkbox" id="searchReadmesCheckbox" [(ngModel)]="searchReadmes" />
           <label for="searchReadmesCheckbox">Include READMEs</label>
           <!-- TODO: Add loading indicator -->
