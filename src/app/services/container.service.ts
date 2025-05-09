@@ -1,7 +1,7 @@
 import { HttpClient, httpResource } from "@angular/common/http";
 import { computed, Injectable, Resource, Signal, WritableResource } from "@angular/core";
-import { concatMap, forkJoin, Observable, of, retry, throwError, timer } from "rxjs";
-import { catchError, map, shareReplay } from 'rxjs/operators';
+import { concatMap, from, mergeMap, Observable, of, retry, throwError, timer, toArray } from "rxjs";
+import { catchError, filter, map, shareReplay } from "rxjs/operators";
 
 import { Ontology } from '../obo/Ontology';
 import { DockerHubImage } from '../models/docker-hub-image';
@@ -114,7 +114,7 @@ export class ContainerService {
     loader: ({ request: metadata }) => {
       const containers = metadata ? Array.from(metadata.keys()) : [];
 
-      const readmeFetchObservables = containers.map((container) => {
+      const createReadmeObservable = (container: string) => {
         const url = new URL(`${this.baseDockerHubEndpoint}/${container}`, this.proxyServerURL).toString();
         return this.http.get<DockerHubImage>(url).pipe(
           retry({
@@ -122,8 +122,8 @@ export class ContainerService {
             delay: (error, retryCount) => {
               if (error.status === 429) { // Too Many Requests
                 // Implement exponential backoff with jitter to avoid thundering herd
-                const baseDelay = 8000; // Start with 8 seconds
-                const maxDelay = 30000; // Cap at 60 seconds
+                const baseDelay = 10000; // Start with 10 seconds
+                const maxDelay = 40000; // Cap at 40 seconds
                 const exponentialDelay = Math.min(baseDelay * Math.pow(1.5, retryCount - 1), maxDelay);
                 const jitter = Math.random() * 1000; // Add up to 1 second of jitter
                 const delayMs = exponentialDelay + jitter;
@@ -145,15 +145,15 @@ export class ContainerService {
             }
           })
         );
-      });
+      };
 
-      return forkJoin(readmeFetchObservables).pipe(
+      return from(containers).pipe(
+        mergeMap(container => createReadmeObservable(container), 5), // Limit to 5 concurrent requests
+        filter(Boolean),
+        toArray(),
         map(results => {
           const readmeMap = new Map<string, string>();
-          results.forEach(result => {
-            readmeMap.set(result.name, result.full_description);
-          });
-          console.log(readmeMap);
+          results.forEach(result => readmeMap.set(result.name, result.full_description));
           return readmeMap;
         }),
         catchError(error => {
