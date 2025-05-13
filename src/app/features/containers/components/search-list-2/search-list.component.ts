@@ -98,29 +98,60 @@ export class SearchListComponent {
   }
 
   /**
-   * Filters containers by checking if any container's name or description includes
-   * the specified name (case-insensitive) and adds matching containers to a set.
+   * Filters containers by checking if their name, description, or README content match the
+   * given search query (case-insensitive). Supports both partial and exact (quoted) terms.
    *
-   * @param {string} searchQuery - The query to search for in container names or descriptions.
-   * @param {Set<string>} matchedContainers - The set to add matching containers to.
+   * - Unquoted terms are matched as case-insensitive substrings (e.g., `mega` matches `megax` and `omegamap`).
+   * - Quoted terms (e.g., `"mega"`) are matched as exact words or phrases, using word boundaries
+   *   (e.g., `"mega"` matches `mega`, but not `megax` or `omegamap`).
+   *
+   * A container is considered a match if all quoted phrases and all unquoted terms
+   * appear in either the container's name, description, or README content.
+   *
+   * @param {string} searchQuery - The query string, which may include quoted exact terms and unquoted partial terms.
+   * @param {Set<string>} matchedContainers - The set to add matching container names to.
    */
   getContainersByNameOrDescription(searchQuery: string, matchedContainers: Set<string>) {
-    const queryLowerCase = searchQuery.toLowerCase();
+    const exactPhrases: string[] = [];
+    const partialTerms: string[] = [];
+    // Split the search query into exact and partial terms
+    // Regex: anything inside double quotes OR one or more non-whitespace characters
+    const regex = /"([^"]+)"|(\S+)/g;
+    let match: RegExpExecArray | null;
+    while ((match = regex.exec(searchQuery)) !== null) {
+      if (match[1]) exactPhrases.push(match[1].toLowerCase());
+      else if (match[2]) partialTerms.push(match[2].toLowerCase());
+    }
+
+    const matchesQuery = (text: string) => {
+      const lower = text.toLowerCase();
+      // Match if all partial terms appear as substrings (loose match)
+      const allTermsMatch = partialTerms.every(term => lower.includes(term));
+      // Match if all quoted phrases appear exactly (word-boundary match)
+      const allPhrasesMatch = exactPhrases.every(phrase => {
+        const escaped = phrase.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // Escape regex
+        const pattern = new RegExp(`\\b${escaped}\\b`, 'i'); // Word-boundary match, case-insensitive
+        return pattern.test(text);
+      });
+
+      return allTermsMatch && allPhrasesMatch;
+    };
+
     this.containers().forEach((containerSet) => {
       containerSet.forEach((container) => {
-        if (container.toLowerCase().includes(queryLowerCase)) {
+        if (matchesQuery(container)) {
           matchedContainers.add(container);
         }
       });
     });
     this.containersMetadata().forEach((metadata) => {
-      if (metadata.description.toLowerCase().includes(queryLowerCase)) {
+      if (matchesQuery(metadata.description)) {
         matchedContainers.add(metadata.name);
       }
     });
     if (this.searchReadmes()) {
       this.containerReadmes().forEach((readme, container) => {
-        if (readme.toLowerCase().includes(queryLowerCase)) {
+        if (matchesQuery(readme)) {
           matchedContainers.add(container);
         }
       });
