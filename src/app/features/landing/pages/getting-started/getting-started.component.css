@@ -188,14 +188,20 @@ pre code {
   background: #9a670060;
 }
 
-#docker-manager-img {
+::ng-deep #docker-manager p:has(> img) {
+  display: contents;
+}
+
+::ng-deep #docker-manager img {
   float: right;
   margin-left: 48px;
   max-width: min(50%, 752px);
   max-height: 310px;
   filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
+}
 
-  @media (width < 1280px) {
+@media (width < 1280px) {
+  ::ng-deep #docker-manager img {
     float: none;
     margin: 36px auto;
     max-width: 100%;

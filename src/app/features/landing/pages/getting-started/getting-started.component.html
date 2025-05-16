@@ -114,25 +114,13 @@
 </ng-template>
 
 <ng-template #dockerManager>
-  <div>
-    <h2>Manage Docker Images</h2>
-    <img [src]="'assets/images/getting-started/manage-docker-images/docker-manager-' + (isDarkTheme() ? 'dark' : 'light') + '.png'" alt="Docker Manager" id="docker-manager-img" />
-    <p>After running several Docker images, you may lose track of the images available on a given computer. You may want to delete Docker images that you are not going to use again soon to save hard disk space or erase leftover Docker images that remain after an unexpected restart. All these operations can be managed using the <strong>pegi3s/docker-manager</strong> image, which provides a simple graphical interface for managing Docker images.</p>
-
-    <div class="note">
-      <strong>Note:</strong> It is not possible to erase Docker images that are being used in the computer where docker-manager is running, thus, if it is possible to delete an image, that means that the image is not being used.
-    </div>
-
-    <p>Since the application has a graphical interface, you must run the following command to allow Docker to access the X11 display:</p>
-
-    <pre><code>xhost +</code></pre>
-
-    <p>After running the command, execute the following Docker command to run the Docker Manager interface:</p>
-
-    <pre><code>docker run --rm -ti -e USERID=$UID -e USER=$USER -e DISPLAY=$DISPLAY -v /var/db:/var/db:Z -v /tmp/.X11-unix:/tmp/.X11-unix -v $HOME/.Xauthority:/home/developer/.Xauthority -v /var/run/docker.sock:/var/run/docker.sock -v /tmp:/tmp pegi3s/docker-manager</code></pre>
-
-    <p>This command will start the Docker Manager interface, allowing you to easily manage your Docker images. You can delete, view, or perform other operations on the images as needed.</p>
-  </div>
+  <markdown
+    clipboard
+    [clipboardButtonComponent]="clipboardButton"
+    id="docker-manager"
+    class="markdown-body"
+    [data]="isDarkTheme() ? (dockerManagerMd.value() | replace:'-light.':'-dark.') : dockerManagerMd.value()"
+  />
 </ng-template>
 
 <ng-template #runCommandsGUI>

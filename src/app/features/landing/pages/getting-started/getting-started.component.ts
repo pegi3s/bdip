@@ -12,12 +12,13 @@ import { SoftwareRecommendationsService } from "../../../../services/software-re
 import { TermStanza } from "../../../../obo/TermStanza";
 import { LowerCasePipe } from "@angular/common";
 import { httpResource } from "@angular/common/http";
+import { ReplacePipe } from "../../../../shared/pipes/replace/replace.pipe";
 
 @Component({
     selector: 'app-getting-started',
     templateUrl: './getting-started.component.html',
     styleUrl: './getting-started.component.css',
-    imports: [TabsComponent, StepperComponent, MarkdownComponent, RouterLink, LowerCasePipe],
+  imports: [TabsComponent, StepperComponent, MarkdownComponent, RouterLink, LowerCasePipe, ReplacePipe],
     host: { '[class.dark]': 'isDarkTheme()' }
 })
 export class GettingStartedComponent {
@@ -44,13 +45,26 @@ export class GettingStartedComponent {
     { fragmentName: 'choose-software', name: 'Choosing the right software', icon: 'assets/icons/fluent-icons/ic_fluent_apps_24_filled.svg' },
   ];
   readonly gettingStartedMdBaseUrl = `https://raw.githubusercontent.com/${githubInfo.owner}/${githubInfo.repository}/${githubInfo.branch}/metadata/web/getting_started`;
+  readonly dockerManagerMd = httpResource.text(
+    () => `${this.gettingStartedMdBaseUrl}/manage-docker-images.md`,
+    {
+      parse: (response: string) => this.setMarkdownBaseUrl(response, this.gettingStartedMdBaseUrl),
+      defaultValue: ""
+    }
+  );
   readonly runCommandsGUIMd = httpResource.text(
     () => `${this.gettingStartedMdBaseUrl}/run-commands-gui.md`,
-    { parse: (response: string) => this.setMarkdownBaseUrl(response, this.gettingStartedMdBaseUrl) }
+    {
+      parse: (response: string) => this.setMarkdownBaseUrl(response, this.gettingStartedMdBaseUrl),
+      defaultValue: ""
+    }
   );
   readonly commonIssuesMd = httpResource.text(
     () => `${this.gettingStartedMdBaseUrl}/common_issues.md`,
-    { parse: (response: string) => this.setMarkdownBaseUrl(response, this.gettingStartedMdBaseUrl) }
+    {
+      parse: (response: string) => this.setMarkdownBaseUrl(response, this.gettingStartedMdBaseUrl),
+      defaultValue: ""
+    }
   );
 
   readonly clipboardButton = ClipboardButtonComponent;
