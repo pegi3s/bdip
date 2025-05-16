@@ -2,6 +2,17 @@
   display: flex;
   justify-content: space-between;
   width: 100%;
+  overflow-x: auto;
+  background:
+    /* Shadow covers */
+    linear-gradient(to right, rgb(var(--color-surface-container-lowest)) 30%, rgba(255,255,255,0)),
+    linear-gradient(to right, rgba(255,255,255,0), rgb(var(--color-surface-container-lowest)) 70%) 100% 0,
+      /* Shadows */
+    radial-gradient(farthest-side at 0 50%, rgba(0,0,0,.2), rgba(0,0,0,0)),
+    radial-gradient(farthest-side at 100% 50%, rgba(0,0,0,.2), rgba(0,0,0,0)) 100% 0;
+  background-repeat: no-repeat;
+  background-size: 40px 100%, 40px 100%, 14px 100%, 14px 100%;
+  background-attachment: local, local, scroll, scroll;
 }
 
 .step {
@@ -12,6 +23,11 @@
   --color-inactive: rgba(var(--slate-700), 1);
   --color: var(--color-inactive);
   --line-z-index: 1;
+
+  @media (width < 1024px) {
+    flex: 1;
+    min-width: 95px;
+  }
 
   :host-context(.dark) & {
     --color-inactive: rgba(var(--slate-600), 1);
@@ -90,3 +106,31 @@
     text-align: center;
   }
 }
+
+@property --left-fade {
+  syntax: "<length>";
+  inherits: false;
+  initial-value: 0;
+}
+
+@property --right-fade {
+  syntax: "<length>";
+  inherits: false;
+  initial-value: 0;
+}
+
+@keyframes scrollfade {
+  0% {
+    --left-fade: 0;
+  }
+  10%, 100% {
+    --left-fade: 3rem;
+  }
+  0%, 90% {
+    --right-fade: 3rem;
+  }
+  100% {
+    --right-fade: 0;
+  }
+}
+
