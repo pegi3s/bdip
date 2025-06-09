@@ -133,7 +133,7 @@ export class TutorialService {
    * @returns A resource that contains the list of video tutorials.
    */
   readonly videoTutorials = rxResource({
-    loader: () => this.http.get<VideoTutorial[]>(
+    stream: () => this.http.get<VideoTutorial[]>(
       `https://raw.githubusercontent.com/${githubInfo.owner}/${githubInfo.repository}/${githubInfo.branch}/metadata/web/tutorials/video-tutorials.json`
     ),
   }).asReadonly();

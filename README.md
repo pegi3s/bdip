@@ -1,6 +1,6 @@
 # Phenotypic Evolution Group Dockerfiles Website
 
-This repository contains the source code for the Phenotypic Evolution Group Dockerfiles website. The website is built using Angular 19.2.1 and is hosted on GitHub Pages.
+This repository contains the source code for the Phenotypic Evolution Group Dockerfiles website. The website is built using Angular 20.0.2 and is hosted on GitHub Pages.
 
 ## Getting Started
 
@@ -8,7 +8,7 @@ This repository contains the source code for the Phenotypic Evolution Group Dock
 
 To build and run the website locally, ensure you have the following installed:
 
-- [Node.js](https://nodejs.org/en/download/) 18.19.1 or higher
+- [Node.js](https://nodejs.org/en/download/) 20.19.0 or higher
 - [Go](https://go.dev/dl/) 1.22.2 or higher
 
 ### Installation

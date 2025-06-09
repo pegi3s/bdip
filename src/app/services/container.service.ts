@@ -84,7 +84,7 @@ export class ContainerService {
    * @returns A Map where the key is the container's name and the value is its Docker Hub information.
    */
   containersInfo = rxResource({
-    loader: () => {
+    stream: () => {
       const url = new URL(`${this.baseDockerHubEndpoint}?page=1&page_size=100`, this.proxyServerURL).toString();
       return this.fetchAllPagesContainersInfo(url, []).pipe(
         map(allResults => {
@@ -110,8 +110,8 @@ export class ContainerService {
 
   /** A map to store the READMEs of each container */
   containersReadmes = rxResource({
-    request: () => this.containersMetadata.value(),
-    loader: ({ request: metadata }) => {
+    params: () => this.containersMetadata.value(),
+    stream: ({ params: metadata }) => {
       const containers = metadata ? Array.from(metadata.keys()) : [];
 
       const createReadmeObservable = (container: string) => {
@@ -224,7 +224,7 @@ export class ContainerService {
     if (!this.containersTags.has(name)) {
       const url = new URL(`${this.baseDockerHubEndpoint}/${name}/tags?page_size=100`, this.proxyServerURL).toString();
       const tagsRes = rxResource({
-        loader: () => this.fetchAllPagesTags(url, []).pipe(
+        stream: () => this.fetchAllPagesTags(url, []).pipe(
           map((tags) => tags),
           catchError(err => {
             console.error('Error fetching DockerHub tags:', err);

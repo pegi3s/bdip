@@ -3,7 +3,7 @@ import { Router, provideRouter, withComponentInputBinding, withInMemoryScrolling
 import { provideAnimations } from "@angular/platform-browser/animations";
 import { routes } from './app.routes';
 import { HttpClient, provideHttpClient, withFetch } from '@angular/common/http';
-import { CLIPBOARD_OPTIONS, ClipboardButtonComponent, provideMarkdown } from 'ngx-markdown';
+import { CLIPBOARD_OPTIONS, ClipboardButtonComponent, MARKED_EXTENSIONS, provideMarkdown } from "ngx-markdown";
 import { baseUrl } from 'marked-base-url';
 import markedAlert from 'marked-alert';
 import { provideAngularSvgIcon } from 'angular-svg-icon';
@@ -18,8 +18,16 @@ export const appConfig: ApplicationConfig = {
     provideMarkdown({
       loader: HttpClient,
       markedExtensions: [
-        baseUrl('https://raw.githubusercontent.com/pegi3s/dockerfiles/master/metadata/web/tutorials/'),
-        markedAlert(),
+        {
+          provide: MARKED_EXTENSIONS,
+          useFactory: () => baseUrl('https://raw.githubusercontent.com/pegi3s/dockerfiles/master/metadata/web/tutorials/'),
+          multi: true,
+        },
+        {
+          provide: MARKED_EXTENSIONS,
+          useFactory: markedAlert,
+          multi: true,
+        }
         /* marked-gfm-heading-id won't work due DomSanitizer removing them */
       ],
       clipboardOptions: {
