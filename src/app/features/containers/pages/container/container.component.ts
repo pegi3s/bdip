@@ -14,6 +14,7 @@ import { LoadingComponent } from "../../../../shared/components/loading/loading.
 import { ImageMetadata } from "../../../../models/image-metadata";
 import { ReplacePipe } from "../../../../shared/pipes/replace/replace.pipe";
 import { TermStanza } from "../../../../obo/TermStanza";
+import { DockerfileService } from "../../../../services/dockerfile.service";
 
 @Component({
     selector: 'app-container',
@@ -28,6 +29,7 @@ export class ContainerComponent {
   private activatedRoute: ActivatedRoute = inject(ActivatedRoute);
   private viewportScroller = inject(ViewportScroller);
   private containerService: ContainerService = inject(ContainerService);
+  private dockerfileService = inject(DockerfileService);
   private themeService: ThemeService = inject(ThemeService);
   isDarkTheme: Signal<boolean>;
 
@@ -37,6 +39,7 @@ export class ContainerComponent {
   container?: DockerHubImage;
   containerTags: Signal<DockerHubTag[]> = signal([]);
   ontologyCategories: Signal<TermStanza[][]> = signal([]);
+  dockerfileContent: Signal<string | undefined> = signal<string>('');
 
   selectedTab = signal<TabName>(TabName.README);
 
@@ -63,6 +66,7 @@ export class ContainerComponent {
       runInInjectionContext(this.injector, () => {
         this.containerTags = this.containerService.getContainerTagsRes(containerName).value;
         this.ontologyCategories = this.containerService.getContainerCategoryHierarchy(containerName);
+        this.dockerfileContent = this.dockerfileService.getContainerDockerfileContent(containerName).value;
       });
     });
     this.viewportScroller.setOffset([0, 150]);
@@ -234,4 +238,5 @@ enum TabName {
   README = 'readme',
   TAGS = 'tags',
   TESTING = 'testing',
+  DOCKERFILE = 'dockerfile',
 }

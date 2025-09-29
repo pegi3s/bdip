@@ -95,7 +95,8 @@
     <app-tabs (activeTab)="onTabSelectedGettingStarted($event)" [tabs]="[
         { id: TabName.README, label: 'README', active: selectedTab() === TabName.README },
         { id: TabName.TAGS, label: TabName.TAGS, active: selectedTab() === TabName.TAGS },
-        { id: TabName.TESTING, label: 'Testing', active: selectedTab() === TabName.TESTING }
+        { id: TabName.TESTING, label: 'Testing', active: selectedTab() === TabName.TESTING },
+        { id: TabName.DOCKERFILE, label: 'Dockerfile', active: selectedTab() === TabName.DOCKERFILE }
       ]" />
     @if (selectedTab() === 'readme') {
       <markdown
@@ -107,6 +108,8 @@
       <ng-container *ngTemplateOutlet="tags; context: { containerTags: containerTags(), containerMetadata: containerMetadata }"></ng-container>
     } @else if (selectedTab() === 'testing') {
       <ng-container *ngTemplateOutlet="testing; context: { containerMetadata: containerMetadata }"></ng-container>
+    } @else if (selectedTab() === 'dockerfile') {
+      <ng-container *ngTemplateOutlet="dockerfile"></ng-container>
     }
   </div>
 } @else if (status === Status.LOADING) {
@@ -308,6 +311,18 @@
 
     ```sh
     xhost + && docker run --rm -ti -e USERID=$UID -e USER=$USER -e DISPLAY=$DISPLAY -v /var/db:/var/db:Z -v /tmp/.X11-unix:/tmp/.X11-unix -v $HOME/.Xauthority:/home/developer/.Xauthority -v "$(pwd):/data" -v /var/run/docker.sock:/var/run/docker.sock -v /tmp:/tmp pegi3s/{{ containerMetadata.name }}:{{ containerMetadata.latest }} {{ containerMetadata.gui_command }}
+    ```
+  </markdown>
+</ng-template>
+
+<ng-template #dockerfile>
+  <markdown
+    clipboard
+    [clipboardButtonComponent]="clipboardButton"
+    class="markdown-body"
+    ngPreserveWhitespaces>
+    ```dockerfile
+    {{ dockerfileContent() }}
     ```
   </markdown>
 </ng-template>
