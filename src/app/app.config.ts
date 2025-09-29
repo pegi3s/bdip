@@ -50,7 +50,7 @@ export const appConfig: ApplicationConfig = {
       withViewTransitions({
         onViewTransitionCreated: ({transition}) => {
           const router = inject(Router);
-          const url = router.getCurrentNavigation()!.finalUrl!.root.children['primary'];
+          const url = router.currentNavigation()!.finalUrl!.root.children['primary'];
           const goingToSearch = url?.segments[0].path == 'search';
           // Skip the transition if we are going to the search page
           // to avoid mixing it with the custom one defined
