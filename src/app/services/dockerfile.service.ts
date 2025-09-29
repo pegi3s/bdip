@@ -21,9 +21,9 @@ export class DockerfileService {
   }
 
   getContainerDockerfileContent(containerName: string): Resource<string | undefined> {
-    const path = this.getContainerDockerfilePath(containerName)?.path;
-    const dockerfileUrl = `https://raw.githubusercontent.com/${githubInfo.owner}/${githubInfo.repository}/refs/heads/${githubInfo.branch}/${path}`;
-
-    return httpResource.text(() => dockerfileUrl).asReadonly();
+    return httpResource.text(() => {
+      const path = this.getContainerDockerfilePath(containerName)?.path;
+      return `https://raw.githubusercontent.com/${githubInfo.owner}/${githubInfo.repository}/refs/heads/${githubInfo.branch}/${path}`;
+    }).asReadonly();
   }
 }
