@@ -15,13 +15,14 @@ import { ImageMetadata } from "../../../../models/image-metadata";
 import { ReplacePipe } from "../../../../shared/pipes/replace/replace.pipe";
 import { TermStanza } from "../../../../obo/TermStanza";
 import { DockerfileService } from "../../../../services/dockerfile.service";
+import { DropdownComponent } from "../../../../shared/components/dropdown/dropdown.component";
 
 @Component({
     selector: 'app-container',
     templateUrl: './container.component.html',
     styleUrl: './container.component.css',
     host: { '[class.dark]': 'isDarkTheme()' },
-    imports: [DatePipe, SlicePipe, MarkdownModule, TabsComponent, BytesToSizePipe, ClipboardButtonComponent, SvgIconComponent, LoadingComponent, NgTemplateOutlet, ReplacePipe, RouterLink]
+  imports: [DatePipe, SlicePipe, MarkdownModule, TabsComponent, BytesToSizePipe, ClipboardButtonComponent, SvgIconComponent, LoadingComponent, NgTemplateOutlet, ReplacePipe, RouterLink, DropdownComponent]
 })
 export class ContainerComponent {
   /* Services */
@@ -42,6 +43,16 @@ export class ContainerComponent {
   dockerfileContent: Signal<string | undefined> = signal<string>('');
 
   selectedTab = signal<TabName>(TabName.README);
+
+  /**
+   * Available container platforms.
+   * The selected option determines which tool the command examples will be adapted for.
+   */
+  containerPlatforms = [
+    { name: 'Docker', value: 'docker', icon: 'assets/icons/logos/docker-mark-blue.svg' },
+    { name: 'Podman', value: 'podman', icon: 'assets/icons/logos/podman.svg' },
+  ];
+  selectedContainerPlatform = signal<number>(0);
 
   constructor() {
     this.isDarkTheme = this.themeService.isDarkTheme();
@@ -92,12 +103,16 @@ export class ContainerComponent {
     return containerMetadata.recommended[containerMetadata.recommended.length - 1].version;
   }
 
-  buildDockerPullCommand(container: DockerHubImage, tag?: string | null): string {
-    let command = `docker pull ${container.namespace}/${container.name}`;
-    if (tag)
-      command += `:${tag}`;
+  buildImageReference(container: DockerHubImage, tag?: string | null): string {
+    let ref = `${container.namespace}/${container.name}`;
+    if (tag) {
+      ref += `:${tag}`;
+    }
+    return ref;
+  }
 
-    return command;
+  buildDockerPullCommand(container: DockerHubImage, tag?: string | null): string {
+    return `docker pull ${this.buildImageReference(container, tag)}`;
   }
 
   convertPlainTextToLink(text: string): string {
@@ -210,6 +225,116 @@ export class ContainerComponent {
     const parentIds = category.getParents().map(parent => this.getIdHierarchy(parent));
     return parentIds.flat().concat(category.id);
   }
+
+  /* Markdown reactive files */
+  /* ---------------------------------------------------------------------------------------------------------------- */
+  getCliMarkdown(containerMetadata: ImageMetadata): string {
+    const rawInvocation = `${containerMetadata.invocation_general} ${containerMetadata.test_invocation_specific}`;
+
+    return `
+# CLI
+
+To test the image, you can use the test data available [here](${containerMetadata.test_data_url}). If there is a
+README file, please follow the instructions that are given before proceeding because you may need to adjust some paths.
+
+The results obtained should be similar to the ones [here](${containerMetadata.test_results_url }) provided.
+
+Below you can find several ways of testing the image, according to your level of expertise.
+
+## 1. Using \`docknrun\`
+
+You can download the test data and run the Docker image using the [\`docknrun\` Docker image](http://bdip.i3s.up.pt/getting-started#run-commands).
+
+## 2. Manual execution
+
+You can create a working directory at the desired location, and within the working directory two additional directories
+named \`test/data\` and \`test/results\`, download the test data using the link provided above, copy the file from the \`Downloads\`
+folder to the \`test/data\` folder, unzip the file (if needed), and then open the command line (Linux) or Ubuntu app (Windows WSL),
+and run the following command:
+
+\`\`\`sh
+${rawInvocation
+  .replace('docker', this.containerPlatforms[this.selectedContainerPlatform()].value)
+  .replace(this.buildImageReference(this.container!),
+    this.buildImageReference(this.container!, containerMetadata?.recommended?.[0]?.version))}
+\`\`\`
+
+Where \`/your/data/dir\` points to the working directory where you have the test data.
+
+## 3. Step by step execution
+
+You can open a command line or Ubuntu app (Windows WSL) and invoke the following commands one by one (lines that start with # are
+comments and therefore can be skipped as they have no effect). Note that \`/your/data/dir\` must be replaced by the path to the
+desired working directory.
+
+\`\`\`sh
+# Attributes the value of the path to the working directory to the working_dir variable.
+working_dir="/your/data/dir"
+# Creates the test/data and test/results directories at the specified location (working dir). The -p option makes sures that any parent folders are created if needed.
+mkdir -p $working_dir/test/data $working_dir/test/results
+# Changes the directory to the test/data directory within the working directory.
+cd $working_dir/test/data
+# Downloads the test data to the test/data directory
+wget "${containerMetadata.test_data_url}"
+# to be executed only if the test data is zipped. It gets the name of the zipped file from the download link and unzips the file.
+downloaded_file=$(basename "${containerMetadata.test_data_url}") && unzip "$downloaded_file"
+# Moves the current directory one level up
+cd ..
+# Runs the Docker image using the test data
+${rawInvocation
+  .replace('/your/data/dir', '$(pwd)')
+  .replace('docker', this.containerPlatforms[this.selectedContainerPlatform()].value)
+  .replace(this.buildImageReference(this.container!),
+    this.buildImageReference(this.container!, containerMetadata?.recommended?.[0]?.version))}
+\`\`\`
+
+## 4. Advanced execution
+
+If you want to run a quick test, you can simply copy the following set of commands and paste all of them at once in the command
+line or Ubuntu app (Windows WSL). The needed directory structure is created under \`/tmp\` with the name \`test.<random_word>\`:
+
+\`\`\`sh
+cd $(mktemp -d "/tmp/test.XXXXXXX")
+
+mkdir test/data test/results
+
+cd test/data
+wget "${containerMetadata.test_data_url}"
+
+downloaded_file = $(basename "${containerMetadata.test_data_url}")
+
+if file "$downloaded_file" | grep -q "Zip archive data"; then
+unzip "$downloaded_file"
+fi
+
+cd ..
+
+${rawInvocation
+  .replace('/your/data/dir', '$(pwd)')
+  .replace('docker', this.containerPlatforms[this.selectedContainerPlatform()].value)
+  .replace(this.buildImageReference(this.container!),
+    this.buildImageReference(this.container!, containerMetadata?.recommended?.[0]?.version))}
+\`\`\`
+`;
+  }
+
+  getGuiMarkdown(containerMetadata: ImageMetadata): string {
+    return `
+# GUI
+
+To test the image, you can use the test data available [here](${containerMetadata.test_data_url}). If there is a
+README file, please follow the instructions that are given before proceeding because you may need to adjust some paths.
+
+The results obtained should be similar to the ones [here](${containerMetadata.test_data_url}) provided.
+
+You can run the following command to open the GUI (note that your current working directory will be available at \`/data\`):
+
+\`\`\`sh
+xhost + && ${this.containerPlatforms[this.selectedContainerPlatform()].value} run --rm -ti -e USERID=$UID -e USER=$USER -e DISPLAY=$DISPLAY -v /var/db:/var/db:Z -v /tmp/.X11-unix:/tmp/.X11-unix -v $HOME/.Xauthority:/home/developer/.Xauthority -v "$(pwd):/data" -v /var/run/docker.sock:/var/run/docker.sock -v /tmp:/tmp pegi3s/${containerMetadata.name}:${containerMetadata.latest} ${containerMetadata.gui_command}
+\`\`\`
+`;
+  }
+  /* ---------------------------------------------------------------------------------------------------------------- */
 
   protected readonly Status = Status;
   protected readonly VersionStatus = VersionStatus;

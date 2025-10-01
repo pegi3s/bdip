@@ -112,12 +112,15 @@
     </div>
   </div>
   <div class="details-container">
-    <app-tabs (activeTab)="onTabSelectedGettingStarted($event)" [tabs]="[
-        { id: TabName.README, label: 'README', active: selectedTab() === TabName.README },
-        { id: TabName.TAGS, label: TabName.TAGS, active: selectedTab() === TabName.TAGS },
-        { id: TabName.TESTING, label: 'Testing', active: selectedTab() === TabName.TESTING },
-        { id: TabName.DOCKERFILE, label: 'Dockerfile', active: selectedTab() === TabName.DOCKERFILE }
-      ]" />
+    <div class="tabs-and-dropdown">
+      <app-tabs (activeTab)="onTabSelectedGettingStarted($event)" [tabs]="[
+          { id: TabName.README, label: 'README', active: selectedTab() === TabName.README },
+          { id: TabName.TAGS, label: TabName.TAGS, active: selectedTab() === TabName.TAGS },
+          { id: TabName.TESTING, label: 'Testing', active: selectedTab() === TabName.TESTING },
+          { id: TabName.DOCKERFILE, label: 'Dockerfile', active: selectedTab() === TabName.DOCKERFILE }
+        ]" />
+      <app-dropdown [items]="containerPlatforms" [(selected)]="selectedContainerPlatform"/>
+    </div>
     @if (selectedTab() === 'readme') {
       <markdown
         clipboard
@@ -233,86 +236,7 @@
     clipboard
     [clipboardButtonComponent]="clipboardButton"
     class="markdown-body"
-    ngPreserveWhitespaces>
-
-    # CLI
-
-    To test the image, you can use the test data available [here]({{ containerMetadata.test_data_url }}). If there is a
-    README file, please follow the instructions that are given before proceeding because you may need to adjust some paths.
-
-    The results obtained should be similar to the ones [here]({{ containerMetadata.test_results_url }}) provided.
-
-    Below you can find several ways of testing the image, according to your level of expertise.
-
-    ## 1. Using `docknrun`
-
-    You can download the test data and run the Docker image using the [`docknrun` Docker image](http://bdip.i3s.up.pt/getting-started#run-commands).
-
-    ## 2. Manual execution
-
-    You can create a working directory at the desired location, and within the working directory two additional directories
-    named `test/data` and `test/results`, download the test data using the link provided above, copy the file from the `Downloads`
-    folder to the `test/data` folder, unzip the file (if needed), and then open the command line (Linux) or Ubuntu app (Windows WSL),
-    and run the following command:
-
-    ```sh
-    {{ containerMetadata.invocation_general + ' ' + containerMetadata.test_invocation_specific
-    | replace:buildDockerPullCommand(container!).replace('docker pull ', ""):buildDockerPullCommand(container!, containerMetadata?.recommended?.[0]?.version).replace('docker pull ', "") }}
-    ```
-
-    Where `/your/data/dir` points to the working directory where you have the test data.
-
-    ## 3. Step by step execution
-
-    You can open a command line or Ubuntu app (Windows WSL) and invoke the following commands one by one (lines that start with # are
-    comments and therefore can be skipped as they have no effect). Note that `/your/data/dir` must be replaced by the path to the
-    desired working directory.
-
-    ```sh
-    # Attributes the value of the path to the working directory to the working_dir variable.
-    working_dir="/your/data/dir"
-    # Creates the test/data and test/results directories at the specified location (working dir). The -p option makes sures that any parent folders are created if needed.
-    mkdir -p $working_dir/test/data $working_dir/test/results
-    # Changes the directory to the test/data directory within the working directory.
-    cd $working_dir/test/data
-    # Downloads the test data to the test/data directory
-    wget "{{ containerMetadata.test_data_url }}"
-    # to be executed only if the test data is zipped. It gets the name of the zipped file from the download link and unzips the file.
-    downloaded_file=$(basename "{{ containerMetadata.test_data_url }}") && unzip "$downloaded_file"
-    # Moves the current directory one level up
-    cd ..
-    # Runs the Docker image using the test data
-    {{ containerMetadata.invocation_general + ' ' + containerMetadata.test_invocation_specific
-    | replace:'/your/data/dir':'$(pwd)'
-    | replace:buildDockerPullCommand(container!).replace('docker pull ', ""):buildDockerPullCommand(container!, containerMetadata?.recommended?.[0]?.version).replace('docker pull ', "") }}
-    ```
-
-    ## 4. Advanced execution
-
-    If you want to run a quick test, you can simply copy the following set of commands and paste all of them at once in the command
-    line or Ubuntu app (Windows WSL). The needed directory structure is created under `/tmp` with the name `test.&lt;random_word&gt;`:
-
-    ```sh
-    cd $(mktemp -d "/tmp/test.XXXXXXX")
-
-    mkdir test/data test/results
-
-    cd test/data
-    wget "{{ containerMetadata.test_data_url }}"
-
-    downloaded_file = $(basename "{{ containerMetadata.test_data_url }}")
-
-    if file "$downloaded_file" | grep -q "Zip archive data"; then
-    unzip "$downloaded_file"
-    fi
-
-    cd ..
-
-    {{ containerMetadata.invocation_general + ' ' + containerMetadata.test_invocation_specific
-    | replace:'/your/data/dir':'$(pwd)'
-    | replace:buildDockerPullCommand(container!).replace('docker pull ', ""):buildDockerPullCommand(container!, containerMetadata?.recommended?.[0]?.version).replace('docker pull ', "") }}
-    ```
-  </markdown>
+    [data]="getCliMarkdown(containerMetadata)"/>
 </ng-template>
 
 <ng-template #testingGUI let-containerMetadata="containerMetadata">
@@ -320,21 +244,7 @@
     clipboard
     [clipboardButtonComponent]="clipboardButton"
     class="markdown-body"
-    ngPreserveWhitespaces>
-
-    # GUI
-
-    To test the image, you can use the test data available [here]({{ containerMetadata.test_data_url }}). If there is a
-    README file, please follow the instructions that are given before proceeding because you may need to adjust some paths.
-
-    The results obtained should be similar to the ones [here]({{ containerMetadata.test_results_url }}) provided.
-
-    You can run the following command to open the GUI (note that your current working directory will be available at `/data`):
-
-    ```sh
-    xhost + && docker run --rm -ti -e USERID=$UID -e USER=$USER -e DISPLAY=$DISPLAY -v /var/db:/var/db:Z -v /tmp/.X11-unix:/tmp/.X11-unix -v $HOME/.Xauthority:/home/developer/.Xauthority -v "$(pwd):/data" -v /var/run/docker.sock:/var/run/docker.sock -v /tmp:/tmp pegi3s/{{ containerMetadata.name }}:{{ containerMetadata.latest }} {{ containerMetadata.gui_command }}
-    ```
-  </markdown>
+    [data]="getGuiMarkdown(containerMetadata)"/>
 </ng-template>
 
 <ng-template #dockerfile>
