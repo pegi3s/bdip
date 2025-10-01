@@ -82,12 +82,32 @@
       <a href="https://hub.docker.com/r/{{ container.namespace }}/{{ container.name }}" target="_blank">
         <svg-icon src="assets/icons/logos/docker-mark-blue.svg" />
         DockerHub
-        <svg-icon src="assets/icons/fluent-icons/ic_fluent_arrow_up_right_16_regular.svg" svgClass="thick" />
+        <svg-icon src="assets/icons/fluent-icons/ic_fluent_arrow_up_right_12_regular.svg" svgClass="thick" />
       </a>
       <a [href]="containerMetadata?.manual_url" target="_blank">
         <svg-icon src="assets/icons/fluent-icons/ic_fluent_book_20_filled.svg" />
         Manual
-        <svg-icon src="assets/icons/fluent-icons/ic_fluent_arrow_up_right_16_regular.svg" svgClass="thick" />
+        <svg-icon src="assets/icons/fluent-icons/ic_fluent_arrow_up_right_12_regular.svg" svgClass="thick" />
+      </a>
+      <a href="https://bio-protocol.org/en/searchlist?content={{ container.name }}" target="_blank">
+        <svg-icon src="assets/icons/logos/bio-protocol.svg" />
+        Bio-Protocol
+        <svg-icon src="assets/icons/fluent-icons/ic_fluent_arrow_up_right_12_regular.svg" svgClass="thick" />
+      </a>
+      <a href="https://bio-protocol.org/exchange/searchlist?content={{ container.name }}" target="_blank">
+        <svg-icon src="assets/icons/logos/bio-protocol.svg" />
+        Bio-Protocol Exchange
+        <svg-icon src="assets/icons/fluent-icons/ic_fluent_arrow_up_right_12_regular.svg" svgClass="thick" />
+      </a>
+      <a href="https://pubmed.ncbi.nlm.nih.gov/?term={{ container.name }}" target="_blank">
+        <svg-icon src="assets/icons/logos/PubMed.svg" />
+        PubMed
+        <svg-icon src="assets/icons/fluent-icons/ic_fluent_arrow_up_right_12_regular.svg" svgClass="thick" />
+      </a>
+      <a href="https://scholar.google.es/scholar?q={{ container.name }}" target="_blank">
+        <svg-icon src="assets/icons/logos/google-scholar.svg" />
+        Google Scholar
+        <svg-icon src="assets/icons/fluent-icons/ic_fluent_arrow_up_right_12_regular.svg" svgClass="thick" />
       </a>
     </div>
   </div>
