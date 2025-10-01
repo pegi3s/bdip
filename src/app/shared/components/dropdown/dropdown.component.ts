@@ -27,10 +27,17 @@ export class DropdownComponent {
     }
   }
 
+  selectItem(index: number): void {
+    this.selected.set(index);
+    this.toggleDropdown();
+  }
+
   private addClickOutsideListener(): void {
     this.documentClickListener = this.renderer.listen('document', 'click', (event: Event) => {
       if (!this.elementRef.nativeElement.contains(event.target)) {
-        this.toggleDropdown();
+        if (this.isDropdownOpen()) {
+          this.toggleDropdown();
+        }
       }
     });
   }

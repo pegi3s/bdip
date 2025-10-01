@@ -1,17 +1,41 @@
-<button class="dropdown-button" (click)="toggleDropdown()">
-  <svg-icon [src]="items()[selected()].icon"/>
-  {{ items()[selected()].name }}
-  <svg-icon src="assets/icons/fluent-icons/ic_fluent_chevron_down_24_regular.svg"/>
+<button
+  class="select-trigger"
+  (click)="toggleDropdown()"
+  [attr.aria-expanded]="isDropdownOpen()"
+  [class.open]="isDropdownOpen()"
+  type="button">
+  <span class="select-value">
+    @if (items()[selected()].icon) {
+      <svg-icon [src]="items()[selected()].icon" class="select-icon"/>
+    }
+    {{ items()[selected()].name }}
+  </span>
+  <svg-icon
+    src="assets/icons/fluent-icons/ic_fluent_chevron_down_24_regular.svg"
+    class="chevron"/>
 </button>
 
 @if (isDropdownOpen()) {
-  <div class="dropdown-menu">
+  <div class="select-content"
+       animate.enter="content-enter"
+       animate.leave="content-leave">
     @for (item of items(); track item.name; let index = $index) {
-      <div class="dropdown-item" (click)="selected.set(index); toggleDropdown()">
-        <svg-icon [src]="item.icon"/>
-        <span class="dropdown-name">{{ item.name }}</span>
+      <div
+        class="select-item"
+        [class.selected]="index === selected()"
+        (click)="selectItem(index)"
+        role="option"
+        [attr.aria-selected]="index === selected()">
+        @if (item.icon) {
+          <svg-icon [src]="item.icon" class="item-icon"/>
+        }
+        <span class="item-label">{{ item.name }}</span>
+<!--        @if (index === selected()) {-->
+<!--          <svg-icon-->
+<!--            src="assets/icons/fluent-icons/ic_fluent_checkmark_24_regular.svg"-->
+<!--            class="check-icon"/>-->
+<!--        }-->
       </div>
     }
   </div>
 }
-

@@ -24,70 +24,152 @@
   );
 }
 
-button, .dropdown-name {
-  font-family: inherit;
-  font-size: 1rem;
-  line-height: 1.5rem;
+* {
+  box-sizing: border-box;
 }
 
-button, .dropdown-menu {
-  border: var(--border) solid rgba(var(--slate-300), 1);
-  border-radius: var(--radius);
-  background-color: rgba(var(--slate-100), 1);
-}
-
-:host-context(.dark) button,
-:host-context(.dark) .dropdown-menu {
-  border: var(--border) solid rgba(var(--slate-400), 0.15);
-  background-color: #192130;
-}
-
-:is(button, .dropdown-item){
-  transition: background-color, color;
-  transition-duration: 0.25s;
-  transition-timing-function: var(--ease, ease);
-
-  &:hover {
-    background-color: rgba(var(--slate-300), 0.7);
-  }
-}
-
-:host-context(.dark) button:hover,
-:host-context(.dark) .dropdown-item:hover {
-  background-color: #2b3444;
-}
-
-button {
+.select-trigger {
   height: 100%;
   padding: 8px 8px 8px 12px;
   display: flex;
   align-items: center;
   gap: 8px;
+  transition: background-color, color;
+  transition-duration: 0.25s;
+  transition-timing-function: var(--ease, ease);
+  user-select: none;
 }
 
-.dropdown-menu {
-  position: absolute;
-  right: 0;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  z-index: 1000;
-  margin-top: 6px;
-  width: 100%;
+.select-trigger,
+.select-content {
+  border-radius: var(--radius);
+  border: var(--border) solid rgba(var(--slate-300), 1);
+  background-color: rgba(var(--slate-100), 1);
 }
 
-.dropdown-item {
-  padding: 8px 12px;
+:host-context(.dark) .select-trigger,
+:host-context(.dark) .select-content {
+  border: var(--border) solid rgba(var(--slate-400), 0.15);
+  background-color: #192130;
+}
+
+.select-trigger:hover,
+.select-item:hover {
+  background-color: rgba(var(--slate-300), 0.7);
+}
+
+:host-context(.dark) .select-trigger:hover,
+:host-context(.dark) .select-item:hover {
+  background-color: #2b3444;
+}
+
+.select-trigger,
+.select-item {
+  font-family: inherit;
+  font-size: 1rem;
+  line-height: 1.5rem;
+}
+
+.select-trigger:focus-visible {
+  outline: 2px solid hsl(221.2, 83.2%, 53.3%);
+  outline-offset: 2px;
+}
+
+.select-value {
   display: flex;
   align-items: center;
   gap: 8px;
-  cursor: pointer;
+  font-weight: 400;
+}
 
-  &:first-child {
-    border-top-left-radius: var(--radius);
-    border-top-right-radius: var(--radius);
+/*.select-icon,*/
+/*.item-icon {*/
+/*  width: 16px;*/
+/*  height: 16px;*/
+/*  flex-shrink: 0;*/
+/*  opacity: 0.7;*/
+/*}*/
+
+.chevron svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  opacity: 0.8;
+  transition: all 200ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.select-trigger.open .chevron svg {
+  transform: rotate(180deg);
+}
+
+/* Native CSS Animations */
+.select-content {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  z-index: 50;
+  min-width: 8rem;
+  overflow: hidden;
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  transform-origin: top center;
+}
+
+/* Enter Animation */
+.content-enter {
+  animation: slideIn 150ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(-8px);
   }
-
-  &:last-child {
-    border-bottom-left-radius: var(--radius);
-    border-bottom-right-radius: var(--radius);
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
   }
 }
+
+/* Leave Animation */
+.content-leave {
+  opacity: 0;
+  transform: scale(0.95) translateY(-8px);
+  transition: opacity 100ms cubic-bezier(0.16, 1, 0.3, 1),
+              transform 100ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.select-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 8px 12px;
+  cursor: pointer;
+  user-select: none;
+  outline: none;
+  transition: background-color, color;
+  transition-duration: 0.25s;
+  transition-timing-function: var(--ease, ease);
+}
+
+/*.select-item.selected {*/
+/*  background-color: hsl(214.3, 31.8%, 94%);*/
+/*}*/
+
+/*:host-context(.dark) .select-item.selected {*/
+/*  background-color: hsl(217.2, 32.6%, 15%);*/
+/*}*/
+
+.item-label {
+  flex: 1;
+}
+
+/*.check-icon {*/
+/*  position: absolute;*/
+/*  right: 8px;*/
+/*  width: 16px;*/
+/*  height: 16px;*/
+/*  opacity: 1;*/
+/*}*/
