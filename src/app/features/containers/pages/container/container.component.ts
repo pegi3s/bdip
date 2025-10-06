@@ -1,4 +1,4 @@
-import { Component, inject, Injector, runInInjectionContext, signal, Signal } from "@angular/core";
+import { Component, effect, inject, Injector, runInInjectionContext, signal, Signal } from "@angular/core";
 import { DockerHubImage } from '../../../../models/docker-hub-image';
 import { DockerHubTag } from '../../../../models/docker-hub-tag';
 import { ActivatedRoute, RouterLink } from "@angular/router";
@@ -52,10 +52,21 @@ export class ContainerComponent {
     { name: 'Docker', value: 'docker', icon: 'assets/icons/logos/docker-mark-blue.svg' },
     { name: 'Podman', value: 'podman', icon: 'assets/icons/logos/podman.svg' },
   ];
-  selectedContainerPlatform = signal<number>(0);
+  selectedContainerPlatform = signal<number>(
+    (i => i === -1 ? 0 : i)(this.containerPlatforms.findIndex(
+      p => p.value === localStorage.getItem('containerPlatform')
+    ))
+  );
 
   constructor() {
     this.isDarkTheme = this.themeService.isDarkTheme();
+
+    // Persist selected container platform in local storage
+    effect(() => {
+      const index = this.selectedContainerPlatform();
+      const value = this.containerPlatforms[index]?.value;
+      localStorage.setItem('containerPlatform', value);
+    });
   }
 
   ngOnInit() {
