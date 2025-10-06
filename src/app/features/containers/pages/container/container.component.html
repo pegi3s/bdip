@@ -119,7 +119,9 @@
           { id: TabName.TESTING, label: 'Testing', active: selectedTab() === TabName.TESTING },
           { id: TabName.DOCKERFILE, label: 'Dockerfile', active: selectedTab() === TabName.DOCKERFILE }
         ]" />
-      <app-dropdown [items]="containerPlatforms" [(selected)]="selectedContainerPlatform"/>
+      @if (selectedTab() === TabName.TESTING) {
+        <app-dropdown [items]="containerPlatforms" [(selected)]="selectedContainerPlatform"/>
+      }
     </div>
     @if (selectedTab() === 'readme') {
       <markdown
