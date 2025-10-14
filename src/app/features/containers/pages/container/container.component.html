@@ -89,22 +89,23 @@
         Manual
         <svg-icon src="assets/icons/fluent-icons/ic_fluent_arrow_up_right_12_regular.svg" svgClass="thick" />
       </a>
-      <a href="https://bio-protocol.org/en/searchlist?content={{ container.name }}" target="_blank">
+
+      <a href="https://bio-protocol.org/en/searchlist?{{ containerMetadata?.custom_searches?.bioprotocol ?? ('content=' + container.name) }}" target="_blank">
         <svg-icon src="assets/icons/logos/bio-protocol.svg" />
         Bio-Protocol
         <svg-icon src="assets/icons/fluent-icons/ic_fluent_arrow_up_right_12_regular.svg" svgClass="thick" />
       </a>
-      <a href="https://bio-protocol.org/exchange/searchlist?content={{ container.name }}" target="_blank">
+      <a href="https://bio-protocol.org/exchange/searchlist?{{ containerMetadata?.custom_searches?.bioprotocol_exchange ?? ('content=' + container.name) }}" target="_blank">
         <svg-icon src="assets/icons/logos/bio-protocol.svg" />
         Bio-Protocol Exchange
         <svg-icon src="assets/icons/fluent-icons/ic_fluent_arrow_up_right_12_regular.svg" svgClass="thick" />
       </a>
-      <a href="https://pubmed.ncbi.nlm.nih.gov/?term={{ container.name }}" target="_blank">
+      <a href="https://pubmed.ncbi.nlm.nih.gov/?{{ containerMetadata?.custom_searches?.pubmed ?? ('term=' + container.name) }}" target="_blank">
         <svg-icon src="assets/icons/logos/PubMed.svg" />
         PubMed
         <svg-icon src="assets/icons/fluent-icons/ic_fluent_arrow_up_right_12_regular.svg" svgClass="thick" />
       </a>
-      <a href="https://scholar.google.es/scholar?q={{ container.name }}" target="_blank">
+      <a href="https://scholar.google.es/scholar?{{ containerMetadata?.custom_searches?.scholar ?? ('q=' + container.name) }}" target="_blank">
         <svg-icon src="assets/icons/logos/google-scholar.svg" />
         Google Scholar
         <svg-icon src="assets/icons/fluent-icons/ic_fluent_arrow_up_right_12_regular.svg" svgClass="thick" />

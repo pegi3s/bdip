@@ -23,6 +23,7 @@ export type ImageMetadata = {
   icon: string;
   input_data_type: string[];
   auto_tests: AutoTests[];
+  custom_searches?: CustomSearches;
 };
 
 type Recommended = {
@@ -43,3 +44,10 @@ type AutoTests = {
   add_config: string;
   commands: string;
 }
+
+type CustomSearches = {
+  pubmed?: string;
+  scholar?: string;
+  bioprotocol?: string;
+  bioprotocol_exchange?: string;
+};
