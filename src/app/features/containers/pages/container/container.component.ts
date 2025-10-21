@@ -12,17 +12,17 @@ import { BytesToSizePipe } from "../../../../shared/pipes/bytes-to-size/bytes-to
 import { SvgIconComponent } from 'angular-svg-icon';
 import { LoadingComponent } from "../../../../shared/components/loading/loading.component";
 import { ImageMetadata } from "../../../../models/image-metadata";
-import { ReplacePipe } from "../../../../shared/pipes/replace/replace.pipe";
 import { TermStanza } from "../../../../obo/TermStanza";
 import { DockerfileService } from "../../../../services/dockerfile.service";
 import { DropdownComponent } from "../../../../shared/components/dropdown/dropdown.component";
+import { RelatedSoftware } from "../../../../models/related-software";
 
 @Component({
     selector: 'app-container',
     templateUrl: './container.component.html',
     styleUrl: './container.component.css',
     host: { '[class.dark]': 'isDarkTheme()' },
-  imports: [DatePipe, SlicePipe, MarkdownModule, TabsComponent, BytesToSizePipe, ClipboardButtonComponent, SvgIconComponent, LoadingComponent, NgTemplateOutlet, ReplacePipe, RouterLink, DropdownComponent]
+  imports: [DatePipe, SlicePipe, MarkdownModule, TabsComponent, BytesToSizePipe, ClipboardButtonComponent, SvgIconComponent, LoadingComponent, NgTemplateOutlet, RouterLink, DropdownComponent]
 })
 export class ContainerComponent {
   /* Services */
@@ -41,6 +41,7 @@ export class ContainerComponent {
   containerTags: Signal<DockerHubTag[]> = signal([]);
   ontologyCategories: Signal<TermStanza[][]> = signal([]);
   dockerfileContent: Signal<string | undefined> = signal<string>('');
+  relatedSoftware: Signal<RelatedSoftware | null> = signal(null);
 
   selectedTab = signal<TabName>(TabName.README);
 
@@ -89,6 +90,7 @@ export class ContainerComponent {
         this.containerTags = this.containerService.getContainerTagsRes(containerName).value;
         this.ontologyCategories = this.containerService.getContainerCategoryHierarchy(containerName);
         this.dockerfileContent = this.dockerfileService.getContainerDockerfileContent(containerName).value;
+        this.relatedSoftware = this.containerService.getRelatedSoftwareRes().value;
       });
     });
     this.viewportScroller.setOffset([0, 150]);
@@ -237,6 +239,81 @@ export class ContainerComponent {
     return parentIds.flat().concat(category.id);
   }
 
+  /**
+   * Get sorted related software by cooccurrence count and name
+   */
+  getSortedRelatedSoftware(): { name: string; displayName: string; count: number; inBdip: boolean }[] {
+    const relatedSoftwareData = this.relatedSoftware();
+    if (!relatedSoftwareData || !this.container) {
+      return [];
+    }
+
+    const currentSoftware = this.container.name.toLowerCase();
+    const currentEntry = relatedSoftwareData.software[currentSoftware];
+
+    if (!currentEntry || !currentEntry.cooccurrences) {
+      return [];
+    }
+
+    const allContainersMetadata = this.containerService.getAllContainersMetadataRes().value();
+    const bdipContainers = new Set(allContainersMetadata ? Array.from(allContainersMetadata.keys()).map(k => k.toLowerCase()) : []);
+
+    return Object.entries(currentEntry.cooccurrences)
+      .map(([softwareName, cooccurrence]) => {
+        const softwareEntry = relatedSoftwareData.software[softwareName];
+        const displayName = softwareEntry?.names?.[0] || softwareName;
+        const count = cooccurrence?.count ?? 0;
+        const inBdip = bdipContainers.has(softwareName.toLowerCase());
+
+        return {
+          name: softwareName,
+          displayName,
+          count,
+          inBdip
+        };
+      })
+      .sort((a, b) => {
+        // Sort by count desc
+        if (b.count !== a.count) {
+          return b.count - a.count;
+        }
+        // Then by displayName asc (case-insensitive)
+        return a.displayName.localeCompare(b.displayName, undefined, { sensitivity: 'base' });
+      });
+  }
+
+  /**
+   * Get articles where a specific software appears with the current container
+   */
+  getCooccurringArticles(softwareName: string): string[] {
+    const relatedSoftwareData = this.relatedSoftware();
+    if (!relatedSoftwareData || !this.container) {
+      return [];
+    }
+
+    const currentSoftware = this.container.name.toLowerCase();
+    const currentEntry = relatedSoftwareData.software[currentSoftware];
+
+    if (!currentEntry || !currentEntry.cooccurrences) {
+      return [];
+    }
+
+    const cooccurrence = currentEntry.cooccurrences[softwareName];
+
+    if (!cooccurrence || !Array.isArray(cooccurrence.articles)) {
+      return [];
+    }
+
+    return cooccurrence.articles;
+  }
+
+  /**
+   * Generate Bio-Protocol article URL from article ID
+   */
+  getBioProtocolArticleUrl(articleId: string): string {
+    return `https://bio-protocol.org/en/bpdetail?id=${articleId}&type=0`;
+  }
+
   /* Markdown reactive files */
   /* ---------------------------------------------------------------------------------------------------------------- */
   getCliMarkdown(containerMetadata: ImageMetadata): string {
@@ -375,4 +452,5 @@ enum TabName {
   TAGS = 'tags',
   TESTING = 'testing',
   DOCKERFILE = 'dockerfile',
+  RELATED_SOFTWARE = 'related-software',
 }

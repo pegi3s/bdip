@@ -11,6 +11,7 @@ import { ImageMetadata } from '../models/image-metadata';
 import { environment } from "../../environments/environment";
 import { rxResource } from "@angular/core/rxjs-interop";
 import { TermStanza } from "../obo/TermStanza";
+import { RelatedSoftware } from '../models/related-software';
 
 @Injectable({
   providedIn: 'root',
@@ -20,6 +21,7 @@ export class ContainerService {
   private readonly urlObo = `${this.baseMetadataURL}/dio.obo`;
   private readonly urlDiaf = `${this.baseMetadataURL}/dio.diaf`;
   private readonly urlJson = `${this.baseMetadataURL}/metadata.json`;
+  private readonly urlRelatedSoftware = `${this.baseMetadataURL}/related-software.json`;
   //private baseURLDockerHub = 'https://hub.docker.com/v2/namespaces/pegi3s/repositories';
   private readonly proxyServerURL = environment.proxyServerURL;
   private readonly baseDockerHubEndpoint = '/v2/namespaces/pegi3s/repositories';
@@ -107,6 +109,15 @@ export class ContainerService {
 
   /** A map to store the tags of each container */
   private readonly containersTags: Map<string, WritableResource<DockerHubTag[]>> = new Map<string, WritableResource<DockerHubTag[]>>();
+
+  /** Global related software dataset */
+  private readonly relatedSoftwareRes = httpResource<RelatedSoftware | null>(
+    () => this.urlRelatedSoftware,
+    {
+      defaultValue: null,
+      parse: (response) => response as RelatedSoftware
+    }
+  );
 
   /** A map to store the READMEs of each container */
   containersReadmes = rxResource({
@@ -241,6 +252,11 @@ export class ContainerService {
   /** Retrieves the README files for all containers from Docker Hub */
   getContainersReadmesRes(): Resource<Map<string, string>> {
     return this.containersReadmes.asReadonly();
+  }
+
+  /** Returns the global related software resource */
+  getRelatedSoftwareRes(): Resource<RelatedSoftware | null> {
+    return this.relatedSoftwareRes.asReadonly();
   }
 
   /* ----- Paging ---- */
