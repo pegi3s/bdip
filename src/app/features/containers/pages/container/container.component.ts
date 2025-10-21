@@ -311,7 +311,7 @@ export class ContainerComponent {
    * Generate Bio-Protocol article URL from article ID
    */
   getBioProtocolArticleUrl(articleId: string): string {
-    return `https://bio-protocol.org/en/bpdetail?id=${articleId}&type=0`;
+    return `https://doi.org/10.21769/BioProtoc.${articleId}`;
   }
 
   /* Markdown reactive files */
