@@ -294,7 +294,7 @@
           <div class="article-links">
             @for (articleId of getCooccurringArticles(software.name); track articleId) {
               <a [href]="getBioProtocolArticleUrl(articleId)" target="_blank" class="article-link">
-                {{ articleId }}
+                {{ getBioProtocolArticleTitle(articleId) }}
               </a>
             }
           </div>

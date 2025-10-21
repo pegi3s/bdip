@@ -519,6 +519,7 @@ table th {
 
 .article-links {
   display: flex;
+  flex-direction: column;
   flex-wrap: wrap;
   gap: 8px;
 }

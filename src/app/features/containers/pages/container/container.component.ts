@@ -42,6 +42,8 @@ export class ContainerComponent {
   ontologyCategories: Signal<TermStanza[][]> = signal([]);
   dockerfileContent: Signal<string | undefined> = signal<string>('');
   relatedSoftware: Signal<RelatedSoftware | null> = signal(null);
+  /** Lazily built index: Bio-Protocol article ID -> title */
+  private articleTitleIndex: Map<string, string> | null = null;
 
   selectedTab = signal<TabName>(TabName.README);
 
@@ -312,6 +314,30 @@ export class ContainerComponent {
    */
   getBioProtocolArticleUrl(articleId: string): string {
     return `https://doi.org/10.21769/BioProtoc.${articleId}`;
+  }
+
+  /**
+   * Resolve a Bio-Protocol article title from its ID.
+   * Falls back to the raw ID if no title is available.
+   */
+  getBioProtocolArticleTitle(articleId: string): string {
+    // Build index on first use and whenever relatedSoftware changes
+    if (!this.articleTitleIndex) {
+      this.articleTitleIndex = new Map<string, string>();
+      const data = this.relatedSoftware();
+      if (data?.articles?.length) {
+        for (const a of data.articles) {
+          if (a?.article_number) {
+            const title = (a.title ?? '').trim();
+            if (title) {
+              this.articleTitleIndex.set(a.article_number, title);
+            }
+          }
+        }
+      }
+    }
+
+    return this.articleTitleIndex.get(articleId) ?? articleId;
   }
 
   /**
