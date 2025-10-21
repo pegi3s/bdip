@@ -114,13 +114,20 @@
   </div>
   <div class="details-container">
     <div class="tabs-and-dropdown">
-      <app-tabs (activeTab)="onTabSelectedGettingStarted($event)" [tabs]="[
-          { id: TabName.README, label: 'README', active: selectedTab() === TabName.README },
-          { id: TabName.TAGS, label: TabName.TAGS, active: selectedTab() === TabName.TAGS },
-          { id: TabName.TESTING, label: 'Testing', active: selectedTab() === TabName.TESTING },
-          { id: TabName.DOCKERFILE, label: 'Dockerfile', active: selectedTab() === TabName.DOCKERFILE },
-          { id: TabName.RELATED_SOFTWARE, label: 'Related software', active: selectedTab() === TabName.RELATED_SOFTWARE }
-        ]" />
+      <app-tabs (activeTab)="onTabSelectedGettingStarted($event)" [tabs]="hasRelatedSoftware()
+      ? [
+        { id: TabName.README, label: 'README', active: selectedTab() === TabName.README },
+        { id: TabName.TAGS, label: TabName.TAGS, active: selectedTab() === TabName.TAGS },
+        { id: TabName.TESTING, label: 'Testing', active: selectedTab() === TabName.TESTING },
+        { id: TabName.DOCKERFILE, label: 'Dockerfile', active: selectedTab() === TabName.DOCKERFILE },
+        { id: TabName.RELATED_SOFTWARE, label: 'Related software', active: selectedTab() === TabName.RELATED_SOFTWARE }
+        ]
+      : [
+        { id: TabName.README, label: 'README', active: selectedTab() === TabName.README },
+        { id: TabName.TAGS, label: TabName.TAGS, active: selectedTab() === TabName.TAGS },
+        { id: TabName.TESTING, label: 'Testing', active: selectedTab() === TabName.TESTING },
+        { id: TabName.DOCKERFILE, label: 'Dockerfile', active: selectedTab() === TabName.DOCKERFILE }
+      ]" />
       @if (selectedTab() === TabName.TESTING) {
         <app-dropdown [items]="containerPlatforms" [(selected)]="selectedContainerPlatform"/>
       }
@@ -266,41 +273,33 @@
 </ng-template>
 
 <ng-template #relatedSoftware>
-  @if (this.relatedSoftware() && getSortedRelatedSoftware().length > 0) {
-    <div class="related-software">
-      <div class="related-software-header">
-        <h3>Software that co-occurs with {{ container!.name }} in Bio-Protocol articles</h3>
-        <p>This list shows software tools that appear together with {{ container!.name }} in scientific protocols from Bio-Protocol. Software available in BDIP is highlighted and linked for easy access.</p>
-      </div>
-      <div class="related-software-list">
-        @for (software of getSortedRelatedSoftware(); track software.name) {
-          <div class="software-item">
-            <div class="software-info">
-              @if (software.inBdip) {
-                <a [routerLink]="['/container', software.name]" class="software-name bdip-link">
-                  {{ software.displayName }}
-                </a>
-              } @else {
-                <span class="software-name">{{ software.displayName }}</span>
-              }
-              <span class="cooccurrence-count">{{ software.count }} {{ software.count === 1 ? 'article' : 'articles' }}</span>
-            </div>
-            <div class="article-links">
-              @for (articleId of getCooccurringArticles(software.name); track articleId) {
-                <a [href]="getBioProtocolArticleUrl(articleId)" target="_blank" class="article-link">
-                  {{ articleId }}
-                </a>
-              }
-            </div>
+  <div class="related-software">
+    <div class="related-software-header">
+      <h3>Software that co-occurs with {{ container!.name }} in Bio-Protocol articles</h3>
+      <p>This list shows software tools that appear together with {{ container!.name }} in scientific protocols from Bio-Protocol. Software available in BDIP is highlighted and linked for easy access.</p>
+    </div>
+    <div class="related-software-list">
+      @for (software of getSortedRelatedSoftware(); track software.name) {
+        <div class="software-item">
+          <div class="software-info">
+            @if (software.inBdip) {
+              <a [routerLink]="['/container', software.name]" class="software-name bdip-link">
+                {{ software.displayName }}
+              </a>
+            } @else {
+              <span class="software-name">{{ software.displayName }}</span>
+            }
+            <span class="cooccurrence-count">{{ software.count }} {{ software.count === 1 ? 'article' : 'articles' }}</span>
           </div>
-        }
-      </div>
+          <div class="article-links">
+            @for (articleId of getCooccurringArticles(software.name); track articleId) {
+              <a [href]="getBioProtocolArticleUrl(articleId)" target="_blank" class="article-link">
+                {{ articleId }}
+              </a>
+            }
+          </div>
+        </div>
+      }
     </div>
-  } @else if (this.relatedSoftware() && getSortedRelatedSoftware().length === 0) {
-    <div class="related-software-empty">
-      <p>No related software information is available for {{ container!.name }} yet.</p>
-    </div>
-  } @else {
-    <app-loading />
-  }
+  </div>
 </ng-template>

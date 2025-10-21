@@ -314,6 +314,13 @@ export class ContainerComponent {
     return `https://doi.org/10.21769/BioProtoc.${articleId}`;
   }
 
+  /**
+   * Check if the related software tab should be shown
+   */
+  hasRelatedSoftware(): boolean {
+    return this.getSortedRelatedSoftware().length > 0;
+  }
+
   /* Markdown reactive files */
   /* ---------------------------------------------------------------------------------------------------------------- */
   getCliMarkdown(containerMetadata: ImageMetadata): string {

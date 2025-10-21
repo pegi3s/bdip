@@ -546,16 +546,3 @@ table th {
   color: rgb(var(--picton-blue-300));
   border-color: rgba(var(--picton-blue-300), 0.3);
 }
-
-.related-software-empty {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 48px 24px;
-  text-align: center;
-  color: rgba(var(--main-font-color), 0.6);
-  font-size: 1rem;
-  border: 1px dashed rgba(var(--main-font-color), 0.2);
-  border-radius: 8px;
-  background-color: rgba(var(--main-font-color), 0.02);
-}
