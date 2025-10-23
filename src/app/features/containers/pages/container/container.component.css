@@ -458,13 +458,23 @@ table th {
 .software-item {
   border: 1px solid rgba(var(--main-font-color), 0.2);
   border-radius: 8px;
-  padding: 16px;
+  padding: 0;
   background-color: rgb(var(--color-surface-container-lowest));
   transition: border-color 0.2s, box-shadow 0.2s;
 
   &:hover {
     border-color: rgba(var(--picton-blue-600), 0.4);
     box-shadow: 0 2px 8px rgba(var(--picton-blue-600), 0.1);
+  }
+
+  & summary {
+    list-style: none;
+    cursor: pointer;
+    user-select: none;
+
+    &::-webkit-details-marker {
+      display: none;
+    }
   }
 }
 
@@ -477,9 +487,25 @@ table th {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 12px;
+  padding: 16px;
+
+  .chevron-icon {
+    transition: transform 0.2s;
+    flex-shrink: 0;
+  }
+}
+
+.software-item[open] .software-info .chevron-icon {
+  transform: rotate(180deg);
+}
+
+.software-name-wrapper {
+  display: flex;
+  align-items: center;
   flex-wrap: wrap;
   gap: 12px;
-  margin-bottom: 12px;
+  flex: 1;
 }
 
 .software-name {
@@ -522,6 +548,8 @@ table th {
   flex-direction: column;
   flex-wrap: wrap;
   gap: 8px;
+  padding: 0 16px 16px 16px;
+  margin-top: 8px;
 }
 
 .article-link {
