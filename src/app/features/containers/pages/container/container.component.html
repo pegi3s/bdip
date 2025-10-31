@@ -285,15 +285,26 @@
             <div class="software-name-wrapper">
               @if (software.inBdip) {
                 <a [routerLink]="['/container', software.name]" class="software-name bdip-link" (click)="$event.stopPropagation()">
-                  {{ software.displayName }}
+                  {{ software.name }}
                 </a>
               } @else {
-                <span class="software-name">{{ software.displayName }}</span>
+                <span class="software-name">{{ software.name }}</span>
               }
               <span class="cooccurrence-count">{{ software.count }} {{ software.count === 1 ? 'article' : 'articles' }}</span>
             </div>
             <svg-icon src="assets/icons/fluent-icons/ic_fluent_chevron_down_24_regular.svg" svgClass="chevron-icon" />
           </summary>
+          <!-- Show the different display names (if more than one) when the details are opened -->
+          @if (software.displayNames && software.displayNames.length > 1) {
+            <div class="display-names">
+              <span class="display-names-chips">
+                <span class="display-names-label">Also known as</span>
+                @for (dname of software.displayNames; track dname) {
+                  <span class="chip display-chip">{{ dname }}</span>
+                }
+              </span>
+            </div>
+          }
           <div class="article-links">
             @for (articleId of getCooccurringArticles(software.name); track articleId) {
               <a [href]="getBioProtocolArticleUrl(articleId)" target="_blank" class="article-link">

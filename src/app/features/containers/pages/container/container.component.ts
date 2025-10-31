@@ -244,7 +244,7 @@ export class ContainerComponent {
   /**
    * Get sorted related software by cooccurrence count and name
    */
-  getSortedRelatedSoftware(): { name: string; displayName: string; count: number; inBdip: boolean }[] {
+  getSortedRelatedSoftware(): { name: string; displayNames: string[]; count: number; inBdip: boolean }[] {
     const relatedSoftwareData = this.relatedSoftware();
     if (!relatedSoftwareData || !this.container) {
       return [];
@@ -263,13 +263,13 @@ export class ContainerComponent {
     return Object.entries(currentEntry.cooccurrences)
       .map(([softwareName, cooccurrence]) => {
         const softwareEntry = relatedSoftwareData.software[softwareName];
-        const displayName = softwareEntry?.names?.[0] || softwareName;
+        const displayNames = softwareEntry?.names;
         const count = cooccurrence?.count ?? 0;
         const inBdip = bdipContainers.has(softwareName.toLowerCase());
 
         return {
           name: softwareName,
-          displayName,
+          displayNames,
           count,
           inBdip
         };
@@ -280,7 +280,7 @@ export class ContainerComponent {
           return b.count - a.count;
         }
         // Then by displayName asc (case-insensitive)
-        return a.displayName.localeCompare(b.displayName, undefined, { sensitivity: 'base' });
+        return a.name.localeCompare(b.name, undefined, { sensitivity: 'base' });
       });
   }
 
