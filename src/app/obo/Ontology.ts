@@ -146,6 +146,8 @@ export class Ontology {
   private parseStanza(lines: string[]) {
     // Regular expression to match stanza headers
     const stanzaRegex = /^\[(\w+)\]/;
+    // Array to hold unresolved parent-child relationships
+    const unresolvedLinks: { childId: string; parentId: string }[] = [];
     // Object mapping term properties to their setter functions
     const termProperties: {
       [key: string]: { setter: (value: string) => void };
@@ -161,17 +163,15 @@ export class Ontology {
       },
       is_a: {
         setter: (parentID: string) => {
-          const parent = this.stanzas.find((term) => term.id === parentID);
-          if (parent) {
-            parent.addChild(ontologyTerm);
-            ontologyTerm.addParent(parent);
-          }
+          // Record the relationship for later resolution
+          unresolvedLinks.push({ childId: ontologyTerm.id, parentId: parentID });
         },
       },
     };
 
     let ontologyTerm: TermStanza = new TermStanza();
     let line;
+    // First pass: parse terms and their properties
     while ((line = lines.shift()) !== undefined) {
       let matched = false;
       // Split the line into tag, value, and comment
@@ -195,6 +195,16 @@ export class Ontology {
     }
     // Add the last term to the ontology
     this.addTerm(ontologyTerm);
+
+    // Second pass: resolve parent-child relationships
+    unresolvedLinks.forEach(({ childId, parentId }) => {
+      const child = this.findTermById(childId);
+      const parent = this.findTermById(parentId);
+      if (child && parent) {
+        parent.addChild(child);
+        child.addParent(parent);
+      }
+    });
   }
 
   private kebabToCamel(s: string): string {
