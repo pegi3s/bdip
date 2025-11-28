@@ -14,10 +14,12 @@ export class DockerfileService {
   );
 
   private getContainerDockerfilePath(containerName: string): GitTreeItem | undefined {
-    return this.repositoryTree.value()?.tree.find(file => {
+    const matches = this.repositoryTree.value()?.tree.filter(file => {
       const path = file.path.toLowerCase();
       return path.startsWith(`${containerName.toLowerCase()}/`) && path.endsWith('/dockerfile');
     });
+
+    return matches?.[matches.length - 1];
   }
 
   getContainerDockerfileContent(containerName: string): Resource<string | undefined> {
