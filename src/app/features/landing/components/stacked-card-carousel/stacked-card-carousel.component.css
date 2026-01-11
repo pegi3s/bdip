@@ -4,6 +4,7 @@
 }
 
 .carousel-container {
+  position: relative;
   width: 100%;
   max-width: 36rem; /* 576px */
   margin: 0 auto;
@@ -14,19 +15,22 @@
   position: relative;
   height: calc(87px + 26px);
   width: 100%;
+  display: flex;
+  justify-content: center;
+  perspective: 1000px;
 }
 
 .card {
   position: absolute;
   width: 16rem;
+  max-width: 70%; /* Responsive cap */
+  height: 100%;
   background-color: white;
   border-radius: 0.5rem;
-  transition: all 500ms ease-in-out;
+  transition: all 500ms cubic-bezier(0.25, 0.8, 0.25, 1);
   overflow: hidden;
-
-  &.animating {
-    pointer-events: none;
-  }
+  cursor: pointer;
+  will-change: transform, opacity, left, right;
 
   &.new {
     --tint: 150;
@@ -47,33 +51,78 @@
   }
 }
 
+.center {
+  z-index: 10;
+  opacity: 1;
+  /* Use translate3d for hardware acceleration */
+  transform: translateX(0) scale(1);
+  left: 0;
+  right: 0;
+  margin: auto;
+  width: 18rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+.center:hover {
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.left {
+  z-index: 5;
+  opacity: 0.7;
+  transform: translateX(-55%) scale(0.9);
+  left: 0; right: 0; margin: auto; /* Base center */
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.right {
+  z-index: 5;
+  opacity: 0.7;
+  transform: translateX(55%) scale(0.9);
+  left: 0; right: 0; margin: auto; /* Base center */
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+:is(.left, .right):hover {
+  opacity: 0.85;
+}
+
+.hidden {
+  z-index: 0;
+  opacity: 0;
+  transform: scale(0.75);
+  pointer-events: none;
+  /* Keep them centered so they animate OUT from the center */
+  left: 0; right: 0; margin: auto;
+}
+
 .card-content {
   padding: 16px 24px;
   height: 100%;
   display: flex;
   flex-direction: column;
 
-  * {
+  p {
     margin: 0;
   }
+}
 
-  .card-header {
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+
+  > span:first-child {
     display: flex;
-    justify-content: space-between;
+    gap: 0.25rem;
     align-items: center;
-    margin-bottom: 12px;
-
-    > span:first-child {
-      display: flex;
-      gap: 0.25rem;
-      align-items: center;
-      background-color: hsl(var(--tint), 100%, 86%, 0.5);
-      color: hsl(var(--tint), 100%, 30%);
-      border-radius: 4px;
-      padding: 0.25rem 0.5rem;
-      font-size: 0.8rem;
-      font-weight: 500;
-    }
+    background-color: hsl(var(--tint), 100%, 86%, 0.5);
+    color: hsl(var(--tint), 100%, 30%);
+    border-radius: 4px;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.8rem;
+    font-weight: 500;
   }
 }
 
@@ -82,85 +131,27 @@
   color: hsl(var(--tint), 100%, 95%);
 }
 
-/* Card positions */
-.center {
-  left: 50%;
-  transform: translateX(-50%) scale(1);
-  top: 0;
-  width: 18rem;
-  z-index: 2;
-  opacity: 1;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-  cursor: pointer;
-
-  &:hover {
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-  }
-}
-
-.left {
-  left: 0;
-  transform: translateX(-1.5rem) scale(0.9);
-  z-index: 1;
-  opacity: 0.7;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  cursor: pointer;
-
-  &:hover {
-    opacity: 0.9;
-  }
-}
-
-.right {
-  right: 0;
-  transform: translateX(1.5rem) scale(0.9);
-  z-index: 1;
-  opacity: 0.7;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  cursor: pointer;
-
-  &:hover {
-    opacity: 0.9;
-  }
-}
-
-.hidden {
-  opacity: 0;
-  transform: scale(0.75);
-  pointer-events: none;
-}
-
 /* Navigation buttons */
 .nav-button {
   position: absolute;
-  top: calc(87px / 2);
+  top: 50%;
   transform: translateY(-50%);
   width: 28px;
   height: 28px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   border-radius: 9999px;
   background-color: rgba(255, 255, 255, 0.9);
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-  z-index: 3;
+  z-index: 20;
   border: none;
   cursor: pointer;
-  transition: all 300ms;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 200ms;
 
   &:hover {
     background-color: white;
     box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-  }
-
-  &:focus-visible {
-    outline: 2px solid #3B82F6;
-    outline-offset: 2px;
-  }
-
-  &:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
   }
 }
 
@@ -174,57 +165,75 @@
   }
 }
 
-.prev {
-  left: -70px;
-}
+.prev { left: 0; }
+.next { right: 0; }
+.next svg { transform: rotate(180deg); }
 
-.next {
-  right: -70px;
+/* Mobile: Hide Buttons, rely on swipe */
+@media (max-width: 600px) {
+  .nav-button {
+    display: none;
+  }
 
-  svg {
-    transform: rotate(180deg);
+  /* Adjust scaling for small screens so cards don't overlap too much */
+  .left { transform: translateX(-20%) scale(0.85); opacity: 0.5; }
+  .right { transform: translateX(20%) scale(0.85); opacity: 0.5; }
+
+  .card-content {
+    padding: 12px 16px;
+    font-size: 0.9rem;
   }
 }
 
-/* Indicators */
+/* Desktop: Push buttons outside slightly if there is room */
+@media (min-width: 601px) {
+  .prev { left: -40px; }
+  .next { right: -40px; }
+}
+
 .indicators {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
   display: flex;
   justify-content: center;
   gap: 0.5rem;
-  z-index: 3;
+  margin-top: 1rem;
 }
 
 .indicator {
-  width: 0.5rem;
-  height: 0.5rem;
+  width: 0.6rem;
+  height: 0.6rem;
   border-radius: 9999px;
   background-color: rgba(0, 0, 0, 0.25);
   border: none;
-  transition: all 300ms;
-  padding: 0;
   cursor: pointer;
+  transition: all 300ms cubic-bezier(0.25, 0.8, 0.25, 1);
+  padding: 0;
+  position: relative;
+  overflow: hidden;
 
   &:hover {
     background-color: rgba(var(--picton-blue-500), 0.4);
   }
 
   &.active {
-    background-color: rgba(var(--picton-blue-500), 0.75);
-    width: 1.5rem;
+    width: 1.75rem; /* Pill shape */
   }
+}
 
-  &:focus-visible {
-    outline: 2px solid rgba(var(--picton-blue-500), 0.75);
-    outline-offset: 2px;
-  }
+/* Progress bar fill for active indicator */
+.indicator.active::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  background-color: rgba(var(--picton-blue-500), 0.75);
+  width: 0;
+  animation: fillProgress 5000ms linear forwards;
+}
 
-  &:disabled {
-    cursor: not-allowed;
-  }
+@keyframes fillProgress {
+  from { width: 0; }
+  to { width: 100%; }
 }
 
 :host-context(.dark) .indicator {
@@ -234,7 +243,7 @@
     background-color: rgba(255, 255, 255, 0.5);
   }
 
-  &.active {
+  &.active::after {
     background-color: #91b9ef;
   }
 }
