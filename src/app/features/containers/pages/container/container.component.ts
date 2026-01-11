@@ -1,4 +1,15 @@
-import { Component, effect, inject, Injector, runInInjectionContext, signal, Signal } from "@angular/core";
+import {
+  Component,
+  computed,
+  effect,
+  inject,
+  Injector,
+  input,
+  runInInjectionContext,
+  signal,
+  Signal,
+  WritableSignal
+} from "@angular/core";
 import { DockerHubImage } from '../../../../models/docker-hub-image';
 import { DockerHubTag } from '../../../../models/docker-hub-tag';
 import { ActivatedRoute, RouterLink } from "@angular/router";
@@ -36,12 +47,85 @@ export class ContainerComponent {
 
   readonly clipboardButton = ClipboardButtonComponent;
 
+  /* Input data */
+  readonly name = input.required<string>();
+
   status: Status = Status.LOADING;
   container?: DockerHubImage;
   containerTags: Signal<DockerHubTag[]> = signal([]);
   ontologyCategories: Signal<TermStanza[][]> = signal([]);
-  dockerfileContent: Signal<string | undefined> = signal<string>('');
   relatedSoftware: Signal<RelatedSoftware | null> = signal(null);
+
+  /* Dockerfiles */
+  selectedDockerfileVariant: WritableSignal<number> = signal(0);
+
+  /**
+   * Computed URL for the selected alternative dockerfile.
+   * Returns empty string if GitHub variant is selected or no URL available.
+   */
+  private selectedDockerfileUrl = computed(() => {
+    const variants = this.dockerfileVariants();
+    const selectedIndex = this.selectedDockerfileVariant();
+    const selected = variants[selectedIndex];
+    if (selected && !selected.isGithub && selected.url) {
+      return selected.url;
+    }
+    return '';
+  });
+
+  private githubDockerfileContent = this.dockerfileService.getContainerDockerfileContent(this.name).value;
+  private alternativeDockerfileContent = this.dockerfileService.getDockerfileFromUrl(this.selectedDockerfileUrl).value;
+
+  /**
+   * Computed list of available dockerfile variants.
+   * GitHub dockerfile is first ("Default") if available, followed by metadata alternatives.
+   */
+  dockerfileVariants = computed(() => {
+    const containerName = this.name();
+    if (!containerName) return [];
+
+    const variants: { name: string; url?: string; isGithub: boolean }[] = [];
+    const metadata = this.containerService.getContainerMetadataRes(containerName)();
+
+    // Check if GitHub dockerfile is available (has content)
+    const githubContent = this.githubDockerfileContent();
+    if (githubContent && githubContent.length > 0) {
+      variants.push({ name: 'Default', isGithub: true });
+    }
+
+    // Add alternatives from metadata
+    const alternatives = metadata?.alternatives?.dockerfiles;
+    if (alternatives) {
+      for (const [variantName, url] of Object.entries(alternatives)) {
+        variants.push({ name: variantName, url, isGithub: false });
+      }
+    }
+
+    return variants;
+  });
+
+  /**
+   * Show dropdown only when there are 2 or more variants available.
+   */
+  showDockerfileDropdown = computed(() => this.dockerfileVariants().length > 1);
+
+  /**
+   * Current dockerfile content based on selected variant.
+   */
+  dockerfileContent = computed(() => {
+    const variants = this.dockerfileVariants();
+    const selectedIndex = this.selectedDockerfileVariant();
+
+    if (variants.length === 0) return undefined;
+
+    const selected = variants[selectedIndex] || variants[0];
+
+    if (selected.isGithub) {
+      return this.githubDockerfileContent();
+    } else {
+      return this.alternativeDockerfileContent();
+    }
+  });
   /** Lazily built index: Bio-Protocol article ID -> title */
   private articleTitleIndex: Map<string, string> | null = null;
 
@@ -91,9 +175,9 @@ export class ContainerComponent {
       runInInjectionContext(this.injector, () => {
         this.containerTags = this.containerService.getContainerTagsRes(containerName).value;
         this.ontologyCategories = this.containerService.getContainerCategoryHierarchy(containerName);
-        this.dockerfileContent = this.dockerfileService.getContainerDockerfileContent(containerName).value;
         this.relatedSoftware = this.containerService.getRelatedSoftwareRes().value;
       });
+      this.selectedDockerfileVariant.set(0);
     });
     this.viewportScroller.setOffset([0, 150]);
     this.activatedRoute.fragment.subscribe(fragment => {

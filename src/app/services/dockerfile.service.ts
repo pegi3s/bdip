@@ -1,4 +1,4 @@
-import { Injectable, Resource } from "@angular/core";
+import { Injectable, Resource, Signal } from "@angular/core";
 import { githubInfo } from "../core/constants/github-info";
 import { httpResource } from "@angular/common/http";
 import { GitTree, GitTreeItem } from "../models/git-tree";
@@ -22,10 +22,14 @@ export class DockerfileService {
     return matches?.[matches.length - 1];
   }
 
-  getContainerDockerfileContent(containerName: string): Resource<string | undefined> {
+  getContainerDockerfileContent(containerName: Signal<string>): Resource<string | undefined> {
     return httpResource.text(() => {
-      const path = this.getContainerDockerfilePath(containerName)?.path;
+      const path = this.getContainerDockerfilePath(containerName())?.path;
       return `https://raw.githubusercontent.com/${githubInfo.owner}/${githubInfo.repository}/refs/heads/${githubInfo.branch}/${path}`;
     }).asReadonly();
+  }
+
+  getDockerfileFromUrl(url: Signal<string>): Resource<string | undefined> {
+    return httpResource.text(() => url()).asReadonly();
   }
 }

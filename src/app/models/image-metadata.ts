@@ -24,6 +24,7 @@ export type ImageMetadata = {
   input_data_type: string[];
   auto_tests: AutoTests[];
   custom_searches?: CustomSearches;
+  alternatives?: AlternativeDockerfiles;
 };
 
 type Recommended = {
@@ -50,4 +51,8 @@ type CustomSearches = {
   scholar?: string;
   bioprotocol?: string;
   bioprotocol_exchange?: string;
+};
+
+type AlternativeDockerfiles = {
+  dockerfiles?: Record<string, string>; // { variantName: url }
 };

@@ -131,6 +131,9 @@
       @if (selectedTab() === TabName.TESTING) {
         <app-dropdown [items]="containerPlatforms" [(selected)]="selectedContainerPlatform"/>
       }
+      @if (selectedTab() === TabName.DOCKERFILE && showDockerfileDropdown()) {
+        <app-dropdown [items]="dockerfileVariants()" [(selected)]="selectedDockerfileVariant"/>
+      }
     </div>
     @if (selectedTab() === 'readme') {
       <markdown
@@ -265,10 +268,8 @@
     clipboard
     [clipboardButtonComponent]="clipboardButton"
     class="markdown-body"
-    ngPreserveWhitespaces>
-    ```dockerfile
-    {{ dockerfileContent() }}
-    ```
+    ngPreserveWhitespaces
+    [data]="'```dockerfile\n' + dockerfileContent() + '\n```'">
   </markdown>
 </ng-template>
 
