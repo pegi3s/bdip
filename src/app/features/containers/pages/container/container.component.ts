@@ -116,7 +116,7 @@ export class ContainerComponent {
     const variants = this.dockerfileVariants();
     const selectedIndex = this.selectedDockerfileVariant();
 
-    if (variants.length === 0) return undefined;
+    if (variants.length === 0) return "";
 
     const selected = variants[selectedIndex] || variants[0];
 

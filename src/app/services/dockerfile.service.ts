@@ -25,7 +25,11 @@ export class DockerfileService {
   getContainerDockerfileContent(containerName: Signal<string>): Resource<string | undefined> {
     return httpResource.text(() => {
       const path = this.getContainerDockerfilePath(containerName())?.path;
-      return `https://raw.githubusercontent.com/${githubInfo.owner}/${githubInfo.repository}/refs/heads/${githubInfo.branch}/${path}`;
+      if (!path) {
+        return undefined;
+      } else {
+        return `https://raw.githubusercontent.com/${githubInfo.owner}/${githubInfo.repository}/refs/heads/${githubInfo.branch}/${path}`;
+      }
     }).asReadonly();
   }
 
