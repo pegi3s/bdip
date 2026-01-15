@@ -55,6 +55,7 @@ export class ContainerComponent {
   containerTags: Signal<DockerHubTag[]> = signal([]);
   ontologyCategories: Signal<TermStanza[][]> = signal([]);
   relatedSoftware: Signal<RelatedSoftware | null> = signal(null);
+  metadata = computed(() => this.containerService.getContainerMetadataRes(this.name())());
 
   /* Dockerfiles */
   selectedDockerfileVariant: WritableSignal<number> = signal(0);
@@ -73,7 +74,7 @@ export class ContainerComponent {
     return '';
   });
 
-  private githubDockerfileContent = this.dockerfileService.getContainerDockerfileContent(this.name).value;
+  private githubDockerfileContent = this.dockerfileService.getContainerDockerfileContent(this.name, this.metadata).value;
   private alternativeDockerfileContent = this.dockerfileService.getDockerfileFromUrl(this.selectedDockerfileUrl).value;
 
   /**
@@ -85,7 +86,7 @@ export class ContainerComponent {
     if (!containerName) return [];
 
     const variants: { name: string; url?: string; isGithub: boolean }[] = [];
-    const metadata = this.containerService.getContainerMetadataRes(containerName)();
+    const metadata = this.metadata();
 
     // Check if GitHub dockerfile is available (has content)
     const githubContent = this.githubDockerfileContent();
