@@ -30,6 +30,7 @@ export class HeaderComponent {
   links = [
     { path: '/search', text: 'Containers', queryParams: { showAll: 'true' } },
     { path: '/getting-started', text: 'Getting Started' },
+    { path: '/advanced', text: 'Advanced' },
     { path: '/tutorials', text: 'Tutorials' },
   ];
 

@@ -1,0 +1,23 @@
+<section class="advanced">
+  <app-stepper [(currentStep)]="currentStep" [steps]="steps" />
+  <div #container></div>
+</section>
+
+<ng-template #dockerManager>
+  <markdown
+    clipboard
+    [clipboardButtonComponent]="clipboardButton"
+    id="docker-manager"
+    class="markdown-body"
+    [data]="isDarkTheme() ? (dockerManagerMd.value() | replace:'-light.':'-dark.') : dockerManagerMd.value()"
+  />
+</ng-template>
+
+<ng-template #dockview>
+  <markdown
+    clipboard
+    [clipboardButtonComponent]="clipboardButton"
+    class="markdown-body"
+    [data]="dockviewMd.value()"
+  />
+</ng-template>

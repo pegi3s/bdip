@@ -113,16 +113,6 @@
   </div>
 </ng-template>
 
-<ng-template #dockerManager>
-  <markdown
-    clipboard
-    [clipboardButtonComponent]="clipboardButton"
-    id="docker-manager"
-    class="markdown-body"
-    [data]="isDarkTheme() ? (dockerManagerMd.value() | replace:'-light.':'-dark.') : dockerManagerMd.value()"
-  />
-</ng-template>
-
 <ng-template #runCommandsGUI>
   <markdown
     clipboard

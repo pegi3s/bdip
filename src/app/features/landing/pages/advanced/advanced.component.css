@@ -1,0 +1,70 @@
+section {
+  margin-inline: auto;
+  padding: calc(35px + var(--header-height)) var(--horizontal-main-margin) 35px;
+  max-inline-size: 2048px;
+}
+
+app-stepper {
+  margin-bottom: 24px;
+  max-width: 1000px;
+  margin-inline: auto;
+}
+
+/* Page title */
+h2:first-child,
+.markdown-body ::ng-deep h1 {
+  margin-block: 0 24px;
+  font-size: 2.25rem;
+  line-height: 2.5rem;
+  font-weight: 700;
+
+  background: linear-gradient(45deg, #ed4e50 0%, #f06f00 100%);
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.markdown-body ::ng-deep h1 {
+  padding-bottom: 0;
+  border: none;
+}
+
+/* Links */
+a {
+  color: #0969da;
+  font-weight: 600;
+}
+
+:host-context(.dark) a {
+  color: rgb(97, 218, 251);
+}
+
+p {
+  font-size: 1rem;
+  line-height: 1.5rem;
+}
+
+.advanced :is(app-tabs, .lead) {
+  margin-bottom: 24px;
+}
+
+::ng-deep #docker-manager p:has(> img) {
+  display: contents;
+}
+
+::ng-deep #docker-manager img {
+  float: right;
+  margin-left: 48px;
+  max-width: min(50%, 752px);
+  max-height: 310px;
+  filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
+}
+
+@media (width < 1280px) {
+  ::ng-deep #docker-manager img {
+    float: none;
+    margin: 36px auto;
+    max-width: 100%;
+    max-height: initial;
+    display: block;
+  }
+}

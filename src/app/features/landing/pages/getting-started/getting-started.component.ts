@@ -1,4 +1,4 @@
-import { Component, effect, inject, Signal, signal, TemplateRef, ViewContainerRef, viewChild } from "@angular/core";
+import { ChangeDetectionStrategy, Component, effect, inject, Signal, signal, TemplateRef, ViewContainerRef, viewChild } from "@angular/core";
 import { OS } from '../../../../models/os';
 import { UtilsService } from '../../../../services/utils.service';
 import { TabsComponent } from '../../../../shared/components/tabs/tabs.component';
@@ -12,13 +12,13 @@ import { SoftwareRecommendationsService } from "../../../../services/software-re
 import { TermStanza } from "../../../../obo/TermStanza";
 import { LowerCasePipe } from "@angular/common";
 import { httpResource } from "@angular/common/http";
-import { ReplacePipe } from "../../../../shared/pipes/replace/replace.pipe";
 
 @Component({
     selector: 'app-getting-started',
     templateUrl: './getting-started.component.html',
     styleUrl: './getting-started.component.css',
-  imports: [TabsComponent, StepperComponent, MarkdownComponent, RouterLink, LowerCasePipe, ReplacePipe],
+    imports: [TabsComponent, StepperComponent, MarkdownComponent, RouterLink, LowerCasePipe],
+    changeDetection: ChangeDetectionStrategy.OnPush,
     host: { '[class.dark]': 'isDarkTheme()' }
 })
 export class GettingStartedComponent {
@@ -32,26 +32,17 @@ export class GettingStartedComponent {
 
   /* Fragments */
   readonly containerRef = viewChild.required('container', { read: ViewContainerRef });
-  readonly installDockerTemplate = viewChild.required<TemplateRef<any>>('installDocker');
-  readonly dockerManagerTemplate = viewChild.required<TemplateRef<any>>('dockerManager');
-  readonly runCommandsGUITemplate = viewChild.required<TemplateRef<any>>('runCommandsGUI');
-  readonly commonIssuesTemplate = viewChild.required<TemplateRef<any>>('commonIssues');
-  readonly chooseSoftwareTemplate = viewChild.required<TemplateRef<any>>('chooseSoftware');
+  readonly installDockerTemplate = viewChild.required<TemplateRef<unknown>>('installDocker');
+  readonly runCommandsGUITemplate = viewChild.required<TemplateRef<unknown>>('runCommandsGUI');
+  readonly commonIssuesTemplate = viewChild.required<TemplateRef<unknown>>('commonIssues');
+  readonly chooseSoftwareTemplate = viewChild.required<TemplateRef<unknown>>('chooseSoftware');
   protected steps = [
     { fragmentName: 'install-docker', name: 'Install Docker', icon: 'assets/icons/logos/docker-mark-blue.svg' },
-    { fragmentName: 'manage-docker-images', name: 'Manage Docker Images', icon: 'assets/icons/octicons/container-24.svg' },
     { fragmentName: 'run-commands-gui', name: 'Run using a GUI', icon: 'assets/icons/fluent-icons/ic_fluent_window_console_20_filled.svg' },
     { fragmentName: 'common-issues', name: 'Common issues', icon: 'assets/icons/fluent-icons/ic_fluent_error_circle_24_filled.svg' },
     { fragmentName: 'choose-software', name: 'Choosing the right software', icon: 'assets/icons/fluent-icons/ic_fluent_apps_24_filled.svg' },
   ];
   readonly gettingStartedMdBaseUrl = `https://raw.githubusercontent.com/${githubInfo.owner}/${githubInfo.repository}/${githubInfo.branch}/metadata/web/getting_started`;
-  readonly dockerManagerMd = httpResource.text(
-    () => `${this.gettingStartedMdBaseUrl}/manage-docker-images.md`,
-    {
-      parse: (response: string) => this.setMarkdownBaseUrl(response, this.gettingStartedMdBaseUrl),
-      defaultValue: ""
-    }
-  );
   readonly runCommandsGUIMd = httpResource.text(
     () => `${this.gettingStartedMdBaseUrl}/run-commands-gui.md`,
     {
@@ -104,9 +95,6 @@ export class GettingStartedComponent {
     switch (fragment) {
       case 'install-docker':
         this.containerRef().createEmbeddedView(this.installDockerTemplate());
-        break;
-      case 'manage-docker-images':
-        this.containerRef().createEmbeddedView(this.dockerManagerTemplate());
         break;
       case 'run-commands-gui':
         this.containerRef().createEmbeddedView(this.runCommandsGUITemplate());
