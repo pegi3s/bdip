@@ -51,11 +51,19 @@ p {
   display: contents;
 }
 
-::ng-deep #docker-manager img {
+::ng-deep :is(#docker-manager, #dockview) img {
   float: right;
   margin-left: 48px;
   max-width: min(50%, 752px);
   max-height: 310px;
+  filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
+}
+
+::ng-deep #dockview img {
+  float: right;
+  margin-left: 48px;
+  max-width: min(40%, 600px);
+  max-height: 440px;
   filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
 }
 
@@ -65,6 +73,14 @@ p {
     margin: 36px auto;
     max-width: 100%;
     max-height: initial;
+    display: block;
+  }
+
+  ::ng-deep #dockview img {
+    float: none;
+    margin: 36px auto;
+    max-width: 100%;
+    max-height: 500px;
     display: block;
   }
 }
