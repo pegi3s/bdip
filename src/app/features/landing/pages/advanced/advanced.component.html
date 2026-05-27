@@ -22,3 +22,13 @@
     [data]="dockviewMd.value()"
   />
 </ng-template>
+
+<ng-template #contribute>
+  <markdown
+    clipboard
+    [clipboardButtonComponent]="clipboardButton"
+    id="contribute"
+    class="markdown-body"
+    [data]="contributeMd.value()"
+  />
+</ng-template>

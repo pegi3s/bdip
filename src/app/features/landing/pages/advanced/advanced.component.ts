@@ -28,10 +28,12 @@ export class AdvancedComponent {
   readonly containerRef = viewChild.required('container', { read: ViewContainerRef });
   readonly dockerManagerTemplate = viewChild.required<TemplateRef<unknown>>('dockerManager');
   readonly dockviewTemplate = viewChild.required<TemplateRef<unknown>>('dockview');
+  readonly contributeTemplate = viewChild.required<TemplateRef<unknown>>('contribute');
 
   protected steps = [
     { fragmentName: 'manage-docker-images', name: 'Manage Docker Images', icon: 'assets/icons/octicons/container-24.svg' },
     { fragmentName: 'monitoring-docker-images', name: 'Monitoring Docker Images', icon: 'assets/icons/fluent-icons/ic_fluent_pulse_square_24_filled.svg' },
+    { fragmentName: 'contribute-docker-images', name: 'Contribute New Docker Images', icon: 'assets/icons/fluent-icons/ic_fluent_people_community_24_filled.svg' },
   ];
 
   readonly advancedMdBaseUrl = `https://raw.githubusercontent.com/${githubInfo.owner}/${githubInfo.repository}/${githubInfo.branch}/metadata/web/advanced`;
@@ -44,6 +46,13 @@ export class AdvancedComponent {
   );
   readonly dockviewMd = httpResource.text(
     () => `${this.advancedMdBaseUrl}/dockview.md`,
+    {
+      parse: (response: string) => this.setMarkdownBaseUrl(response, this.advancedMdBaseUrl),
+      defaultValue: ""
+    }
+  );
+  readonly contributeMd = httpResource.text(
+    () => `${this.advancedMdBaseUrl}/contribute.md`,
     {
       parse: (response: string) => this.setMarkdownBaseUrl(response, this.advancedMdBaseUrl),
       defaultValue: ""
@@ -82,6 +91,9 @@ export class AdvancedComponent {
         break;
       case 'monitoring-docker-images':
         this.containerRef().createEmbeddedView(this.dockviewTemplate());
+        break;
+      case 'contribute-docker-images':
+        this.containerRef().createEmbeddedView(this.contributeTemplate());
         break;
       default:
         // Default to the first template if fragment is unrecognized
