@@ -7,12 +7,20 @@
     <div>
       <div class="name">
         <p>{{ contributor().name }}</p>
-        <div class="organizations">
-          @for (organization of contributor().organizations; track $index) {
-            <div class="organization" [style.--bg-color]="organization.color">
-              <span class="tooltip">{{ organization.fullName }}</span>
-              <p>{{ organization.acronym }}</p>
-            </div>
+        <div class="name-meta">
+          <div class="organizations">
+            @for (organization of contributor().organizations; track $index) {
+              <div class="organization" [style.--bg-color]="organization.color">
+                <span class="tooltip">{{ organization.fullName }}</span>
+                <p>{{ organization.acronym }}</p>
+              </div>
+            }
+          </div>
+          @if (contributor().period) {
+            <span class="period">
+              <svg-icon src="assets/icons/fluent-icons/ic_fluent_calendar_12_filled.svg" />
+              {{ contributor().period }}
+            </span>
           }
         </div>
       </div>

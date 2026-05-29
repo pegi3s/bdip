@@ -66,6 +66,37 @@
   }
 }
 
+.name-meta {
+  flex: 1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  @media (width > 576px) {
+    justify-content: space-between;
+  }
+}
+
+.period {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  box-shadow: rgba(0, 0, 0, 0.02) 0 5px 5px 0;
+  border-radius: 16px;
+  background-color: var(--contact-info-item-bg);
+  padding: 6px 10px;
+  font-size: 0.75rem;
+  line-height: 1rem;
+  opacity: 0.75;
+
+  svg {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+  }
+}
+
 .organizations {
   display: flex;
   gap: 8px;

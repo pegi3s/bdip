@@ -10,4 +10,5 @@ export interface Contributor {
     github?: string;
   };
   organizations: Organization[];
+  period?: string;
 }
