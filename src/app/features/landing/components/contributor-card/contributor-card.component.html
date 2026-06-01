@@ -16,10 +16,10 @@
               </div>
             }
           </div>
-          @if (contributor().period) {
+          @if (periodLabel()) {
             <span class="period">
               <svg-icon src="assets/icons/fluent-icons/ic_fluent_calendar_12_filled.svg" />
-              {{ contributor().period }}
+              {{ periodLabel() }}
             </span>
           }
         </div>

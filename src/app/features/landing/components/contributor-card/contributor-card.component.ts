@@ -1,4 +1,4 @@
-import { Component, inject, input, Signal } from "@angular/core";
+import { Component, computed, inject, input, Signal } from "@angular/core";
 import { NgOptimizedImage } from '@angular/common';
 import { Contributor } from '../../models/contributor.model';
 import { ThemeService } from '../../../../services/theme.service';
@@ -18,6 +18,22 @@ export class ContributorCardComponent {
 
   /* Inputs */
   contributor = input.required<Contributor>();
+  periodLabel = computed(() => {
+    const period = this.contributor().period;
+
+    if (!period) {
+      return undefined;
+    }
+
+    const from = period.from.trim();
+    const to = period.to?.trim();
+
+    if (from && to) {
+      return `${from} - ${to}`;
+    }
+
+    return `${from} - Present`;
+  });
 
   constructor() {
     this.isDarkTheme = this.themeService.isDarkTheme();

@@ -1,5 +1,10 @@
 import { Organization } from '../../../models/organization';
 
+export interface ContributorPeriod {
+  from: string;
+  to?: string;
+}
+
 export interface Contributor {
   name: string;
   description: string;
@@ -10,5 +15,5 @@ export interface Contributor {
     github?: string;
   };
   organizations: Organization[];
-  period?: string;
+  period?: ContributorPeriod;
 }
