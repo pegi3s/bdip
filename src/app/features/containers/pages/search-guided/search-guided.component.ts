@@ -50,6 +50,7 @@ export class SearchGuidedComponent {
   showAll = signal<boolean>(false);
   /** Search inside READMEs. */
   searchReadmes = signal<boolean>(false);
+  readmesLoading = this.containerService.getContainersReadmesRes().isLoading;
 
   constructor() {
     this.isDarkTheme = this.themeService.isDarkTheme();

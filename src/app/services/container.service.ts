@@ -1,5 +1,5 @@
 import { HttpClient, httpResource } from "@angular/common/http";
-import { computed, Injectable, Resource, Signal, WritableResource } from "@angular/core";
+import { computed, Injectable, Resource, Signal, signal, WritableResource } from "@angular/core";
 import { concatMap, from, mergeMap, Observable, of, retry, throwError, timer, toArray } from "rxjs";
 import { catchError, filter, map, shareReplay } from "rxjs/operators";
 
@@ -29,6 +29,12 @@ export class ContainerService {
   private ontologyCache?: Observable<Ontology>;
 
   constructor(private http: HttpClient) {
+  }
+
+  private readonly _readmesEnabled = signal<boolean>(false);
+
+  enableReadmes(): void {
+    this._readmesEnabled.set(true);
   }
 
   /* ----- Resources ---- */
@@ -121,7 +127,10 @@ export class ContainerService {
 
   /** A map to store the READMEs of each container */
   containersReadmes = rxResource({
-    params: () => this.containersMetadata.value(),
+    params: () => {
+      if (!this._readmesEnabled()) return undefined;
+      return this.containersMetadata.value();
+    },
     stream: ({ params: metadata }) => {
       const containers = metadata ? Array.from(metadata.keys()) : [];
 

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, inject, input, Signal, signal } from "@angular/core";
+import { ChangeDetectionStrategy, Component, computed, effect, inject, input, Signal, signal } from "@angular/core";
 import { RouterLink } from "@angular/router";
 import { ContainerService } from "../../../../services/container.service";
 import { TermStanza } from "../../../../obo/TermStanza";
@@ -77,7 +77,13 @@ export class SearchListComponent {
   ];
   selectedFilterOption = signal<number>(-1);
 
-  constructor() { }
+  constructor() {
+    effect(() => {
+      if (this.searchReadmes()) {
+        this.containerService.enableReadmes();
+      }
+    });
+  }
 
   getContainersByCategories(categories: TermStanza[], matchedContainers: Set<string>) {
     categories.forEach((category) => {

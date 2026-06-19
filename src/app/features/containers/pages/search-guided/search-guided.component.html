@@ -56,7 +56,9 @@
         <div class="checkbox-container">
           <input type="checkbox" id="searchReadmesCheckbox" [(ngModel)]="searchReadmes" />
           <label for="searchReadmesCheckbox">Include READMEs</label>
-          <!-- TODO: Add loading indicator -->
+          @if (readmesLoading()) {
+            <span class="readme-spinner" role="status" aria-label="Loading READMEs"></span>
+          }
         </div>
       }
     </div>
