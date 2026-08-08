@@ -1,11 +1,11 @@
-<section class="search-container" #searchContainer [class.active]="categorySelectionStack().length !== 0 || this.searchTerm().length !== 0" [class.collapsed]="showAll()">
-  @if (this.searchTerm().length === 0) {
+<section class="search-container" #searchContainer [class.active]="categorySelectionStack().length !== 0 || searchTerm().length !== 0" [class.collapsed]="showAll()">
+  @if (searchTerm().length === 0) {
     <div class="search-by-category" @fadeIn>
       <p>
         @if (categorySelectionStack().length > 0) {
-          <span class="arrow-back" (click)="clearSearch()">
+          <button class="arrow-back" type="button" (click)="clearSearch()" aria-label="Back to search">
             <svg-icon src="assets/icons/fluent-icons/ic_fluent_arrow_left_24_filled.svg" />
-          </span>
+          </button>
         }
         Ready to explore? Choose a category!
       </p>
@@ -15,7 +15,7 @@
             @if (last) {
               <div>
                 {{ category.name?.replaceAll("_", " ") }}
-                <button (click)="goUpLevel()">
+                <button (click)="goUpLevel()" aria-label="Go up one level">
                   <svg-icon src="assets/icons/material-symbols/close_small_24dp_E8EAED_FILL1_wght400_GRAD0_opsz24.svg" />
                 </button>
               </div>
@@ -27,7 +27,7 @@
           }
         </div>
       }
-      @if (getSelectedCategory() === undefined || getSelectedCategory()?.hasChildren()) {
+      @if (selectedCategory() === undefined || selectedCategory()?.hasChildren()) {
         <div class="container">
           @for (category of categories(); track category.id) {
             <div (click)="loadChildren(category)">
@@ -39,20 +39,20 @@
     </div>
   }
 
-  @if (this.categorySelectionStack().length === 0) {
+  @if (categorySelectionStack().length === 0) {
     <div class="search-by-text" @fadeIn>
       <p>
         Unleash the power of our advanced search!
       </p>
       <div>
-        <input placeholder="Search" type="text" maxlength="200" [(ngModel)]="searchTerm" @fadeIn/>
-        @if (this.searchTerm().length > 0) {
-          <button (click)="clearSearch()">
+        <input placeholder="Search" type="text" maxlength="200" aria-label="Search" [(ngModel)]="searchTerm" @fadeIn/>
+        @if (searchTerm().length > 0) {
+          <button (click)="clearSearch()" aria-label="Clear search">
             <svg-icon src="assets/icons/material-symbols/close_small_24dp_E8EAED_FILL1_wght400_GRAD0_opsz24.svg" />
           </button>
         }
       </div>
-      @if (this.searchTerm().length > 0) {
+      @if (searchTerm().length > 0) {
         <div class="checkbox-container">
           <input type="checkbox" id="searchReadmesCheckbox" [(ngModel)]="searchReadmes" />
           <label for="searchReadmesCheckbox">Include READMEs</label>
@@ -68,4 +68,4 @@
   [searchQuery]="searchTerm()"
   [searchReadmes]="searchReadmes()"
   [rootCategories]="showAll() ? rootCategories() : []"
-  [selectedCategory]="getSelectedCategory()" />
+  [selectedCategory]="selectedCategory()" />

@@ -3,59 +3,218 @@ import {
   computed,
   effect,
   inject,
-  Injector,
   input,
-  runInInjectionContext,
   signal,
   Signal,
-  WritableSignal
-} from "@angular/core";
+  WritableSignal,
+} from '@angular/core';
+import { rxResource, takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { DockerHubImage } from '../../../../models/docker-hub-image';
 import { DockerHubTag } from '../../../../models/docker-hub-tag';
-import { ActivatedRoute, RouterLink } from "@angular/router";
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { ContainerService } from '../../../../services/container.service';
 import { MarkdownModule } from 'ngx-markdown';
-import { DatePipe, NgTemplateOutlet, SlicePipe, ViewportScroller } from "@angular/common";
+import {
+  DatePipe,
+  NgTemplateOutlet,
+  SlicePipe,
+  ViewportScroller,
+} from '@angular/common';
 import { ThemeService } from '../../../../services/theme.service';
 import { ClipboardButtonComponent } from '../../../../shared/components/clipboard-button/clipboard-button.component';
-import { TabsComponent } from "../../../../shared/components/tabs/tabs.component";
-import { BytesToSizePipe } from "../../../../shared/pipes/bytes-to-size/bytes-to-size.pipe";
+import { TabsComponent } from '../../../../shared/components/tabs/tabs.component';
+import { BytesToSizePipe } from '../../../../shared/pipes/bytes-to-size/bytes-to-size.pipe';
 import { SvgIconComponent } from 'angular-svg-icon';
-import { LoadingComponent } from "../../../../shared/components/loading/loading.component";
-import { ImageMetadata } from "../../../../models/image-metadata";
-import { TermStanza } from "../../../../obo/TermStanza";
-import { DockerfileService } from "../../../../services/dockerfile.service";
-import { DropdownComponent } from "../../../../shared/components/dropdown/dropdown.component";
-import { RelatedSoftware } from "../../../../models/related-software";
+import { LoadingComponent } from '../../../../shared/components/loading/loading.component';
+import { ImageMetadata } from '../../../../models/image-metadata';
+import { TermStanza } from '../../../../obo/TermStanza';
+import { DockerfileService } from '../../../../services/dockerfile.service';
+import { DropdownComponent } from '../../../../shared/components/dropdown/dropdown.component';
+import { RelatedSoftware } from '../../../../models/related-software';
+import { catchError, map, of } from 'rxjs';
 
 @Component({
-    selector: 'app-container',
-    templateUrl: './container.component.html',
-    styleUrl: './container.component.css',
-    host: { '[class.dark]': 'isDarkTheme()' },
-  imports: [DatePipe, SlicePipe, MarkdownModule, TabsComponent, BytesToSizePipe, ClipboardButtonComponent, SvgIconComponent, LoadingComponent, NgTemplateOutlet, RouterLink, DropdownComponent]
+  selector: 'app-container',
+  templateUrl: './container.component.html',
+  styleUrl: './container.component.css',
+  host: { '[class.dark]': 'isDarkTheme()' },
+  imports: [
+    DatePipe,
+    SlicePipe,
+    MarkdownModule,
+    TabsComponent,
+    BytesToSizePipe,
+    ClipboardButtonComponent,
+    SvgIconComponent,
+    LoadingComponent,
+    NgTemplateOutlet,
+    RouterLink,
+    DropdownComponent,
+  ],
 })
 export class ContainerComponent {
   /* Services */
-  private readonly injector = inject(Injector);
-  private activatedRoute: ActivatedRoute = inject(ActivatedRoute);
-  private viewportScroller = inject(ViewportScroller);
-  private containerService: ContainerService = inject(ContainerService);
-  private dockerfileService = inject(DockerfileService);
-  private themeService: ThemeService = inject(ThemeService);
-  isDarkTheme: Signal<boolean>;
+  private readonly activatedRoute = inject(ActivatedRoute);
+  private readonly viewportScroller = inject(ViewportScroller);
+  private readonly containerService = inject(ContainerService);
+  private readonly dockerfileService = inject(DockerfileService);
+  private readonly themeService = inject(ThemeService);
+  readonly isDarkTheme: Signal<boolean> = this.themeService.isDarkTheme;
 
   readonly clipboardButton = ClipboardButtonComponent;
 
   /* Input data */
   readonly name = input.required<string>();
 
-  status: Status = Status.LOADING;
-  container?: DockerHubImage;
-  containerTags: Signal<DockerHubTag[]> = signal([]);
-  ontologyCategories: Signal<TermStanza[][]> = signal([]);
-  relatedSoftware: Signal<RelatedSoftware | null> = signal(null);
-  metadata = computed(() => this.containerService.getContainerMetadataRes(this.name())());
+  /**
+   * `name` is a required input; reading it before Angular has bound it throws. Some of the
+   * reactive properties below can run before that binding is guaranteed (e.g. resource `params`
+   * callbacks), so this centralizes the "read safely" workaround instead of repeating the same
+   * try/catch in every one of them.
+   */
+  private readonly safeName = computed<string | undefined>(() => {
+    try {
+      return this.name();
+    } catch {
+      return undefined;
+    }
+  });
+
+  private readonly containerInfo = rxResource<{ status: Status; container?: DockerHubImage }, string | undefined>({
+    params: () => this.safeName(),
+    stream: ({ params: containerName }) => {
+      if (!containerName) {
+        return of({
+          status: Status.LOADING,
+          container: undefined,
+        });
+      }
+      return this.containerService.getContainerInfo(containerName).pipe(
+        map((container) => ({ status: Status.LOADED, container })),
+        catchError((error: { status?: number }) =>
+          of({
+            status:
+              error.status === 404
+                ? Status.ERROR_NOT_FOUND
+                : Status.ERROR_SERVER,
+            container: undefined,
+          }),
+        ),
+      );
+    },
+    defaultValue: {
+      status: Status.LOADING,
+      container: undefined,
+    },
+  });
+
+  readonly status = computed(
+    () => this.containerInfo.value()?.status ?? Status.LOADING,
+  );
+  readonly container = computed(() => this.containerInfo.value()?.container);
+
+  private readonly containerTagsRes = rxResource({
+    params: () => this.safeName(),
+    stream: ({ params: containerName }) => {
+      if (!containerName) return of([] as DockerHubTag[]);
+      return this.containerService.getContainerTags(containerName);
+    },
+    defaultValue: [] as DockerHubTag[],
+  });
+
+  readonly containerTags = computed(() => this.containerTagsRes.value() ?? []);
+  readonly ontologyCategories = computed(() => {
+    const containerName = this.safeName();
+    if (!containerName) return [];
+    return this.containerService.getContainerCategoryHierarchy(containerName)();
+  });
+  readonly relatedSoftware = computed(
+    () => this.containerService.getRelatedSoftwareRes().value() ?? null,
+  );
+  readonly metadata = computed(() => {
+    const containerName = this.safeName();
+    if (!containerName) return undefined;
+    return this.containerService.getContainerMetadataRes(containerName)();
+  });
+
+  /**
+   * Related software co-occurring with the current container in Bio-Protocol articles,
+   * sorted by co-occurrence count (desc) then name. Memoized since it involves sorting and
+   * building a lookup set, and is read from the template on every check for whether the tab
+   * should be shown as well as when rendering the list itself.
+   */
+  readonly sortedRelatedSoftware = computed<{
+    name: string;
+    displayNames: string[];
+    count: number;
+    inBdip: boolean;
+  }[]>(() => {
+    const relatedSoftwareData = this.relatedSoftware();
+    const container = this.container();
+    if (!relatedSoftwareData || !container) {
+      return [];
+    }
+
+    const currentSoftware = container.name.toLowerCase();
+    const currentEntry = relatedSoftwareData.software[currentSoftware];
+
+    if (!currentEntry || !currentEntry.cooccurrences) {
+      return [];
+    }
+
+    const allContainersMetadata = this.containerService
+      .getAllContainersMetadataRes()
+      .value();
+    const bdipContainers = new Set(
+      allContainersMetadata
+        ? Array.from(allContainersMetadata.keys()).map((k) => k.toLowerCase())
+        : [],
+    );
+
+    return Object.entries(currentEntry.cooccurrences)
+      .map(([softwareName, cooccurrence]) => {
+        const softwareEntry = relatedSoftwareData.software[softwareName];
+        const displayNames = softwareEntry?.names;
+        const count = cooccurrence?.count ?? 0;
+        const inBdip = bdipContainers.has(softwareName.toLowerCase());
+
+        return {
+          name: softwareName,
+          displayNames,
+          count,
+          inBdip,
+        };
+      })
+      .sort((a, b) => {
+        // Sort by count desc
+        if (b.count !== a.count) {
+          return b.count - a.count;
+        }
+        // Then by displayName asc (case-insensitive)
+        return a.name.localeCompare(b.name, undefined, { sensitivity: 'base' });
+      });
+  });
+
+  /** Whether the related software tab should be shown. */
+  readonly hasRelatedSoftware = computed(() => this.sortedRelatedSoftware().length > 0);
+
+  /** The four base detail tabs, plus "Related software" when there's any to show. */
+  readonly detailTabs = computed(() => {
+    const tabs = [
+      { id: TabName.README, label: 'README', active: this.selectedTab() === TabName.README },
+      { id: TabName.TAGS, label: TabName.TAGS, active: this.selectedTab() === TabName.TAGS },
+      { id: TabName.TESTING, label: 'Testing', active: this.selectedTab() === TabName.TESTING },
+      { id: TabName.DOCKERFILE, label: 'Dockerfile', active: this.selectedTab() === TabName.DOCKERFILE },
+    ];
+    if (this.hasRelatedSoftware()) {
+      tabs.push({
+        id: TabName.RELATED_SOFTWARE,
+        label: 'Related software',
+        active: this.selectedTab() === TabName.RELATED_SOFTWARE,
+      });
+    }
+    return tabs;
+  });
 
   /* Dockerfiles */
   selectedDockerfileVariant: WritableSignal<number> = signal(0);
@@ -74,8 +233,14 @@ export class ContainerComponent {
     return '';
   });
 
-  private githubDockerfileContent = this.dockerfileService.getContainerDockerfileContent(this.name, this.metadata).value;
-  private alternativeDockerfileContent = this.dockerfileService.getDockerfileFromUrl(this.selectedDockerfileUrl).value;
+  private githubDockerfileContent =
+    this.dockerfileService.getContainerDockerfileContent(
+      this.name,
+      this.metadata,
+    ).value;
+  private alternativeDockerfileContent =
+    this.dockerfileService.getDockerfileFromUrl(this.selectedDockerfileUrl)
+      .value;
 
   /**
    * Computed list of available dockerfile variants.
@@ -117,7 +282,7 @@ export class ContainerComponent {
     const variants = this.dockerfileVariants();
     const selectedIndex = this.selectedDockerfileVariant();
 
-    if (variants.length === 0) return "";
+    if (variants.length === 0) return '';
 
     const selected = variants[selectedIndex] || variants[0];
 
@@ -137,57 +302,48 @@ export class ContainerComponent {
    * The selected option determines which tool the command examples will be adapted for.
    */
   containerPlatforms = [
-    { name: 'Docker', value: 'docker', icon: 'assets/icons/logos/docker-mark-blue.svg' },
+    {
+      name: 'Docker',
+      value: 'docker',
+      icon: 'assets/icons/logos/docker-mark-blue.svg',
+    },
     { name: 'Podman', value: 'podman', icon: 'assets/icons/logos/podman.svg' },
   ];
-  selectedContainerPlatform = signal<number>(
-    (i => i === -1 ? 0 : i)(this.containerPlatforms.findIndex(
-      p => p.value === localStorage.getItem('containerPlatform')
-    ))
-  );
+  selectedContainerPlatform = signal<number>(this.resolveInitialPlatformIndex());
 
   constructor() {
-    this.isDarkTheme = this.themeService.isDarkTheme();
-
     // Persist selected container platform in local storage
     effect(() => {
       const index = this.selectedContainerPlatform();
       const value = this.containerPlatforms[index]?.value;
-      localStorage.setItem('containerPlatform', value);
-    });
-  }
-
-  ngOnInit() {
-    this.activatedRoute.params.subscribe(params => {
-      const containerName = this.activatedRoute.snapshot.params['name'];
-      this.containerService.getContainerInfo(containerName).subscribe({
-        next: (container) => {
-          this.container = container;
-          this.status = Status.LOADED;
-        },
-        error: (error) => {
-          if (error.status === 404) {
-            this.status = Status.ERROR_NOT_FOUND;
-          } else {
-            this.status = Status.ERROR_SERVER;
-          }
-        },
-      });
-      runInInjectionContext(this.injector, () => {
-        this.containerTags = this.containerService.getContainerTagsRes(containerName).value;
-        this.ontologyCategories = this.containerService.getContainerCategoryHierarchy(containerName);
-        this.relatedSoftware = this.containerService.getRelatedSoftwareRes().value;
-      });
-      this.selectedDockerfileVariant.set(0);
-    });
-    this.viewportScroller.setOffset([0, 150]);
-    this.activatedRoute.fragment.subscribe(fragment => {
-      if (fragment && Object.values(TabName).includes(fragment as TabName)) {
-        this.selectedTab.set(fragment as TabName);
-      } else {
-        this.selectedTab.set(TabName.README);
+      if (value) {
+        localStorage.setItem('containerPlatform', value);
       }
     });
+
+    // Reset dockerfile variant whenever the route container changes
+    effect(() => {
+      this.name();
+      this.selectedDockerfileVariant.set(0);
+      this.articleTitleIndex = null;
+    });
+
+    this.viewportScroller.setOffset([0, 150]);
+    this.activatedRoute.fragment
+      .pipe(takeUntilDestroyed())
+      .subscribe((fragment) => {
+        if (fragment && Object.values(TabName).includes(fragment as TabName)) {
+          this.selectedTab.set(fragment as TabName);
+        } else {
+          this.selectedTab.set(TabName.README);
+        }
+      });
+  }
+
+  private resolveInitialPlatformIndex(): number {
+    const savedValue = localStorage.getItem('containerPlatform');
+    const index = this.containerPlatforms.findIndex((platform) => platform.value === savedValue);
+    return index === -1 ? 0 : index;
   }
 
   getLatestRecommendedTag(containerMetadata?: ImageMetadata | null): string {
@@ -195,12 +351,16 @@ export class ContainerComponent {
       return '';
     }
 
-    const latestRecommended = containerMetadata.recommended.find(recommended => recommended.version === containerMetadata.latest);
+    const latestRecommended = containerMetadata.recommended.find(
+      (recommended) => recommended.version === containerMetadata.latest,
+    );
     if (latestRecommended) {
       return latestRecommended.version;
     }
     // else
-    return containerMetadata.recommended[containerMetadata.recommended.length - 1].version;
+    return containerMetadata.recommended[
+      containerMetadata.recommended.length - 1
+    ].version;
   }
 
   buildImageReference(container: DockerHubImage, tag?: string | null): string {
@@ -211,46 +371,63 @@ export class ContainerComponent {
     return ref;
   }
 
-  buildDockerPullCommand(container: DockerHubImage, tag?: string | null): string {
+  buildDockerPullCommand(
+    container: DockerHubImage,
+    tag?: string | null,
+  ): string {
     return `docker pull ${this.buildImageReference(container, tag)}`;
   }
 
   convertPlainTextToLink(text: string): string {
     const urlPattern = /\((https?:\/\/[^\s]+)\)/g; // Captures URL inside parentheses
     return text.replace(urlPattern, (match, url) => {
-      return `<a href="${url}" target="_blank">${match}</a>`;
+      return `<a href="${url}" target="_blank" rel="noopener noreferrer">${match}</a>`;
     });
+  }
+
+  /** Exposed to the template for building external search URLs safely. */
+  protected encodeUriComponent(value: string): string {
+    return encodeURIComponent(value);
   }
 
   onTabSelectedGettingStarted(tab: string) {
     this.selectedTab.set(tab as TabName);
-    history.pushState(null, "", window.location.pathname + '#' + tab);
+    history.pushState(null, '', window.location.pathname + '#' + tab);
   }
 
   getContainerMetadataByName(name: string): Signal<ImageMetadata | undefined> {
     return this.containerService.getContainerMetadataRes(name);
   }
 
-  getVersionStatus(tag: DockerHubTag, containerMetadata: ImageMetadata): VersionStatus | undefined {
+  getVersionStatus(
+    tag: DockerHubTag,
+    containerMetadata: ImageMetadata,
+  ): VersionStatus | undefined {
     if (containerMetadata.status === 'Unusable') {
       return VersionStatus.UNUSABLE;
     } else if (containerMetadata.status === 'Not_recommended') {
       return VersionStatus.NOT_RECOMMENDED;
-    } else if (containerMetadata.recommended.find(recommended => recommended.version === tag.name)) {
+    } else if (
+      containerMetadata.recommended.find(
+        (recommended) => recommended.version === tag.name,
+      )
+    ) {
       return VersionStatus.RECOMMENDED;
     } else if (tag.name === containerMetadata.latest) {
       return VersionStatus.LATEST;
-    } else if (containerMetadata.bug_found.some(bug => {
-      // Handle exact match
-      if (bug.version === tag.name) return true;
+    } else if (
+      containerMetadata.bug_found.some((bug) => {
+        // Handle exact match
+        if (bug.version === tag.name) return true;
 
-      // Handle version ranges
-      if (bug.version.includes('<') || bug.version.includes('>')) {
-        return this.isVersionInRange(tag.name, bug.version);
-      }
+        // Handle version ranges
+        if (bug.version.includes('<') || bug.version.includes('>')) {
+          return this.isVersionInRange(tag.name, bug.version);
+        }
 
-      return false;
-    })) {
+        return false;
+      })
+    ) {
       return VersionStatus.BUG_FOUND;
     } else if (containerMetadata.not_working.includes(tag.name)) {
       return VersionStatus.NOT_WORKING;
@@ -265,13 +442,17 @@ export class ContainerComponent {
     if (version === 'latest') {
       // Typically "latest" is considered newer than any specific version
       // So "latest" would be > any version number
-      const operator = range.substring(0, 2).includes('=') ? range.substring(0, 2) : range.substring(0, 1);
+      const operator = range.substring(0, 2).includes('=')
+        ? range.substring(0, 2)
+        : range.substring(0, 1);
       return operator.includes('>'); // Only true for '>' or '>='
     }
 
     // Parse the version and range
     const cleanVersion = version.replace(/^v/, '');
-    const operator = range.substring(0, 2).includes('=') ? range.substring(0, 2) : range.substring(0, 1);
+    const operator = range.substring(0, 2).includes('=')
+      ? range.substring(0, 2)
+      : range.substring(0, 1);
     const rangeVersion = range.replace(operator, '').trim();
 
     // Handle versions with suffixes like "SNAPSHOT"
@@ -290,11 +471,16 @@ export class ContainerComponent {
         const comparison = vPart > rPart ? 1 : -1;
 
         switch (operator) {
-          case '<=': return comparison <= 0;
-          case '>=': return comparison >= 0;
-          case '<': return comparison < 0;
-          case '>': return comparison > 0;
-          default: return false;
+          case '<=':
+            return comparison <= 0;
+          case '>=':
+            return comparison >= 0;
+          case '<':
+            return comparison < 0;
+          case '>':
+            return comparison > 0;
+          default:
+            return false;
         }
       }
     }
@@ -312,7 +498,10 @@ export class ContainerComponent {
   }
 
   removeReadmeOwnershipHeader(readme: string): string {
-    return readme.replace(/# This image belongs to a larger project called Bioinformatics Docker Images Project.*/, '');
+    return readme.replace(
+      /# This image belongs to a larger project called Bioinformatics Docker Images Project.*/,
+      '',
+    );
   }
 
   getIdHierarchy(category: TermStanza): string[] {
@@ -322,51 +511,10 @@ export class ContainerComponent {
     }
 
     // Get the hierarchy of the parents
-    const parentIds = category.getParents().map(parent => this.getIdHierarchy(parent));
+    const parentIds = category
+      .getParents()
+      .map((parent) => this.getIdHierarchy(parent));
     return parentIds.flat().concat(category.id);
-  }
-
-  /**
-   * Get sorted related software by cooccurrence count and name
-   */
-  getSortedRelatedSoftware(): { name: string; displayNames: string[]; count: number; inBdip: boolean }[] {
-    const relatedSoftwareData = this.relatedSoftware();
-    if (!relatedSoftwareData || !this.container) {
-      return [];
-    }
-
-    const currentSoftware = this.container.name.toLowerCase();
-    const currentEntry = relatedSoftwareData.software[currentSoftware];
-
-    if (!currentEntry || !currentEntry.cooccurrences) {
-      return [];
-    }
-
-    const allContainersMetadata = this.containerService.getAllContainersMetadataRes().value();
-    const bdipContainers = new Set(allContainersMetadata ? Array.from(allContainersMetadata.keys()).map(k => k.toLowerCase()) : []);
-
-    return Object.entries(currentEntry.cooccurrences)
-      .map(([softwareName, cooccurrence]) => {
-        const softwareEntry = relatedSoftwareData.software[softwareName];
-        const displayNames = softwareEntry?.names;
-        const count = cooccurrence?.count ?? 0;
-        const inBdip = bdipContainers.has(softwareName.toLowerCase());
-
-        return {
-          name: softwareName,
-          displayNames,
-          count,
-          inBdip
-        };
-      })
-      .sort((a, b) => {
-        // Sort by count desc
-        if (b.count !== a.count) {
-          return b.count - a.count;
-        }
-        // Then by displayName asc (case-insensitive)
-        return a.name.localeCompare(b.name, undefined, { sensitivity: 'base' });
-      });
   }
 
   /**
@@ -374,11 +522,12 @@ export class ContainerComponent {
    */
   getCooccurringArticles(softwareName: string): string[] {
     const relatedSoftwareData = this.relatedSoftware();
-    if (!relatedSoftwareData || !this.container) {
+    const container = this.container();
+    if (!relatedSoftwareData || !container) {
       return [];
     }
 
-    const currentSoftware = this.container.name.toLowerCase();
+    const currentSoftware = container.name.toLowerCase();
     const currentEntry = relatedSoftwareData.software[currentSoftware];
 
     if (!currentEntry || !currentEntry.cooccurrences) {
@@ -425,13 +574,6 @@ export class ContainerComponent {
     return this.articleTitleIndex.get(articleId) ?? articleId;
   }
 
-  /**
-   * Check if the related software tab should be shown
-   */
-  hasRelatedSoftware(): boolean {
-    return this.getSortedRelatedSoftware().length > 0;
-  }
-
   /* Markdown reactive files */
   /* ---------------------------------------------------------------------------------------------------------------- */
   getCliMarkdown(containerMetadata: ImageMetadata): string {
@@ -443,7 +585,7 @@ export class ContainerComponent {
 To test the image, you can use the test data available [here](${containerMetadata.test_data_url}). If there is a
 README file, please follow the instructions that are given before proceeding because you may need to adjust some paths.
 
-The results obtained should be similar to the ones [here](${containerMetadata.test_results_url }) provided.
+The results obtained should be similar to the ones [here](${containerMetadata.test_results_url}) provided.
 
 Below you can find several ways of testing the image, according to your level of expertise.
 
@@ -460,9 +602,17 @@ and run the following command:
 
 \`\`\`sh
 ${rawInvocation
-  .replace('docker', this.containerPlatforms[this.selectedContainerPlatform()].value)
-  .replace(this.buildImageReference(this.container!),
-    this.buildImageReference(this.container!, containerMetadata?.recommended?.[0]?.version))}
+  .replace(
+    'docker',
+    this.containerPlatforms[this.selectedContainerPlatform()].value,
+  )
+  .replace(
+    this.buildImageReference(this.container()!),
+    this.buildImageReference(
+      this.container()!,
+      containerMetadata?.recommended?.[0]?.version,
+    ),
+  )}
 \`\`\`
 
 Where \`/your/data/dir\` points to the working directory where you have the test data.
@@ -489,9 +639,17 @@ cd ..
 # Runs the Docker image using the test data
 ${rawInvocation
   .replace('/your/data/dir', '$(pwd)')
-  .replace('docker', this.containerPlatforms[this.selectedContainerPlatform()].value)
-  .replace(this.buildImageReference(this.container!),
-    this.buildImageReference(this.container!, containerMetadata?.recommended?.[0]?.version))}
+  .replace(
+    'docker',
+    this.containerPlatforms[this.selectedContainerPlatform()].value,
+  )
+  .replace(
+    this.buildImageReference(this.container()!),
+    this.buildImageReference(
+      this.container()!,
+      containerMetadata?.recommended?.[0]?.version,
+    ),
+  )}
 \`\`\`
 
 ## 4. Advanced execution
@@ -517,9 +675,17 @@ cd ..
 
 ${rawInvocation
   .replace('/your/data/dir', '$(pwd)')
-  .replace('docker', this.containerPlatforms[this.selectedContainerPlatform()].value)
-  .replace(this.buildImageReference(this.container!),
-    this.buildImageReference(this.container!, containerMetadata?.recommended?.[0]?.version))}
+  .replace(
+    'docker',
+    this.containerPlatforms[this.selectedContainerPlatform()].value,
+  )
+  .replace(
+    this.buildImageReference(this.container()!),
+    this.buildImageReference(
+      this.container()!,
+      containerMetadata?.recommended?.[0]?.version,
+    ),
+  )}
 \`\`\`
 `;
   }
@@ -562,7 +728,7 @@ enum VersionStatus {
   NO_LONGER_TESTED,
   // Hacky way to avoid writing more code
   NOT_RECOMMENDED,
-  UNUSABLE
+  UNUSABLE,
 }
 
 enum TabName {

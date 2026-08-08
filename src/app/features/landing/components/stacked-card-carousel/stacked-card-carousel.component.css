@@ -117,8 +117,8 @@
     display: flex;
     gap: 0.25rem;
     align-items: center;
-    background-color: hsl(var(--tint), 100%, 86%, 0.5);
-    color: hsl(var(--tint), 100%, 30%);
+    background-color: hsl(var(--tint) 100% 86% / 0.5);
+    color: hsl(var(--tint) 100% 30%);
     border-radius: 4px;
     padding: 0.25rem 0.5rem;
     font-size: 0.8rem;
@@ -127,8 +127,8 @@
 }
 
 :host-context(.dark) .card-header > span:first-child {
-  background-color: hsl(var(--tint), 100%, 25%, 0.4);
-  color: hsl(var(--tint), 100%, 95%);
+  background-color: hsl(var(--tint) 100% 25% / 0.4);
+  color: hsl(var(--tint) 100% 95%);
 }
 
 /* Navigation buttons */
@@ -219,7 +219,9 @@
   }
 }
 
-/* Progress bar fill for active indicator */
+/* Progress bar fill for active indicator. Duration comes from the --auto-rotate-duration
+   custom property (set by the component from its single source of truth), so it can never
+   silently drift out of sync with the actual rotation interval. */
 .indicator.active::after {
   content: '';
   position: absolute;
@@ -228,7 +230,10 @@
   height: 100%;
   background-color: rgba(var(--picton-blue-500), 0.75);
   width: 0;
-  animation: fillProgress 5000ms linear forwards;
+  animation-name: fillProgress;
+  animation-duration: var(--auto-rotate-duration, 5000ms);
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
 }
 
 @keyframes fillProgress {

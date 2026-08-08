@@ -9,13 +9,28 @@ import { ImageMetadata } from "../../../../models/image-metadata";
 import { DropdownComponent } from "../../../../shared/components/dropdown/dropdown.component";
 import { IconDropdownComponent } from "../../../../shared/components/icon-dropdown/icon-dropdown.component";
 
+/** A container counts as "new"/"recently updated" within this many days. */
+const RECENCY_THRESHOLD_DAYS = 30;
+
+interface SortOption {
+  name: string;
+  value: string;
+  icon: string;
+  reverse?: boolean;
+}
+
+interface FilterOption {
+  name: string;
+  value: string;
+}
+
 @Component({
-    selector: 'app-search-list',
+  selector: 'app-search-list',
   imports: [RouterLink, TabsComponent, ContainerIconComponent, DropdownComponent, IconDropdownComponent],
-    templateUrl: './search-list.component.html',
-    styleUrl: './search-list.component.css',
-    host: { '[class.dark]': 'isDarkTheme()' },
-    changeDetection: ChangeDetectionStrategy.OnPush
+  templateUrl: './search-list.component.html',
+  styleUrl: './search-list.component.css',
+  host: { '[class.dark]': 'isDarkTheme()' },
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SearchListComponent {
   /* Inputs */
@@ -24,14 +39,14 @@ export class SearchListComponent {
   searchQuery = input<string>('');
   searchReadmes = input<boolean>(false);
 
-  private themeService: ThemeService = inject(ThemeService);
-  protected isDarkTheme: Signal<boolean> = this.themeService.isDarkTheme();
+  private readonly themeService = inject(ThemeService);
+  protected readonly isDarkTheme: Signal<boolean> = this.themeService.isDarkTheme;
 
-  private containerService: ContainerService = inject(ContainerService);
-  containers = this.containerService.getContainersMapRes().value;
-  containersMetadata = this.containerService.getAllContainersMetadataRes().value;
-  containersInfo = this.containerService.getAllContainersInfoRes().value;
-  containerReadmes = this.containerService.getContainersReadmesRes().value;
+  private readonly containerService = inject(ContainerService);
+  protected readonly containers = this.containerService.getContainersMapRes().value;
+  protected readonly containersMetadata = this.containerService.getAllContainersMetadataRes().value;
+  protected readonly containersInfo = this.containerService.getAllContainersInfoRes().value;
+  protected readonly containerReadmes = this.containerService.getContainersReadmesRes().value;
 
   /**
    * This computed property generates a set of container names that match the current search criteria sorted alphabetically.
@@ -39,7 +54,7 @@ export class SearchListComponent {
    * it searches for containers within that category. If no specific category is selected, it searches
    * within all root categories. The search results are stored in a unique set to avoid duplicates.
    */
-  matchedContainers = computed(() => {
+  protected readonly matchedContainers = computed(() => {
     const matchedContainers = new Set<string>();
     if (this.searchQuery().length > 0) {
       this.getContainersByNameOrDescription(this.searchQuery(), matchedContainers);
@@ -60,22 +75,22 @@ export class SearchListComponent {
   /**
    * Level of detail for the container list. If true, the list is compact.
    */
-  protected isCompact = signal<boolean>(false);
+  protected readonly isCompact = signal<boolean>(false);
 
   /** Sorting options for the container list. */
-  sortOptions = [
+  protected readonly sortOptions: SortOption[] = [
     { name: 'Name: A-Z', value: 'name', icon: 'assets/icons/fluent-icons/ic_fluent_text_sort_ascending_24_regular.svg' },
     { name: 'Name: Z-A', value: 'name', reverse: true, icon: 'assets/icons/fluent-icons/ic_fluent_text_sort_descending_24_regular.svg' },
   ];
-  selectedSortOption = signal<number>(0);
+  protected readonly selectedSortOption = signal<number>(0);
 
   /** Filter options for the container list. */
-  filterOptions = [
+  protected readonly filterOptions: FilterOption[] = [
     { name: 'Only show new', value: 'new' },
     { name: 'Only show updated', value: 'updated' },
     { name: 'Hide unusable', value: 'hide-unusable' },
   ];
-  selectedFilterOption = signal<number>(-1);
+  protected readonly selectedFilterOption = signal<number>(-1);
 
   constructor() {
     effect(() => {
@@ -85,13 +100,13 @@ export class SearchListComponent {
     });
   }
 
-  getContainersByCategories(categories: TermStanza[], matchedContainers: Set<string>) {
+  private getContainersByCategories(categories: TermStanza[], matchedContainers: Set<string>): void {
     categories.forEach((category) => {
       this.getContainersByCategory(category, matchedContainers);
     });
   }
 
-  getContainersByCategory(category: TermStanza, matchedContainers: Set<string>) {
+  private getContainersByCategory(category: TermStanza, matchedContainers: Set<string>): void {
     if (!category.hasChildren()) {
       this.containers().get(category.id)?.forEach((container) => {
         matchedContainers.add(container);
@@ -117,7 +132,7 @@ export class SearchListComponent {
    * @param {string} searchQuery - The query string, which may include quoted exact terms and unquoted partial terms.
    * @param {Set<string>} matchedContainers - The set to add matching container names to.
    */
-  getContainersByNameOrDescription(searchQuery: string, matchedContainers: Set<string>) {
+  private getContainersByNameOrDescription(searchQuery: string, matchedContainers: Set<string>): void {
     const exactPhrases: string[] = [];
     const partialTerms: string[] = [];
     // Split the search query into exact and partial terms
@@ -164,23 +179,25 @@ export class SearchListComponent {
     }
   }
 
-  getContainerMetadataByName(name: string): ImageMetadata | undefined {
+  protected getContainerMetadataByName(name: string): ImageMetadata | undefined {
     return this.containersMetadata().get(name);
   }
 
-  isContainerNew(name: string): boolean {
-    const creationDate = Date.parse(this.containersInfo().get(name)?.date_registered ?? '0');
-    const daysSinceCreation = Math.floor((Date.now() - creationDate) / (1000 * 60 * 60 * 24));
-    return daysSinceCreation <= 30;
+  protected isContainerNew(name: string): boolean {
+    return this.isWithinRecencyThreshold(this.containersInfo().get(name)?.date_registered);
   }
 
-  wasContainerRecentlyUpdated(name: string): boolean {
-    const creationDate = Date.parse(this.containersInfo().get(name)?.last_updated ?? '0');
-    const daysSinceCreation = Math.floor((Date.now() - creationDate) / (1000 * 60 * 60 * 24));
-    return daysSinceCreation <= 30;
+  protected wasContainerRecentlyUpdated(name: string): boolean {
+    return this.isWithinRecencyThreshold(this.containersInfo().get(name)?.last_updated);
   }
 
-  onTabSelectedGridView(view: string) {
+  private isWithinRecencyThreshold(dateString: string | undefined): boolean {
+    const timestamp = Date.parse(dateString ?? '0');
+    const daysSince = Math.floor((Date.now() - timestamp) / (1000 * 60 * 60 * 24));
+    return daysSince <= RECENCY_THRESHOLD_DAYS;
+  }
+
+  protected onTabSelectedGridView(view: string): void {
     this.isCompact.set(view === 'c');
   }
 }

@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component, effect, inject, Signal, signal, TemplateRef, ViewContainerRef, viewChild } from "@angular/core";
+import { Component, effect, inject, Signal, signal, TemplateRef, ViewContainerRef, viewChild } from "@angular/core";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { ActivatedRoute, Router } from "@angular/router";
 import { httpResource } from "@angular/common/http";
 import { MarkdownComponent } from "ngx-markdown";
@@ -7,14 +8,14 @@ import { githubInfo } from "../../../../core/constants/github-info";
 import { StepperComponent } from "../../../../shared/components/stepper/stepper.component";
 import { ThemeService } from "../../../../services/theme.service";
 import { ReplacePipe } from "../../../../shared/pipes/replace/replace.pipe";
+import { setMarkdownBaseUrl } from "../../../../shared/utils/markdown-base-url";
 
 @Component({
-    selector: 'app-advanced',
-    templateUrl: './advanced.component.html',
-    styleUrl: './advanced.component.css',
-    imports: [StepperComponent, MarkdownComponent, ReplacePipe],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    host: { '[class.dark]': 'isDarkTheme()' }
+  selector: 'app-advanced',
+  templateUrl: './advanced.component.html',
+  styleUrl: './advanced.component.css',
+  imports: [StepperComponent, MarkdownComponent, ReplacePipe],
+  host: { '[class.dark]': 'isDarkTheme()' }
 })
 export class AdvancedComponent {
   /* Services */
@@ -22,7 +23,7 @@ export class AdvancedComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
 
-  isDarkTheme: Signal<boolean>;
+  protected readonly isDarkTheme: Signal<boolean> = this.themeService.isDarkTheme;
 
   /* Fragments */
   readonly containerRef = viewChild.required('container', { read: ViewContainerRef });
@@ -36,49 +37,38 @@ export class AdvancedComponent {
     { fragmentName: 'contribute-docker-images', name: 'Contribute New Docker Images', icon: 'assets/icons/fluent-icons/ic_fluent_people_community_24_filled.svg' },
   ];
 
-  readonly advancedMdBaseUrl = `https://raw.githubusercontent.com/${githubInfo.owner}/${githubInfo.repository}/${githubInfo.branch}/metadata/web/advanced`;
-  readonly dockerManagerMd = httpResource.text(
-    () => `${this.advancedMdBaseUrl}/manage-docker-images.md`,
-    {
-      parse: (response: string) => this.setMarkdownBaseUrl(response, this.advancedMdBaseUrl),
-      defaultValue: ""
-    }
-  );
-  readonly dockviewMd = httpResource.text(
-    () => `${this.advancedMdBaseUrl}/dockview.md`,
-    {
-      parse: (response: string) => this.setMarkdownBaseUrl(response, this.advancedMdBaseUrl),
-      defaultValue: ""
-    }
-  );
-  readonly contributeMd = httpResource.text(
-    () => `${this.advancedMdBaseUrl}/contribute.md`,
-    {
-      parse: (response: string) => this.setMarkdownBaseUrl(response, this.advancedMdBaseUrl),
-      defaultValue: ""
-    }
-  );
+  private readonly advancedMdBaseUrl = `https://raw.githubusercontent.com/${githubInfo.owner}/${githubInfo.repository}/${githubInfo.branch}/metadata/web/advanced`;
 
-  readonly clipboardButton = ClipboardButtonComponent;
+  readonly dockerManagerMd = this.loadMarkdown('manage-docker-images.md');
+  readonly dockviewMd = this.loadMarkdown('dockview.md');
+  readonly contributeMd = this.loadMarkdown('contribute.md');
+
+  protected readonly clipboardButton = ClipboardButtonComponent;
 
   /* State */
-  currentStep = signal(0);
+  protected currentStep = signal(0);
 
   constructor() {
-    this.isDarkTheme = this.themeService.isDarkTheme();
-
     effect(() => {
       const fragment = this.steps[this.currentStep()].fragmentName;
       this.router.navigate([], { fragment });
       this.loadTemplateBasedOnFragment(fragment);
     });
-  }
 
-  ngOnInit() {
-    this.route.fragment.subscribe(fragment => {
+    this.route.fragment.pipe(takeUntilDestroyed()).subscribe(fragment => {
       const stepIndex = this.steps.findIndex(step => step.fragmentName === fragment);
       this.currentStep.set(stepIndex === -1 ? 0 : stepIndex);
     });
+  }
+
+  private loadMarkdown(filename: string) {
+    return httpResource.text(
+      () => `${this.advancedMdBaseUrl}/${filename}`,
+      {
+        parse: (response: string) => setMarkdownBaseUrl(response, this.advancedMdBaseUrl),
+        defaultValue: "",
+      },
+    );
   }
 
   private loadTemplateBasedOnFragment(fragment: string | null) {
@@ -99,44 +89,5 @@ export class AdvancedComponent {
         // Default to the first template if fragment is unrecognized
         this.containerRef().createEmbeddedView(this.dockerManagerTemplate());
     }
-  }
-
-  setMarkdownBaseUrl(content: string, baseUrl: string): string {
-    // Ensure baseUrl ends with a trailing slash
-    const normalizedBaseUrl = baseUrl.endsWith('/') ? baseUrl : baseUrl + '/';
-
-    // Replace image sources in HTML
-    content = content.replace(/<img\s+[^>]*src\s*=\s*["']([^"']+)["'][^>]*>/gi,
-      (match, src) => match.replace(src, this.convertToAbsoluteUrl(src, normalizedBaseUrl)));
-
-    // Replace href attributes in HTML anchors
-    content = content.replace(/<a\s+[^>]*href\s*=\s*["']([^"']+)["'][^>]*>/gi,
-      (match, href) => match.replace(href, this.convertToAbsoluteUrl(href, normalizedBaseUrl)));
-
-    // Replace image sources in Markdown
-    content = content.replace(/!\[([^\]]*)\]\(([^)]+)\)/gi,
-      (match, alt, src) => `![${alt}](${this.convertToAbsoluteUrl(src, normalizedBaseUrl)})`);
-
-    // Replace links in Markdown
-    content = content.replace(/\[([^\]]+)\]\(([^)]+)\)/gi,
-      (match, text, url) => `[${text}](${this.convertToAbsoluteUrl(url, normalizedBaseUrl)})`);
-
-    return content;
-  };
-
-  private convertToAbsoluteUrl(url: string, baseUrl: string): string {
-    // Skip URLs that are already absolute
-    if (url.startsWith('http://') ||
-      url.startsWith('https://') ||
-      url.startsWith('//') ||
-      url.startsWith('mailto:') ||
-      url.startsWith('tel:') ||
-      url.startsWith('#')) {
-      return url;
-    }
-
-    // Remove leading slash if present
-    const cleanUrl = url.startsWith('/') ? url.substring(1) : url;
-    return baseUrl + cleanUrl;
   }
 }

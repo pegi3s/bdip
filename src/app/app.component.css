@@ -5,7 +5,6 @@
   position: relative;
 }
 
-/* TODO: Not optimal */
-:host router-outlet ::ng-deep + * {
+.page-content {
   flex-grow: 1;
 }

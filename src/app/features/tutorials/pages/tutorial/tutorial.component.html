@@ -1,7 +1,7 @@
 <ul class="tutorials">
-  @for (tutorial of tutorials; track tutorial.filename) {
+  @for (tutorial of tutorials(); track tutorial.filename) {
     <li [class.current]="tutorial === selectedTutorial()">
-      <a [routerLink]="['../' + tutorial.filename]">{{ tutorial.name }}</a>
+      <a [routerLink]="['..', tutorial.filename]">{{ tutorial.name }}</a>
     </li>
   }
 </ul>
@@ -10,13 +10,17 @@
   [clipboardButtonComponent]="clipboardButton"
   class="markdown-body"
   [src]="selectedTutorial()?.url"
-  (ready)="this.getHeadings()"
+  (ready)="getHeadings()"
 />
 <!-- There shouldn't be any risk of XSS as the headers are being obtained from the rendered Markdown that already has been sanitized. -->
 <ul class="sections">
-  @for (heading of headings; track $index) {
+  @for (heading of headings(); track $index) {
     <li>
-      <a [routerLink]="[]" [fragment]="heading.id" [innerHTML]="heading.innerHTML"></a>
+      <a
+        [routerLink]="[]"
+        [fragment]="heading.id"
+        [innerHTML]="heading.innerHTML"
+      ></a>
     </li>
   }
 </ul>

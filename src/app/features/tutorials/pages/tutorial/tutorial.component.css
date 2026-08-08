@@ -36,6 +36,8 @@ ul {
   position: sticky;
   top: 150px;
   align-self: start;
+  margin: 0;
+  padding: 0;
   color: var(--color);
   font-size: 0.875rem;
   line-height: 24px;
@@ -51,11 +53,6 @@ ul {
   --color-selected: 160, 191, 255;
   --color-hover: rgb(205, 210, 220);
   --bg-color-hover: rgba(224, 228, 236, 0.05);
-}
-
-ul {
-  margin: 0;
-  padding: 0;
 }
 
 a:hover {

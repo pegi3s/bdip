@@ -6,9 +6,7 @@
   --count: 6;
   /* Scale of the component to change its size without affecting the position calculations */
   --scale: 1;
-}
 
-:host {
   display: block;
   scale: var(--scale);
   container-type: size;
@@ -22,17 +20,14 @@
   width: 100%;
   height: 100%;
   pointer-events: none;
-}
-
-.container {
   display: grid;
+  min-width: 300px;
+  min-height: 100px;
+
   @container (width < 970px) {
     -webkit-mask: linear-gradient(90deg, transparent, black 15% 85%, transparent);
     mask: linear-gradient(90deg, transparent, black 15% 85%, transparent);
   }
-  width: 100%;
-  min-width: 300px;
-  min-height: 100px;
 }
 
 ul {
@@ -47,22 +42,24 @@ ul {
   align-items: center;
   padding: 0;
   width: fit-content;
+  height: 100%;
+  pointer-events: none;
+
   @container (width > 970px) {
     justify-content: space-around;
     width: 100%;
   }
-  height: 100%;
-  pointer-events: none;
 }
 
 li {
   display: grid;
   place-items: center;
+  height: 80%;
+  font-size: clamp(2rem, 4vw + 1rem, 8rem);
+
   @container (width < 970px) {
     aspect-ratio: 21 / 9;
   }
-  height: 80%;
-  font-size: clamp(2rem, 4vw + 1rem, 8rem);
 }
 
 :is(ul, li) {
@@ -84,7 +81,10 @@ img {
   filter: grayscale(1) invert(1) brightness(150%);
 }
 
-/* Blur component */
+/* Blur component — NOTE: no element in the template currently uses this. Unlike other WIP-looking
+   code in this app, there's no comment suggesting this is a deliberate toggle; it looks like it
+   was carried over from the CodePen source this component is based on without the corresponding
+   markup. Flagging rather than removing, in case it's meant to be wired up. */
 .blur {
   position: absolute;
   top: 0;

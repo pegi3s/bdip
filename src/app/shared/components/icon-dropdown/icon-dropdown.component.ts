@@ -1,59 +1,44 @@
-import { Component, ElementRef, inject, input, model, Renderer2, signal } from "@angular/core";
-import { SvgIconComponent } from "angular-svg-icon";
+import {
+  Component,
+  ElementRef,
+  HostListener,
+  inject,
+  input,
+  model,
+  signal,
+} from '@angular/core';
+import { SvgIconComponent } from 'angular-svg-icon';
 
 @Component({
   selector: 'app-icon-dropdown',
   imports: [SvgIconComponent],
   templateUrl: './icon-dropdown.component.html',
-  styleUrl: './icon-dropdown.component.css'
+  styleUrl: './icon-dropdown.component.css',
 })
 export class IconDropdownComponent {
-  private renderer: Renderer2 = inject(Renderer2);
-  private elementRef: ElementRef = inject(ElementRef);
+  private readonly elementRef = inject(ElementRef<HTMLElement>);
 
-  icon = input.required<string>();
-  items = input.required<DropdownItem[]>();
-  selected = model.required<number>();
+  readonly icon = input.required<string>();
+  readonly items = input.required<DropdownItem[]>();
+  readonly selected = model.required<number>();
 
-  isDropdownOpen = signal<boolean>(false);
+  protected readonly isDropdownOpen = signal<boolean>(false);
 
-  private documentClickListener?: (() => void);
+  protected toggleDropdown(): void {
+    this.isDropdownOpen.update((value) => !value);
+  }
 
-  selectItem(index: number): void {
-    if (this.selected() === index) {
-      this.selected.set(-1);
-    } else {
-      this.selected.set(index);
-    }
+  protected selectItem(index: number): void {
+    // Clicking the already-selected item clears the filter
+    this.selected.set(this.selected() === index ? -1 : index);
     this.toggleDropdown();
   }
 
-  toggleDropdown(): void {
-    this.isDropdownOpen.update(value => !value);
-    if (this.isDropdownOpen()) {
-      this.addClickOutsideListener();
-    } else {
-      this.removeClickOutsideListener();
+  @HostListener('document:click', ['$event'])
+  protected onDocumentClick(event: Event): void {
+    if (this.isDropdownOpen() && !this.elementRef.nativeElement.contains(event.target as Node)) {
+      this.isDropdownOpen.set(false);
     }
-  }
-
-  private addClickOutsideListener(): void {
-    this.documentClickListener = this.renderer.listen('document', 'click', (event: Event) => {
-      if (!this.elementRef.nativeElement.contains(event.target)) {
-        this.toggleDropdown();
-      }
-    });
-  }
-
-  private removeClickOutsideListener(): void {
-    if (this.documentClickListener) {
-      this.documentClickListener();
-      this.documentClickListener = undefined;
-    }
-  }
-
-  ngOnDestroy(): void {
-    this.removeClickOutsideListener();
   }
 }
 

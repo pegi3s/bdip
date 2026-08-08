@@ -5,10 +5,12 @@
   [class.open]="isDropdownOpen()"
   type="button">
   <span class="select-value">
-    @if (items()[selected()].icon) {
-      <svg-icon [src]="items()[selected()].icon" class="select-icon"/>
+    @if (items()[selected()]; as selectedItem) {
+      @if (selectedItem.icon) {
+        <svg-icon [src]="selectedItem.icon" class="select-icon"/>
+      }
+      {{ selectedItem.name }}
     }
-    {{ items()[selected()].name }}
   </span>
   <svg-icon
     src="assets/icons/fluent-icons/ic_fluent_chevron_down_24_regular.svg"

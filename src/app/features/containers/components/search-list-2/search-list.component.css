@@ -119,6 +119,7 @@
   }
 
   &:is(.new, .updated, .unusable, .not-recommended)::after {
+    --alpha: 8;
     position: absolute;
     bottom: -5px;
     right: -5px;
@@ -129,10 +130,6 @@
     line-height: 1rem;
     font-weight: 600;
     box-shadow: 0 2px 6px hsl(var(--tint) 75% 30% / 0.4), 0 0 0 1px hsl(var(--tint) 100% 90%);
-  }
-
-  &:is(.new, .updated, .unusable, .not-recommended)::after {
-    --alpha: 8;
   }
 
   .header {

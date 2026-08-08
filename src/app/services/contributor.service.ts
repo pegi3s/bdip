@@ -1,25 +1,32 @@
-import { inject, Injectable } from "@angular/core";
+import { inject, Service } from "@angular/core";
 import { Contributor } from "../features/landing/models/contributor.model";
 import * as Organization from "../models/organization";
-import { Observable, ReplaySubject } from "rxjs";
-import { catchError, map, tap } from "rxjs/operators";
+import { Observable, of, ReplaySubject } from "rxjs";
+import { catchError, map } from "rxjs/operators";
 import { HttpClient } from "@angular/common/http";
 import { githubInfo } from "../core/constants/github-info";
 
-@Injectable({
-  providedIn: "root"
-})
+interface Collaborators {
+  authors: Contributor[];
+  contributors: Contributor[];
+}
+
+@Service()
 export class ContributorService {
   private readonly baseMetadataURL = `https://raw.githubusercontent.com/${githubInfo.owner}/${githubInfo.repository}/${githubInfo.branch}/metadata/`;
   private readonly urlContributors = `${this.baseMetadataURL}/contributors.json`;
 
-  private http: HttpClient = inject(HttpClient);
+  private readonly http = inject(HttpClient);
 
-  private collaboratorsSubject: ReplaySubject<{ authors: Contributor[], contributors: Contributor[] }> = new ReplaySubject(1);
-  private collaborators$: Observable<{ authors: Contributor[], contributors: Contributor[] }> = this.collaboratorsSubject.asObservable();
+  private readonly collaboratorsSubject = new ReplaySubject<Collaborators>(1);
+  private readonly collaborators$: Observable<Collaborators> = this.collaboratorsSubject.asObservable();
+
+  constructor() {
+    this.getContributorsJson();
+  }
 
   private getContributorsJson(): void {
-    this.http.get<{ authors: Contributor[], contributors: Contributor[] }>(this.urlContributors).pipe(
+    this.http.get<Collaborators>(this.urlContributors).pipe(
       map(data => {
         // Function to map organization acronyms to their corresponding Organization objects
         const mapOrganizations = (person: { organizations: (string | Organization.Organization)[] }) => {
@@ -33,16 +40,11 @@ export class ContributorService {
 
         return data;
       }),
-      tap(data => this.collaboratorsSubject.next(data)),
       catchError(error => {
         console.error("Error fetching contributors:", error);
-        return [];
+        return of<Collaborators>({ authors: [], contributors: [] });
       })
-    ).subscribe();
-  }
-
-  constructor() {
-    this.getContributorsJson();
+    ).subscribe(data => this.collaboratorsSubject.next(data));
   }
 
   getAuthors(): Observable<Contributor[]> {

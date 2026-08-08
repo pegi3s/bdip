@@ -1,23 +1,23 @@
-import { Injectable } from '@angular/core';
+import { inject, Service } from '@angular/core';
 import { Tutorial } from '../models/tutorial';
 import { HttpClient } from '@angular/common/http';
-import { Observable, ReplaySubject, catchError, map } from 'rxjs';
+import { Observable, of, ReplaySubject, catchError, map } from 'rxjs';
 import { githubInfo } from '../core/constants/github-info';
 import { rxResource } from "@angular/core/rxjs-interop";
 import { VideoTutorial } from "../models/video-tutorial";
 
-@Injectable({
-  providedIn: 'root'
-})
+@Service()
 export class TutorialService {
-  private githubTutorialDirUrl: string = `https://api.github.com/repos/${githubInfo.owner}/${githubInfo.repository}/contents/metadata/web/tutorials`;
+  private readonly http = inject(HttpClient);
+
+  private readonly githubTutorialDirUrl: string = `https://api.github.com/repos/${githubInfo.owner}/${githubInfo.repository}/contents/metadata/web/tutorials`;
 
   private tutorials: Tutorial[] = [];
 
-  private tutorialsSubject = new ReplaySubject<Tutorial[]>(1);
-  tutorials$: Observable<Tutorial[]> = this.tutorialsSubject.asObservable();
+  private readonly tutorialsSubject = new ReplaySubject<Tutorial[]>(1);
+  private readonly tutorials$: Observable<Tutorial[]> = this.tutorialsSubject.asObservable();
 
-  constructor(private http: HttpClient) {
+  constructor() {
     this.loadTutorials();
   }
 
@@ -41,7 +41,7 @@ export class TutorialService {
       map((items: GithubListingItem[]) => items.filter(item => item.type === 'file' && item.name.endsWith('.md'))),
       catchError(error => {
         console.error('Error loading tutorials:', error);
-        return [];
+        return of([] as GithubListingItem[]);
       })
     ).subscribe((tutorials: GithubListingItem[]) => {
       this.tutorials = tutorials.map(item => ({
@@ -49,7 +49,8 @@ export class TutorialService {
         filename: item.name.replace('.md', ''),
         url: item.download_url! // Files always have a download_url
       }));
-      this.tutorialsSubject.next(this.tutorials);
+      // Emit a new array reference so zoneless/signal consumers update
+      this.tutorialsSubject.next([...this.tutorials]);
 
       this.loadAditionalInfoTutorials();
     });
@@ -74,27 +75,31 @@ export class TutorialService {
       map((items: GithubListingItem[]) => items.filter(item => item.type === 'file')),
       catchError(error => {
         console.error('Error loading tutorial images:', error);
-        return [];
+        return of([] as GithubListingItem[]);
       })
     ).subscribe((images: GithubListingItem[]) => {
-      images.forEach(image => {
-        const tutorial = this.tutorials.find(tutorial => tutorial.filename === image.name.replace(/\.[^/.]+$/, ""));
-        if (tutorial) {
-          tutorial.image = image.download_url!;
-        }
+      this.tutorials = this.tutorials.map((tutorial) => {
+        const image = images.find(
+          (item) => tutorial.filename === item.name.replace(/\.[^/.]+$/, ''),
+        );
+        return image?.download_url
+          ? { ...tutorial, image: image.download_url }
+          : tutorial;
       });
 
       // After images are loaded, assign placeholders to tutorials that don't have an image
       const numGradients = 3;
       let gradientIndex = 1;
-      this.tutorials.forEach(tutorial => {
-        if (!tutorial.image) {
-          tutorial.image = `assets/gradients/gradient${gradientIndex}.png`;
-          gradientIndex = (gradientIndex % numGradients) + 1;
+      this.tutorials = this.tutorials.map((tutorial) => {
+        if (tutorial.image) {
+          return tutorial;
         }
+        const image = `assets/gradients/gradient${gradientIndex}.png`;
+        gradientIndex = (gradientIndex % numGradients) + 1;
+        return { ...tutorial, image };
       });
 
-      this.tutorialsSubject.next(this.tutorials);
+      this.tutorialsSubject.next([...this.tutorials]);
     });
   }
 
@@ -109,9 +114,18 @@ export class TutorialService {
    * Fetches the Markdown content for a tutorial and extracts the first line to set it as the tutorial description.
    */
   private getTutorialDescription(tutorial: Tutorial): void {
-    this.http.get(tutorial.url, { responseType: 'text' }).subscribe((markdown: string) => {
-      tutorial.description = markdown.split('\n')[0].replace(/^#+ /, '').replaceAll('`', '');
-      this.tutorialsSubject.next(this.tutorials);
+    this.http.get(tutorial.url, { responseType: 'text' }).pipe(
+      catchError(error => {
+        console.error(`Error fetching description for tutorial '${tutorial.filename}':`, error);
+        return of(null);
+      }),
+    ).subscribe((markdown) => {
+      if (markdown === null) return;
+      const description = markdown.split('\n')[0].replace(/^#+ /, '').replaceAll('`', '');
+      this.tutorials = this.tutorials.map((item) =>
+        item.filename === tutorial.filename ? { ...item, description } : item,
+      );
+      this.tutorialsSubject.next([...this.tutorials]);
     });
   }
 
@@ -135,7 +149,13 @@ export class TutorialService {
   readonly videoTutorials = rxResource({
     stream: () => this.http.get<VideoTutorial[]>(
       `https://raw.githubusercontent.com/${githubInfo.owner}/${githubInfo.repository}/${githubInfo.branch}/metadata/web/tutorials/video-tutorials.json`
+    ).pipe(
+      catchError(error => {
+        console.error('Error fetching video tutorials:', error);
+        return of([] as VideoTutorial[]);
+      }),
     ),
+    defaultValue: [] as VideoTutorial[],
   }).asReadonly();
 }
 

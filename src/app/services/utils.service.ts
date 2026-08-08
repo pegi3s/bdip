@@ -1,20 +1,14 @@
-import { Injectable } from '@angular/core';
+import { Service } from '@angular/core';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class UtilsService {
-  constructor() {}
-
-  /**
-   * Determines the operating system of the user's device.
-   */
+  /** Determines the operating system of the user's device. */
   getOS(): string {
     /* const platform = navigator.userAgentData.platform; */
     const platform = navigator.platform;
-    if (platform.indexOf('Win') !== -1) {
+    if (platform.includes('Win')) {
       return 'windows';
-    } else if (platform.indexOf('Linux') !== -1) {
+    } else if (platform.includes('Linux')) {
       return 'linux';
     }
     return '';

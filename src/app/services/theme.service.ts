@@ -1,59 +1,52 @@
-import { computed, Injectable, Signal, signal, WritableSignal } from "@angular/core";
+import { computed, effect, Service, Signal, signal } from '@angular/core';
 import { Theme } from '../shared/enums/theme';
 
-@Injectable({
-  providedIn: 'root',
-})
+const THEME_STORAGE_KEY = 'theme';
+
+/** Manual toggle order: light -> dark -> system (follow OS) -> light. */
+const NEXT_THEME: Record<Theme, Theme> = {
+  [Theme.LIGHT]: Theme.DARK,
+  [Theme.DARK]: Theme.SYSTEM,
+  [Theme.SYSTEM]: Theme.LIGHT,
+};
+
+@Service()
 export class ThemeService {
-  private readonly _theme: WritableSignal<Theme>;
-  private readonly theme: Signal<Theme>;
-  private readonly darkTheme: Signal<boolean>;
+  private readonly prefersDarkQuery = window.matchMedia('(prefers-color-scheme: dark)');
+
+  private readonly _theme = signal<Theme>(this.readStoredTheme());
+  private readonly systemPrefersDark = signal(this.prefersDarkQuery.matches);
+
+  readonly theme: Signal<Theme> = this._theme.asReadonly();
+  readonly isDarkTheme: Signal<boolean> = computed(() =>
+    this._theme() === Theme.SYSTEM ? this.systemPrefersDark() : this._theme() === Theme.DARK,
+  );
 
   constructor() {
-    const localTheme = localStorage.getItem('theme');
-    // If the user has set a theme, use it. Otherwise, use the system theme.
-    this._theme = signal<Theme>(localTheme ? localTheme as Theme : Theme.SYSTEM);
+    this.prefersDarkQuery.addEventListener('change', (event) => {
+      this.systemPrefersDark.set(event.matches);
+    });
 
-    const finalTheme = this._theme() === Theme.SYSTEM ? window.matchMedia('(prefers-color-scheme: dark)').matches ? Theme.DARK : Theme.LIGHT : this._theme();
-    // Add data-theme attribute to the host element
-    document.body.setAttribute('data-theme', finalTheme);
+    // Single source of truth for DOM/localStorage sync: reacts to manual
+    // theme changes *and* OS-level preference changes, so nothing needs to
+    // remember to call this after mutating state.
+    effect(() => {
+      document.body.setAttribute('data-theme', this.isDarkTheme() ? Theme.DARK : Theme.LIGHT);
 
-    this.darkTheme = computed(() => this._theme() === Theme.SYSTEM ? window.matchMedia('(prefers-color-scheme: dark)').matches : this._theme() === Theme.DARK);
-    this.theme = this._theme.asReadonly();
-
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
-    prefersDark.addEventListener('change', (mediaQuery) => {
-      this.toggleTheme();
+      if (this._theme() === Theme.SYSTEM) {
+        localStorage.removeItem(THEME_STORAGE_KEY);
+      } else {
+        localStorage.setItem(THEME_STORAGE_KEY, this._theme());
+      }
     });
   }
 
-  toggleTheme(manual: boolean = false): void {
-    if (manual) {
-      if (this._theme() === Theme.LIGHT) {
-        this._theme.set(Theme.DARK);
-      } else if (this._theme() === Theme.DARK) {
-        this._theme.set(Theme.SYSTEM);
-      } else {
-        this._theme.set(Theme.LIGHT);
-      }
-    }
-
-    let theme = this._theme();
-    if (this._theme() === Theme.SYSTEM) {
-      theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? Theme.DARK : Theme.LIGHT;
-      localStorage.removeItem('theme');
-    } else {
-      localStorage.setItem('theme', this._theme());
-    }
-
-    document.body.setAttribute('data-theme', theme);
+  toggleTheme(): void {
+    this._theme.update((current) => NEXT_THEME[current]);
   }
 
-  isDarkTheme(): Signal<boolean> {
-    return this.darkTheme;
-  }
-
-  getTheme(): Signal<Theme> {
-    return this.theme;
+  private readStoredTheme(): Theme {
+    const stored = localStorage.getItem(THEME_STORAGE_KEY);
+    return stored ? (stored as Theme) : Theme.SYSTEM;
   }
 }

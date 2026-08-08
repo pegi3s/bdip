@@ -1,12 +1,11 @@
-import { computed, inject, Injectable } from "@angular/core";
+import { computed, inject, Service } from "@angular/core";
 import { githubInfo } from "../core/constants/github-info";
-import { HttpClient, httpResource } from "@angular/common/http";
+import { httpResource } from "@angular/common/http";
 import { Article, Recommendation } from "../models/software-recommendation";
 import { ContainerService } from "./container.service";
+import { TermStanza } from "../obo/TermStanza";
 
-@Injectable({
-  providedIn: 'root'
-})
+@Service()
 export class SoftwareRecommendationsService {
   private readonly baseMetadataURL = `https://raw.githubusercontent.com/${githubInfo.owner}/${githubInfo.repository}/${githubInfo.branch}/metadata/`;
   private readonly urlSoftwareRecommendations = `${this.baseMetadataURL}/software_recommendations.json`;
@@ -21,8 +20,6 @@ export class SoftwareRecommendationsService {
   readonly softwareRecommendations = computed<Recommendation[]>(
     () => this.parser(this.softwareRecommendationsRaw.value())
   );
-
-  constructor() { }
 
   private parser(response: unknown): Recommendation[] {
     const rawRecommendations = response as {
@@ -39,15 +36,15 @@ export class SoftwareRecommendationsService {
     }
 
     return rawRecommendations.map(rawRec => {
-      const categories = rawRec.categories.map(categoryId => {
-        const term = ontology.value()!.findTermById(categoryId);
-        if (term) {
+      const categories = rawRec.categories
+        .map(categoryId => {
+          const term = ontology.value()!.findTermById(categoryId);
+          if (!term) {
+            console.warn(`Term with ID ${categoryId} not found in ontology.`);
+          }
           return term;
-        } else {
-          console.warn(`Term with ID ${categoryId} not found in ontology.`);
-          return null;
-        }
-      }).filter(term => term !== null);
+        })
+        .filter((term): term is TermStanza => term !== null);
 
       return {
         section_header: rawRec.section_header,

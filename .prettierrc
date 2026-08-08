@@ -1,3 +1,13 @@
 {
-  "plugins": ["prettier-plugin-css-order"]
+  "printWidth": 100,
+  "singleQuote": true,
+  "plugins": ["prettier-plugin-css-order"],
+  "overrides": [
+    {
+      "files": "*.html",
+      "options": {
+        "parser": "angular"
+      }
+    }
+  ]
 }

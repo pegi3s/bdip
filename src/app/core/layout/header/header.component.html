@@ -1,6 +1,6 @@
-<div class="search-animation" [class.expand]="searchClicked"></div>
-<div class="outer" [class.menu-opened]="showMenu">
-  <header [class.transitions-enabled]="enableTransitions" [class.scrolled]="scrolled">
+<div class="search-animation" [class.expand]="searchClicked()"></div>
+<div class="outer" [class.menu-opened]="showMenu()">
+  <header [class.transitions-enabled]="enableTransitions()" [class.scrolled]="scrolled()">
     <div class="header-logo">
       <a routerLink="/">
         <svg-icon src="assets/dockerfiles-logo-simplified.svg" svgAriaLabel="logo" />
@@ -12,7 +12,7 @@
         <a [routerLink]="[link.path]" [queryParams]="link.queryParams" [class.current]="matchPath(link)">{{ link.text }}</a>
       }
     </nav>
-    <div class="search-button" [class.hiding]="searchClicked" [class.hidden]="!showSearch">
+    <div class="search-button" [class.hiding]="searchClicked()" [class.hidden]="!showSearch()">
       <div (click)="onSearchClick()">
         <svg-icon src="assets/icons/magnifying-glass-tilted-left.svg" svgAriaLabel="search" />
         <span>Search</span>

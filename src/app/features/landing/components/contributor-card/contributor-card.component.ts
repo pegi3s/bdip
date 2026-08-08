@@ -1,24 +1,25 @@
-import { Component, computed, inject, input, Signal } from "@angular/core";
+import { Component, computed, inject, input, Signal } from '@angular/core';
 import { NgOptimizedImage } from '@angular/common';
 import { Contributor } from '../../models/contributor.model';
 import { ThemeService } from '../../../../services/theme.service';
 import { SvgIconComponent } from 'angular-svg-icon';
 
 @Component({
-    selector: 'app-contributor-card',
-    imports: [NgOptimizedImage, SvgIconComponent],
-    templateUrl: './contributor-card.component.html',
-    styleUrl: './contributor-card.component.css',
-    host: { '[class.dark]': 'isDarkTheme()' }
+  selector: 'app-contributor-card',
+  imports: [NgOptimizedImage, SvgIconComponent],
+  templateUrl: './contributor-card.component.html',
+  styleUrl: './contributor-card.component.css',
+  host: { '[class.dark]': 'isDarkTheme()' },
 })
 export class ContributorCardComponent {
   /* Services */
-  private themeService: ThemeService = inject(ThemeService);
-  isDarkTheme: Signal<boolean>;
+  private readonly themeService = inject(ThemeService);
+  protected readonly isDarkTheme: Signal<boolean> = this.themeService.isDarkTheme;
 
   /* Inputs */
-  contributor = input.required<Contributor>();
-  periodLabel = computed(() => {
+  readonly contributor = input.required<Contributor>();
+
+  protected readonly periodLabel = computed(() => {
     const period = this.contributor().period;
 
     if (!period) {
@@ -34,8 +35,4 @@ export class ContributorCardComponent {
 
     return `${from} - Present`;
   });
-
-  constructor() {
-    this.isDarkTheme = this.themeService.isDarkTheme();
-  }
 }

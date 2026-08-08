@@ -1,7 +1,7 @@
 import { HttpClient, httpResource } from "@angular/common/http";
-import { computed, Injectable, Resource, Signal, signal, WritableResource } from "@angular/core";
-import { concatMap, from, mergeMap, Observable, of, retry, throwError, timer, toArray } from "rxjs";
-import { catchError, filter, map, shareReplay } from "rxjs/operators";
+import { computed, inject, Resource, Service, Signal, signal, WritableResource } from "@angular/core";
+import { concatMap, filter, Observable, of, retry, shareReplay, take, throwError, timer, from, mergeMap, toArray } from "rxjs";
+import { catchError, map } from "rxjs/operators";
 
 import { Ontology } from '../obo/Ontology';
 import { DockerHubImage } from '../models/docker-hub-image';
@@ -13,10 +13,10 @@ import { rxResource } from "@angular/core/rxjs-interop";
 import { TermStanza } from "../obo/TermStanza";
 import { RelatedSoftware } from '../models/related-software';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class ContainerService {
+  private readonly http = inject(HttpClient);
+
   private readonly baseMetadataURL = `https://raw.githubusercontent.com/${githubInfo.owner}/${githubInfo.repository}/${githubInfo.branch}/metadata/`;
   private readonly urlObo = `${this.baseMetadataURL}/dio.obo`;
   private readonly urlDiaf = `${this.baseMetadataURL}/dio.diaf`;
@@ -27,9 +27,6 @@ export class ContainerService {
   private readonly baseDockerHubEndpoint = '/v2/namespaces/pegi3s/repositories';
 
   private ontologyCache?: Observable<Ontology>;
-
-  constructor(private http: HttpClient) {
-  }
 
   private readonly _readmesEnabled = signal<boolean>(false);
 
@@ -94,7 +91,7 @@ export class ContainerService {
   containersInfo = rxResource({
     stream: () => {
       const url = new URL(`${this.baseDockerHubEndpoint}?page=1&page_size=100`, this.proxyServerURL).toString();
-      return this.fetchAllPagesContainersInfo(url, []).pipe(
+      return this.fetchAllPages<DockerHubImage>(url, [], 'DockerHub images').pipe(
         map(allResults => {
           const imageMap = new Map<string, DockerHubImage>();
           allResults.forEach(image => {
@@ -104,10 +101,6 @@ export class ContainerService {
           });
           return imageMap;
         }),
-        catchError(err => {
-          console.error('Error fetching DockerHub images:', err);
-          return of(new Map<string, DockerHubImage>());
-        })
       );
     },
     defaultValue: new Map<string, DockerHubImage>(),
@@ -244,13 +237,7 @@ export class ContainerService {
     if (!this.containersTags.has(name)) {
       const url = new URL(`${this.baseDockerHubEndpoint}/${name}/tags?page_size=100`, this.proxyServerURL).toString();
       const tagsRes = rxResource({
-        stream: () => this.fetchAllPagesTags(url, []).pipe(
-          map((tags) => tags),
-          catchError(err => {
-            console.error('Error fetching DockerHub tags:', err);
-            return of([]); // Return an empty array if error
-          })
-        ),
+        stream: () => this.fetchAllPages<DockerHubTag>(url, [], 'DockerHub tags'),
         defaultValue: [],
       });
       this.containersTags.set(name, tagsRes);
@@ -271,56 +258,30 @@ export class ContainerService {
   /* ----- Paging ---- */
 
   /**
-   * Recursively fetches all pages of containers from Docker Hub.
+   * Recursively fetches all pages of a paginated DockerHub endpoint.
    *
    * @param url The URL of the current page to fetch.
    * @param allResults The array to store all the results from all pages.
+   * @param errorContext Short label used in the error log if a page fails to load.
    */
-  private fetchAllPagesContainersInfo(url: string, allResults: DockerHubImage[]): Observable<DockerHubImage[]> {
-    return this.http.get<{ next: string, results: DockerHubImage[] }>(url).pipe(
+  private fetchAllPages<T>(url: string, allResults: T[], errorContext: string): Observable<T[]> {
+    return this.http.get<{ next: string, results: T[] }>(url).pipe(
       catchError(err => {
-        console.error('Error fetching DockerHub images:', err);
-        return of({ next: null, results: [] }); // Return an empty page if error
+        console.error(`Error fetching ${errorContext}:`, err);
+        return of({ next: null as string | null, results: [] as T[] });
       }),
-      map(response => {
+      concatMap(response => {
         // Push the current page's results to the allResults array
         allResults.push(...response.results);
 
-        // If there is a next page, continue to fetch the next page
+        // If there is a next page, continue to fetch the next page; otherwise we're done.
         if (response.next) {
           const indexEndpoint = response.next.indexOf('/v2');
           const nextURL = new URL(response.next.substring(indexEndpoint), this.proxyServerURL).toString();
-          return this.fetchAllPagesContainersInfo(nextURL, allResults);
-        } else {
-          // Return the final results once all pages have been fetched
-          return of(allResults);
+          return this.fetchAllPages<T>(nextURL, allResults, errorContext);
         }
+        return of(allResults);
       }),
-      concatMap((finalResults) => finalResults),
-    );
-  }
-
-  private fetchAllPagesTags(url: string, allResults: DockerHubTag[]): Observable<DockerHubTag[]> {
-    return this.http.get<{ next: string, results: DockerHubTag[] }>(url).pipe(
-      catchError(err => {
-        console.error('Error fetching DockerHub tags:', err);
-        return of({ next: null, results: [] }); // Return an empty page if error
-      }),
-      map(response => {
-        // Push the current page's results to the allResults array
-        allResults.push(...response.results);
-
-        // If there is a next page, continue to fetch the next page
-        if (response.next) {
-          const indexEndpoint = response.next.indexOf('/v2');
-          const nextURL = new URL(response.next.substring(indexEndpoint), this.proxyServerURL).toString();
-          return this.fetchAllPagesTags(nextURL, allResults);
-        } else {
-          // Return the final results once all pages have been fetched
-          return of(allResults);
-        }
-      }),
-      concatMap((finalResults) => finalResults),
     );
   }
 
@@ -406,12 +367,11 @@ export class ContainerService {
    * Fetches information about the tags of a specific container from Docker Hub.
    *
    * @param {string} name - The name of the Docker container.
-   * @returns {Observable<DockerHubImage>} An Observable that will emit the information about the tags of the Docker container.
+   * @returns {Observable<DockerHubTag[]>} An Observable that will emit the information about the tags of the Docker container.
    */
   getContainerTags(name: string): Observable<DockerHubTag[]> {
     const url = new URL(`${this.baseDockerHubEndpoint}/${name}/tags?page_size=100`, this.proxyServerURL).toString();
-    return this.fetchAllPagesTags(url, []).pipe(
-      map((tags) => tags),
+    return this.fetchAllPages<DockerHubTag>(url, [], 'DockerHub tags').pipe(
       catchError(err => {
         console.error('Error fetching DockerHub tags:', err);
         return of([]); // Return an empty array if error

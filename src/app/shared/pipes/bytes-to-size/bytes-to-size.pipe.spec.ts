@@ -1,4 +1,5 @@
 import { BytesToSizePipe } from './bytes-to-size.pipe';
+import { provideZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 
 describe('BytesToSizePipe', () => {
@@ -6,7 +7,7 @@ describe('BytesToSizePipe', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [BytesToSizePipe]
+      providers: [provideZonelessChangeDetection(), BytesToSizePipe]
     });
     pipe = TestBed.inject(BytesToSizePipe);
   });

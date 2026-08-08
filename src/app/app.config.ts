@@ -1,8 +1,13 @@
-import { ApplicationConfig, inject, provideZoneChangeDetection, SecurityContext } from '@angular/core';
+import {
+  ApplicationConfig,
+  inject,
+  provideBrowserGlobalErrorListeners,
+  SecurityContext
+} from '@angular/core';
 import { Router, provideRouter, withComponentInputBinding, withInMemoryScrolling, withViewTransitions } from '@angular/router';
 import { provideAnimations } from "@angular/platform-browser/animations";
 import { routes } from './app.routes';
-import { HttpClient, provideHttpClient, withFetch } from '@angular/common/http';
+import { HttpClient, provideHttpClient } from '@angular/common/http';
 import {
   CLIPBOARD_OPTIONS,
   ClipboardButtonComponent,
@@ -20,7 +25,8 @@ export const appConfig: ApplicationConfig = {
   providers: [
     provideAnimations(),
     provideAngularSvgIcon(),
-    provideHttpClient(withFetch()),
+    provideBrowserGlobalErrorListeners(),
+    provideHttpClient(),
     provideMarkdown({
       loader: HttpClient,
       markedExtensions: [
@@ -73,7 +79,6 @@ export const appConfig: ApplicationConfig = {
         scrollPositionRestoration: 'top',
         anchorScrolling: 'enabled',
       })
-    ),
-    provideZoneChangeDetection({ eventCoalescing: true })
+    )
   ]
 };

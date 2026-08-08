@@ -1,25 +1,30 @@
-import { Component, input, model } from "@angular/core";
-import { SvgIconComponent } from "angular-svg-icon";
+import {
+  Component,
+  input,
+  model,
+  signal,
+} from '@angular/core';
+import { SvgIconComponent } from 'angular-svg-icon';
 
 @Component({
-    selector: 'app-stepper',
-    imports: [SvgIconComponent],
-    templateUrl: './stepper.component.html',
-    styleUrl: './stepper.component.css'
+  selector: 'app-stepper',
+  imports: [SvgIconComponent],
+  templateUrl: './stepper.component.html',
+  styleUrl: './stepper.component.css',
 })
 export class StepperComponent {
   /* Input */
-  steps = input.required<Step[]>();
-  currentStep = model.required<number>();
-  previousStep: number = -1; // Used to avoid animations when skipping steps
+  readonly steps = input.required<Step[]>();
+  readonly currentStep = model.required<number>();
+  protected readonly previousStep = signal(-1); // Used to avoid animations when skipping steps
 
-  setStep(stepNumber: number) {
-    this.previousStep = this.currentStep();
+  protected setStep(stepNumber: number): void {
+    this.previousStep.set(this.currentStep());
     this.currentStep.set(stepNumber);
   }
 
-  isAdjacent(stepNumber: number): boolean {
-    return Math.abs(stepNumber - this.previousStep) === 1;
+  protected isAdjacent(stepNumber: number): boolean {
+    return Math.abs(stepNumber - this.previousStep()) === 1;
   }
 }
 

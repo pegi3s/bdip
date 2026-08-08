@@ -3,11 +3,11 @@ import { ThemeToggleComponent } from '../../../shared/components/theme-toggle/th
 import { SvgIconComponent } from 'angular-svg-icon';
 
 @Component({
-    selector: 'app-footer',
-    imports: [SvgIconComponent, ThemeToggleComponent],
-    templateUrl: './footer.component.html',
-    styleUrl: './footer.component.css'
+  selector: 'app-footer',
+  imports: [SvgIconComponent, ThemeToggleComponent],
+  templateUrl: './footer.component.html',
+  styleUrl: './footer.component.css',
 })
 export class FooterComponent {
-  readonly currentYear: number = new Date().getFullYear();
+  protected readonly currentYear = new Date().getFullYear();
 }

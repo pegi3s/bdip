@@ -2,7 +2,6 @@ import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
   name: 'bytesToSize',
-  standalone: true
 })
 export class BytesToSizePipe implements PipeTransform {
   transform(bytes: number, decimals: number = 2): string {

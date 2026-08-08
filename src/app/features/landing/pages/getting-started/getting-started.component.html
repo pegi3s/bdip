@@ -21,7 +21,7 @@
           <h3>Enable Virtualization Option</h3>
           <p>
             The following approach requires that the virtualization option is enabled in your BIOS, which is the case for most recent laptops.
-            To enable this option, follow the instructions provided in this <a href="https://support.microsoft.com/en-us/windows/enable-virtualization-on-windows-11-pcs-c5578302-6e43-4b4b-a449-8ced115f58e1" target="_blank">guide</a>.
+            To enable this option, follow the instructions provided in this <a href="https://support.microsoft.com/en-us/windows/enable-virtualization-on-windows-11-pcs-c5578302-6e43-4b4b-a449-8ced115f58e1" target="_blank" rel="noopener noreferrer">guide</a>.
           </p>
         </li>
         <li>
@@ -100,7 +100,7 @@
         </li>
 
         <li>
-          <h3>Step 6: Reboot</h3>
+          <h3>Reboot</h3>
           <p>Reboot your computer. Docker Images with a graphical interface may not be displayed properly until you reboot your computer.</p>
           <div class="note">
             <strong>Note:</strong> To run Docker images with a graphical interface, you need to run the following command first:
@@ -172,7 +172,7 @@
           <ul>
             @for (article of section.articles; track article.url) {
               <li>
-                <a href="{{ article.url }}" target="_blank">{{ article.short_name }}</a>
+                <a [href]="article.url" target="_blank" rel="noopener noreferrer">{{ article.short_name }}</a>
               </li>
             }
           </ul>

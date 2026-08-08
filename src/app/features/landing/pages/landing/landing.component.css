@@ -37,16 +37,16 @@ section > div {
 
 :host-context(.dark) .intro {
   background-image:
-      radial-gradient(18% 28% at 24% 50%, #3070bf22 7%, #073bff00 100%),
-      radial-gradient(18% 28% at 18% 71%, #2a659f11 6%, #073bff00 100%),
-      radial-gradient(70% 53% at 36% 76%, #204a8f11 0%, #073bff00 100%),
-      radial-gradient(42% 53% at 15% 94%, #2a659f11 7%, #073bff00 100%),
-      radial-gradient(42% 53% at 34% 72%, #2a659f11 7%, #073bff00 100%),
-      radial-gradient(18% 28% at 35% 87%, #2a659f11 7%, #073bff00 100%),
-      radial-gradient(31% 43% at 7% 98%, #2a659f22 24%, #073bff00 100%),
-      radial-gradient(35% 56% at 91% 74%, #204a8f22 9%, #073bff00 100%),
-      radial-gradient(74% 86% at 67% 38%, #16338022 24%, #073bff00 100%);
-    background-color: #01020c;
+    radial-gradient(18% 28% at 24% 50%, #3070bf22 7%, #073bff00 100%),
+    radial-gradient(18% 28% at 18% 71%, #2a659f11 6%, #073bff00 100%),
+    radial-gradient(70% 53% at 36% 76%, #204a8f11 0%, #073bff00 100%),
+    radial-gradient(42% 53% at 15% 94%, #2a659f11 7%, #073bff00 100%),
+    radial-gradient(42% 53% at 34% 72%, #2a659f11 7%, #073bff00 100%),
+    radial-gradient(18% 28% at 35% 87%, #2a659f11 7%, #073bff00 100%),
+    radial-gradient(31% 43% at 7% 98%, #2a659f22 24%, #073bff00 100%),
+    radial-gradient(35% 56% at 91% 74%, #204a8f22 9%, #073bff00 100%),
+    radial-gradient(74% 86% at 67% 38%, #16338022 24%, #073bff00 100%);
+  background-color: #01020c;
 }
 
 .intro > div {
@@ -59,7 +59,7 @@ section > div {
     "header"
     "carousel"
     "text";
-    /* "whale"; */
+  /* "whale"; */
   align-content: center;
   align-items: center;
   justify-items: center;
@@ -749,13 +749,13 @@ p {
 
 @keyframes fadeInMoveDown {
   0% {
-      opacity: 0;
-      transform: translateY(-15px);
+    opacity: 0;
+    transform: translateY(-15px);
   }
 
   100% {
-      opacity: 1;
-      transform: translateY(0px);
+    opacity: 1;
+    transform: translateY(0px);
   }
 }
 
@@ -795,28 +795,23 @@ p {
     transform-origin: 35% 65%;
   }
   40% {
-    transform: translate3d(-1px, 0, 0);
-    transform: rotate(-2deg);
+    transform: translate3d(-1px, 0, 0) rotate(-2deg);
     transform-origin: 35% 65%;
   }
   45% {
-    transform: translate3d(2px, 0, 0);
-    transform: rotate(4deg);
+    transform: translate3d(2px, 0, 0) rotate(4deg);
     transform-origin: 35% 65%;
   }
   50% {
-    transform: translate3d(-4px, 0, 0);
-    transform: rotate(-8deg);
+    transform: translate3d(-4px, 0, 0) rotate(-8deg);
     transform-origin: 35% 65%;
   }
   55% {
-    transform: translate3d(4px, 0, 0);
-    transform: rotate(8deg);
+    transform: translate3d(4px, 0, 0) rotate(8deg);
     transform-origin: 35% 65%;
   }
   60% {
-    transform: translate3d(-1px, 0, 0);
-    transform: rotate(-2deg);
+    transform: translate3d(-1px, 0, 0) rotate(-2deg);
     transform-origin: 35% 65%;
   }
 }

@@ -4,17 +4,7 @@
   --card-border-color: rgb(229, 231, 235);
   --icon-outer-box-color: hsl(var(--color), 90%, 75%);
   --icon-inner-box-color: hsl(var(--color), 60%, 45%);
-}
 
-:host-context(.dark) {
-  --card-bg-color: rgb(43, 43, 43, 0.6);
-  --card-bg-color-hover: hsla(var(--color), 10%, 20%);
-  --card-border-color: rgb(58, 58, 60);
-  --icon-outer-box-color: hsl(var(--color), 90%, 65%);
-  --icon-inner-box-color: hsl(var(--color), 55%, 40%);
-}
-
-:host {
   display: block;
 
   transition-duration: 0.2s;
@@ -28,6 +18,14 @@
   padding: 20px;
 
   --color: 0;
+}
+
+:host-context(.dark) {
+  --card-bg-color: rgb(43, 43, 43, 0.6);
+  --card-bg-color-hover: hsla(var(--color), 10%, 20%);
+  --card-border-color: rgb(58, 58, 60);
+  --icon-outer-box-color: hsl(var(--color), 90%, 65%);
+  --icon-inner-box-color: hsl(var(--color), 55%, 40%);
 }
 
 .icon-container {

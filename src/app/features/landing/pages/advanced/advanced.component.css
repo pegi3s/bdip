@@ -6,8 +6,6 @@ section {
 
 app-stepper {
   margin-bottom: 24px;
-  max-width: 1000px;
-  margin-inline: auto;
 }
 
 /* Page title */
@@ -51,20 +49,22 @@ p {
   display: contents;
 }
 
+/* Shared sizing/positioning for the doc images; each section overrides its own max-width/height
+   below since #docker-manager and #dockview intentionally use different figure sizes. */
 ::ng-deep :is(#docker-manager, #dockview) img {
   float: right;
   margin-left: 48px;
-  max-width: min(50%, 752px);
-  max-height: 310px;
   filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
 }
 
+::ng-deep #docker-manager img {
+  max-width: min(50%, 752px);
+  max-height: 310px;
+}
+
 ::ng-deep #dockview img {
-  float: right;
-  margin-left: 48px;
   max-width: min(40%, 600px);
   max-height: 440px;
-  filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
 }
 
 ::ng-deep #contribute ul {

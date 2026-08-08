@@ -7,7 +7,7 @@
     @for (item of items(); track item.image.name; let i = $index) {
       <div
         class="card"
-        [ngClass]="cardStates().get(i) || 'hidden'"
+        [class]="cardStates().get(i) || 'hidden'"
         [class.new]="item.type === 'new'"
         [class.updated]="item.type !== 'new'"
         (click)="onCardClick(i)"
@@ -25,10 +25,10 @@
     }
 
     <!-- Navigation controls -->
-    <button class="nav-button prev" (click)="prev()">
+    <button class="nav-button prev" (click)="prev()" aria-label="Previous">
       <svg-icon src="assets/icons/fluent-icons/ic_fluent_arrow_left_24_filled.svg" />
     </button>
-    <button class="nav-button next" (click)="next()">
+    <button class="nav-button next" (click)="next()" aria-label="Next">
       <svg-icon src="assets/icons/fluent-icons/ic_fluent_arrow_left_24_filled.svg" />
     </button>
 
@@ -39,7 +39,8 @@
     @for (item of items(); track item.image.name; let i = $index) {
       <button class="indicator"
               [class.active]="i === activeIndex()"
-              (click)="goTo(i)"></button>
+              (click)="goTo(i)"
+              [attr.aria-label]="'Go to slide ' + (i + 1)"></button>
     }
   </div>
 </div>

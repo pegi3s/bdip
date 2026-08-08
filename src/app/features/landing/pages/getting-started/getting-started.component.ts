@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component, effect, inject, Signal, signal, TemplateRef, ViewContainerRef, viewChild } from "@angular/core";
+import { Component, effect, inject, Signal, signal, TemplateRef, ViewContainerRef, viewChild } from "@angular/core";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { OS } from '../../../../models/os';
 import { UtilsService } from '../../../../services/utils.service';
 import { TabsComponent } from '../../../../shared/components/tabs/tabs.component';
@@ -9,26 +10,27 @@ import { MarkdownComponent } from "ngx-markdown";
 import { ClipboardButtonComponent } from "../../../../shared/components/clipboard-button/clipboard-button.component";
 import { githubInfo } from "../../../../core/constants/github-info";
 import { SoftwareRecommendationsService } from "../../../../services/software-recommendations.service";
-import { TermStanza } from "../../../../obo/TermStanza";
 import { LowerCasePipe } from "@angular/common";
 import { httpResource } from "@angular/common/http";
+import { setMarkdownBaseUrl } from "../../../../shared/utils/markdown-base-url";
+import { getIdHierarchy, getNameHierarchy } from "../../../../shared/utils/term-stanza-hierarchy";
 
 @Component({
-    selector: 'app-getting-started',
-    templateUrl: './getting-started.component.html',
-    styleUrl: './getting-started.component.css',
-    imports: [TabsComponent, StepperComponent, MarkdownComponent, RouterLink, LowerCasePipe],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    host: { '[class.dark]': 'isDarkTheme()' }
+  selector: 'app-getting-started',
+  templateUrl: './getting-started.component.html',
+  styleUrl: './getting-started.component.css',
+  imports: [TabsComponent, StepperComponent, MarkdownComponent, RouterLink, LowerCasePipe],
+  host: { '[class.dark]': 'isDarkTheme()' }
 })
 export class GettingStartedComponent {
   /* Services */
   private readonly softwareRecommendationsService = inject(SoftwareRecommendationsService);
-  private readonly utilsService: UtilsService = inject(UtilsService);
-  private readonly themeService: ThemeService = inject(ThemeService);
-  isDarkTheme: Signal<boolean>;
+  private readonly utilsService = inject(UtilsService);
+  private readonly themeService = inject(ThemeService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
+
+  protected readonly isDarkTheme: Signal<boolean> = this.themeService.isDarkTheme;
 
   /* Fragments */
   readonly containerRef = viewChild.required('container', { read: ViewContainerRef });
@@ -42,50 +44,47 @@ export class GettingStartedComponent {
     { fragmentName: 'common-issues', name: 'Common issues', icon: 'assets/icons/fluent-icons/ic_fluent_error_circle_24_filled.svg' },
     { fragmentName: 'choose-software', name: 'Choosing the right software', icon: 'assets/icons/fluent-icons/ic_fluent_apps_24_filled.svg' },
   ];
-  readonly gettingStartedMdBaseUrl = `https://raw.githubusercontent.com/${githubInfo.owner}/${githubInfo.repository}/${githubInfo.branch}/metadata/web/getting_started`;
-  readonly runCommandsGUIMd = httpResource.text(
-    () => `${this.gettingStartedMdBaseUrl}/run-commands-gui.md`,
-    {
-      parse: (response: string) => this.setMarkdownBaseUrl(response, this.gettingStartedMdBaseUrl),
-      defaultValue: ""
-    }
-  );
-  readonly commonIssuesMd = httpResource.text(
-    () => `${this.gettingStartedMdBaseUrl}/common_issues.md`,
-    {
-      parse: (response: string) => this.setMarkdownBaseUrl(response, this.gettingStartedMdBaseUrl),
-      defaultValue: ""
-    }
-  );
 
-  readonly clipboardButton = ClipboardButtonComponent;
+  private readonly gettingStartedMdBaseUrl = `https://raw.githubusercontent.com/${githubInfo.owner}/${githubInfo.repository}/${githubInfo.branch}/metadata/web/getting_started`;
+
+  readonly runCommandsGUIMd = this.loadMarkdown('run-commands-gui.md');
+  readonly commonIssuesMd = this.loadMarkdown('common_issues.md');
+
+  protected readonly clipboardButton = ClipboardButtonComponent;
 
   /* Data */
-  readonly softwareRecommendations = this.softwareRecommendationsService.softwareRecommendations;
+  protected readonly softwareRecommendations = this.softwareRecommendationsService.softwareRecommendations;
 
   /* State */
-  currentStep = signal(0);
-  gettingStartedOS: OS;
+  protected currentStep = signal(0);
+  protected gettingStartedOS: OS;
 
   /* Helpers */
-  OS = OS;
+  protected readonly OS = OS;
 
   constructor() {
     this.gettingStartedOS = this.utilsService.getOS() as OS;
-    this.isDarkTheme = this.themeService.isDarkTheme();
 
     effect(() => {
       const fragment = this.steps[this.currentStep()].fragmentName;
       this.router.navigate([], { fragment });
       this.loadTemplateBasedOnFragment(fragment);
     });
-  }
 
-  ngOnInit() {
-    this.route.fragment.subscribe(fragment => {
+    this.route.fragment.pipe(takeUntilDestroyed()).subscribe(fragment => {
       const stepIndex = this.steps.findIndex(step => step.fragmentName === fragment);
       this.currentStep.set(stepIndex === -1 ? 0 : stepIndex);
     });
+  }
+
+  private loadMarkdown(filename: string) {
+    return httpResource.text(
+      () => `${this.gettingStartedMdBaseUrl}/${filename}`,
+      {
+        parse: (response: string) => setMarkdownBaseUrl(response, this.gettingStartedMdBaseUrl),
+        defaultValue: "",
+      },
+    );
   }
 
   private loadTemplateBasedOnFragment(fragment: string | null) {
@@ -111,68 +110,10 @@ export class GettingStartedComponent {
     }
   }
 
-  onTabSelectedGettingStarted(os: string) {
+  protected onTabSelectedGettingStarted(os: string): void {
     this.gettingStartedOS = os as OS;
   }
 
-  getIdHierarchy(category: TermStanza): string[] {
-    // Base case: if no parents, return just this ID
-    if (!category.hasParents()) {
-      return [category.id];
-    }
-
-    // Get the hierarchy of the parents
-    const parentIds = category.getParents().map(parent => this.getIdHierarchy(parent));
-    return parentIds.flat().concat(category.id);
-  }
-
-  getNameHierarchy(category: TermStanza): string[] {
-    // Base case: if no parents, return just this name
-    if (!category.hasParents()) {
-      return [category.name!.replaceAll("_", " ")];
-    }
-
-    // Get the hierarchy of the parents
-    const parentNames = category.getParents().map(parent => this.getNameHierarchy(parent));
-    return parentNames.flat().concat(category.name!.replaceAll("_", " "));
-  }
-
-  setMarkdownBaseUrl(content: string, baseUrl: string): string {
-    // Ensure baseUrl ends with a trailing slash
-    const normalizedBaseUrl = baseUrl.endsWith('/') ? baseUrl : baseUrl + '/';
-
-    // Replace image sources in HTML
-    content = content.replace(/<img\s+[^>]*src\s*=\s*["']([^"']+)["'][^>]*>/gi,
-      (match, src) => match.replace(src, this.convertToAbsoluteUrl(src, normalizedBaseUrl)));
-
-    // Replace href attributes in HTML anchors
-    content = content.replace(/<a\s+[^>]*href\s*=\s*["']([^"']+)["'][^>]*>/gi,
-      (match, href) => match.replace(href, this.convertToAbsoluteUrl(href, normalizedBaseUrl)));
-
-    // Replace image sources in Markdown
-    content = content.replace(/!\[([^\]]*)\]\(([^)]+)\)/gi,
-      (match, alt, src) => `![${alt}](${this.convertToAbsoluteUrl(src, normalizedBaseUrl)})`);
-
-    // Replace links in Markdown
-    content = content.replace(/\[([^\]]+)\]\(([^)]+)\)/gi,
-      (match, text, url) => `[${text}](${this.convertToAbsoluteUrl(url, normalizedBaseUrl)})`);
-
-    return content;
-  };
-
-  private convertToAbsoluteUrl(url: string, baseUrl: string): string {
-    // Skip URLs that are already absolute
-    if (url.startsWith('http://') ||
-      url.startsWith('https://') ||
-      url.startsWith('//') ||
-      url.startsWith('mailto:') ||
-      url.startsWith('tel:') ||
-      url.startsWith('#')) {
-      return url;
-    }
-
-    // Remove leading slash if present
-    const cleanUrl = url.startsWith('/') ? url.substring(1) : url;
-    return baseUrl + cleanUrl;
-  }
+  protected readonly getIdHierarchy = getIdHierarchy;
+  protected readonly getNameHierarchy = getNameHierarchy;
 }

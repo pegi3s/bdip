@@ -1,27 +1,62 @@
 @if (matchedContainers().length !== 0) {
   <div class="listing-options">
-    <app-icon-dropdown icon="assets/icons/fluent-icons/ic_fluent_filter_24_filled.svg" [items]="filterOptions" [(selected)]="selectedFilterOption"/>
-    <app-dropdown [items]="sortOptions" [(selected)]="selectedSortOption"/>
-    <app-tabs class="only-icons" [tabs]="[
-        { id: 'c', icon: 'assets/icons/fluent-icons/ic_fluent_grid_24_filled.svg', active: isCompact()},
-        { id: 'd', icon: 'assets/icons/fluent-icons/ic_fluent_apps_list_detail_24_filled.svg', active: !isCompact()}
-      ]" (activeTab)="onTabSelectedGridView($event)" />
+    <app-icon-dropdown
+      icon="assets/icons/fluent-icons/ic_fluent_filter_24_filled.svg"
+      [items]="filterOptions"
+      [(selected)]="selectedFilterOption"
+    />
+    <app-dropdown [items]="sortOptions" [(selected)]="selectedSortOption" />
+    <app-tabs
+      class="only-icons"
+      [tabs]="[
+        {
+          id: 'c',
+          icon: 'assets/icons/fluent-icons/ic_fluent_grid_24_filled.svg',
+          active: isCompact(),
+        },
+        {
+          id: 'd',
+          icon: 'assets/icons/fluent-icons/ic_fluent_apps_list_detail_24_filled.svg',
+          active: !isCompact(),
+        },
+      ]"
+      (activeTab)="onTabSelectedGridView($event)"
+    />
   </div>
 }
-<div class="category-container" [class.compact]="isCompact()"
-     [class.show-new]="selectedFilterOption() !== -1 && filterOptions[selectedFilterOption()].value === 'new'"
-     [class.show-updated]="selectedFilterOption() !== -1 && filterOptions[selectedFilterOption()].value === 'updated'"
-     [class.hide-unusable]="selectedFilterOption() !== -1 && filterOptions[selectedFilterOption()].value === 'hide-unusable'">
+<div
+  class="category-container"
+  [class.compact]="isCompact()"
+  [class.show-new]="
+    selectedFilterOption() !== -1 &&
+    filterOptions[selectedFilterOption()].value === 'new'
+  "
+  [class.show-updated]="
+    selectedFilterOption() !== -1 &&
+    filterOptions[selectedFilterOption()].value === 'updated'
+  "
+  [class.hide-unusable]="
+    selectedFilterOption() !== -1 &&
+    filterOptions[selectedFilterOption()].value === 'hide-unusable'
+  "
+>
   @for (container of matchedContainers(); track container) {
     @let containerMetadata = getContainerMetadataByName(container);
-    <a class="container-item" [routerLink]="['/container', container]"
-       [class.updated]="wasContainerRecentlyUpdated(container)"
-       [class.new]="isContainerNew(container)"
-       [class.unusable]="containerMetadata?.status === 'Unusable'"
-       [class.not-recommended]="containerMetadata?.status === 'Not_recommended'">
+    <a
+      class="container-item"
+      [routerLink]="['/container', container]"
+      [class.updated]="wasContainerRecentlyUpdated(container)"
+      [class.new]="isContainerNew(container)"
+      [class.unusable]="containerMetadata?.status === 'Unusable'"
+      [class.not-recommended]="containerMetadata?.status === 'Not_recommended'"
+    >
       <div class="header">
         <span>{{ container }}</span>
-        <app-container-icon [name]="container" [icon]="containerMetadata?.icon" [color]="isDarkTheme()? 'white' : '#0082c4'"/>
+        <app-container-icon
+          [name]="container"
+          [icon]="containerMetadata?.icon"
+          [color]="isDarkTheme() ? 'white' : '#0082c4'"
+        />
       </div>
       @if (!isCompact()) {
         <p class="description">

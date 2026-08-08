@@ -1,122 +1,128 @@
-import { Component, ElementRef, Renderer2, Signal, signal } from "@angular/core";
-import { NavigationEnd, RouterLink, Router } from '@angular/router';
+import {
+  Component,
+  DestroyRef,
+  ElementRef,
+  HostListener,
+  Signal,
+  inject,
+  signal,
+} from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { NavigationEnd, Router, RouterLink } from '@angular/router';
+import { filter } from 'rxjs';
 import { ThemeService } from '../../../services/theme.service';
 import { SvgIconComponent } from 'angular-svg-icon';
 
+/** Width above which the mobile menu auto-closes on resize. */
+const DESKTOP_BREAKPOINT_PX = 1024;
+
+/** Delay before navigating to /search, giving the expand animation time to play. */
+const SEARCH_NAVIGATION_DELAY_MS = 600;
+
+interface NavLink {
+  path: string;
+  text: string;
+  queryParams?: Record<string, string>;
+}
+
 @Component({
-    selector: 'app-header',
-    templateUrl: './header.component.html',
-    styleUrl: './header.component.css',
-    imports: [RouterLink, SvgIconComponent],
-    host: { '[class.dark]': 'isDarkTheme()' }
+  selector: 'app-header',
+  templateUrl: './header.component.html',
+  styleUrl: './header.component.css',
+  imports: [RouterLink, SvgIconComponent],
+  host: { '[class.dark]': 'isDarkTheme()' },
 })
 export class HeaderComponent {
+  private readonly themeService = inject(ThemeService);
+  private readonly router = inject(Router);
+  private readonly elementRef = inject(ElementRef<HTMLElement>);
+  private readonly destroyRef = inject(DestroyRef);
+
   /* Disable transitions on first load to prevent the header from sliding in */
-  protected enableTransitions = false;
+  protected readonly enableTransitions = signal(false);
+  protected readonly scrolled = signal(true);
 
-  protected scrolled = true;
-  protected isOverflowing = false;
+  protected readonly showMenu = signal(false);
+  protected readonly showSearch = signal(true);
+  protected readonly searchClicked = signal(false);
+  protected readonly currentSection = signal('');
+  protected readonly isDarkTheme: Signal<boolean> = this.themeService.isDarkTheme;
 
-  protected showMenu = false;
-  protected showSearch = true;
-
-  searchClicked: boolean = false;
-  isDarkTheme: Signal<boolean>;
-  currentSection = signal<string>('');
-
-  private documentClickListener: Function | null = null;
-  private windowResizeListener: Function | null = null;
-
-  links = [
+  protected readonly links: NavLink[] = [
     { path: '/search', text: 'Containers', queryParams: { showAll: 'true' } },
     { path: '/getting-started', text: 'Getting Started' },
     { path: '/advanced', text: 'Advanced' },
     { path: '/tutorials', text: 'Tutorials' },
   ];
 
-  constructor(
-    private themeService: ThemeService,
-    private router: Router,
-    private elementRef: ElementRef,
-    private renderer: Renderer2,
-  ) {
-    this.isDarkTheme = this.themeService.isDarkTheme();
-  }
+  private pendingSearchNavigation: ReturnType<typeof setTimeout> | undefined;
 
-  ngOnInit() {
-    this.router.events.subscribe(event => {
-      if (event instanceof NavigationEnd) {
+  constructor() {
+    this.router.events
+      .pipe(
+        filter((event): event is NavigationEnd => event instanceof NavigationEnd),
+        takeUntilDestroyed(),
+      )
+      .subscribe((event) => {
         this.currentSection.set(event.url);
-        this.showSearch = this.router.url.indexOf('/search') === -1;
-        if (this.searchClicked) {
-          this.searchClicked = false;
-        }
-      }
-    });
+        this.showSearch.set(!this.router.url.includes('/search'));
+        this.searchClicked.set(false);
+      });
+
+    this.destroyRef.onDestroy(() => clearTimeout(this.pendingSearchNavigation));
   }
 
-  matchPath(link: Path) {
-    const pathMatch = this.currentSection().indexOf(link.path) !== -1;
-    if (!pathMatch) {
+  protected matchPath(link: NavLink): boolean {
+    if (!this.currentSection().includes(link.path)) {
       return false;
     }
 
-    if (link.queryParams) {
-      const currentQueryParams = this.router.parseUrl(this.router.url).queryParams as { [key: string]: any };
-      return Object.keys(link.queryParams).every(key => link.queryParams && currentQueryParams[key] == link.queryParams[key]);
+    if (!link.queryParams) {
+      return true;
     }
 
-    return true;
+    const currentQueryParams = this.router.parseUrl(this.router.url)
+      .queryParams as Record<string, string>;
+
+    return Object.entries(link.queryParams).every(
+      ([key, value]) => currentQueryParams[key] === value,
+    );
   }
 
-  onSearchClick() {
-    this.searchClicked = true;
-    setTimeout(() => {
-      this.router.navigate(['/search']);
-    }, 600);
+  protected onSearchClick(): void {
+    this.searchClicked.set(true);
+    this.pendingSearchNavigation = setTimeout(() => {
+      void this.router.navigate(['/search']);
+    }, SEARCH_NAVIGATION_DELAY_MS);
   }
 
-  toggleMenu() {
-    this.showMenu = !this.showMenu;
+  protected toggleMenu(): void {
+    this.showMenu.update((open) => !open);
+  }
 
-    // When the menu is shown, add a listener to close it when clicking outside,
-    // clicking on a menu item, or resizing the window above 1024px
-    if (this.showMenu) {
-      this.documentClickListener = this.renderer.listen('document', 'click', (event) => {
-        const clickedInside = this.elementRef.nativeElement.contains(event.target);
-        if (!clickedInside) {
-          this.showMenu = false;
-          this.removeMenuListeners();
-        } else if (event.target.tagName === 'A'|| event.target.tagName === 'IMG' || event.target.closest('.search-button') !== null) {
-          this.showMenu = false;
-          this.removeMenuListeners();
-        }
-      });
-      this.windowResizeListener = this.renderer.listen('window', 'resize', (event) => {
-        if (event.target.innerWidth > 1024) {
-          this.showMenu = false;
-          this.removeMenuListeners();
-        }
-      });
-    } else {
-      this.removeMenuListeners();
+  @HostListener('document:click', ['$event'])
+  protected onDocumentClick(event: Event): void {
+    if (!this.showMenu()) {
+      return;
+    }
+
+    const target = event.target as HTMLElement | null;
+    const clickedOutside = !this.elementRef.nativeElement.contains(target);
+    const clickedNavItem =
+      target?.tagName === 'A' ||
+      target?.tagName === 'IMG' ||
+      target?.closest('.search-button') !== null;
+
+    if (clickedOutside || clickedNavItem) {
+      this.showMenu.set(false);
     }
   }
 
-  removeMenuListeners() {
-    if (this.documentClickListener) {
-      this.documentClickListener();
-      this.documentClickListener = null;
-    }
-    if (this.windowResizeListener) {
-      this.windowResizeListener();
-      this.windowResizeListener = null;
+  @HostListener('window:resize', ['$event'])
+  protected onWindowResize(event: UIEvent): void {
+    const width = (event.target as Window).innerWidth;
+    if (this.showMenu() && width > DESKTOP_BREAKPOINT_PX) {
+      this.showMenu.set(false);
     }
   }
-}
-
-type Path = {
-  path: string;
-  text: string;
-  queryParams?: { [key: string]: any };
 }

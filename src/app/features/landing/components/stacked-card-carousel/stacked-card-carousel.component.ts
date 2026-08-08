@@ -1,7 +1,7 @@
 import { Component, signal, computed, inject, input, ChangeDetectionStrategy } from "@angular/core";
-import { CommonModule } from '@angular/common';
+import { AsyncPipe, DatePipe, TitleCasePipe } from '@angular/common';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { Subject, timer } from "rxjs";
+import { Observable, Subject, timer } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { DockerHubImage } from "../../../../models/docker-hub-image";
 import { SvgIconComponent } from "angular-svg-icon";
@@ -9,18 +9,32 @@ import { Router } from "@angular/router";
 
 type CardPosition = 'center' | 'left' | 'right' | 'hidden';
 
+interface CarouselItem {
+  type: string;
+  image: DockerHubImage;
+  version: Observable<string>;
+}
+
+/** How long each card stays centered before auto-advancing. Also drives the indicator's
+ *  progress-bar animation via the --auto-rotate-duration custom property — keep these in sync
+ *  by only changing this constant, not the CSS directly. */
+const AUTO_ROTATE_INTERVAL_MS = 5000;
+
 @Component({
   selector: 'app-stacked-card-carousel',
-  imports: [CommonModule, SvgIconComponent],
+  imports: [AsyncPipe, DatePipe, TitleCasePipe, SvgIconComponent],
   templateUrl: './stacked-card-carousel.component.html',
   styleUrl: './stacked-card-carousel.component.css',
+  host: { '[style.--auto-rotate-duration.ms]': 'autoRotateIntervalMs' },
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class StackedCardCarouselComponent {
   private readonly router = inject(Router);
 
+  protected readonly autoRotateIntervalMs = AUTO_ROTATE_INTERVAL_MS;
+
   // --- Inputs ---
-  readonly items = input.required<{ type: string; image: DockerHubImage; version: any }[]>();
+  readonly items = input.required<CarouselItem[]>();
 
   // --- State ---
   readonly activeIndex = signal(0);
@@ -53,11 +67,11 @@ export class StackedCardCarouselComponent {
     // --- The Magic Timer Logic ---
     // switchMap cancels the previous timer whenever a value is emitted
     this.autoRotateReset$.pipe(
-      // Wait 5 seconds after the last interaction
-      switchMap(() => timer(5000)),
+      // Wait for the auto-rotate interval after the last interaction
+      switchMap(() => timer(AUTO_ROTATE_INTERVAL_MS)),
       takeUntilDestroyed()
     ).subscribe(() => {
-      this.next(true); // true = triggered by timer
+      this.next();
     });
 
     // Start the timer initially
@@ -66,23 +80,31 @@ export class StackedCardCarouselComponent {
 
   // --- Navigation ---
 
-  next(isAuto = false) {
-    this.activeIndex.update(i => (i + 1) % this.items().length);
+  next(): void {
+    const total = this.items().length;
+    if (total <= 1) {
+      return;
+    }
+    this.activeIndex.update((i) => (i + 1) % total);
     // Always reset the timer to ensure the loop continues
     this.autoRotateReset$.next();
   }
 
-  prev() {
-    this.activeIndex.update(i => (i - 1 + this.items().length) % this.items().length);
+  prev(): void {
+    const total = this.items().length;
+    if (total <= 1) {
+      return;
+    }
+    this.activeIndex.update((i) => (i - 1 + total) % total);
     this.autoRotateReset$.next(); // Reset timer
   }
 
-  goTo(index: number) {
+  goTo(index: number): void {
     this.activeIndex.set(index);
     this.autoRotateReset$.next(); // Reset timer
   }
 
-  onCardClick(index: number) {
+  onCardClick(index: number): void {
     const state = this.cardStates().get(index);
     if (state === 'center') {
       const item = this.items()[index];
@@ -97,12 +119,12 @@ export class StackedCardCarouselComponent {
   // --- Touch Handling ---
   private touchStartX = 0;
 
-  onTouchStart(e: TouchEvent) {
+  onTouchStart(e: TouchEvent): void {
     this.touchStartX = e.changedTouches[0].screenX;
     // Optional: Pause timer on touch start?
   }
 
-  onTouchEnd(e: TouchEvent) {
+  onTouchEnd(e: TouchEvent): void {
     const touchEndX = e.changedTouches[0].screenX;
     const threshold = 50;
 

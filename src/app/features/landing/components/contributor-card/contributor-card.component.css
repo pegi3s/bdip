@@ -124,6 +124,7 @@
   display: block;
   position: absolute;
   top: 0;
+  visibility: hidden;
   opacity: 0;
   transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
   box-shadow: 0 10px 10px rgba(0, 0, 0, 0.1);
@@ -177,10 +178,8 @@ div > img {
   border-radius: 100%;
   width: 68px;
   height: 68px;
-}
 
-@media (min-width: 576px) {
-  div > img {
+  @media (width > 576px) {
     display: block;
   }
 }

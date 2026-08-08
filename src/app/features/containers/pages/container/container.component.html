@@ -1,16 +1,22 @@
-@if (status === Status.LOADED && container != undefined) {
+@if (status() === Status.LOADED && container(); as container) {
   @let containerMetadata = metadata();
   <div class="info">
     <div class="title">
       <svg-icon src="assets/icons/octicons/container-24.svg" svgClass="thick" />
       <h2>{{ container.name }}</h2>
     </div>
-    <p class="description" [innerHTML]=convertPlainTextToLink(container.description)></p>
+    <p
+      class="description"
+      [innerHTML]="convertPlainTextToLink(container.description)"
+    ></p>
     <div class="ontology-hierarchy">
       @for (hierarchy of ontologyCategories(); track $index) {
         <div>
           @for (category of hierarchy; track $index) {
-            <a [routerLink]="['/search']" [queryParams]="{c: getIdHierarchy(category).join()}">
+            <a
+              [routerLink]="['/search']"
+              [queryParams]="{ c: getIdHierarchy(category).join() }"
+            >
               {{ category.name }}
             </a>
             @if (!$last) {
@@ -22,149 +28,267 @@
     </div>
     <div class="status">
       @switch (containerMetadata?.status) {
-        @case ('Unusable') {
+        @case ("Unusable") {
           <span class="chip not-working">Unusable</span>
         }
-        @case ('Not_recommended') {
+        @case ("Not_recommended") {
           <span class="chip bug-found">Usage not recommended</span>
         }
       }
     </div>
     <div class="stats">
       <div class="pulls">
-        <svg-icon src="assets/icons/fluent-icons/ic_fluent_arrow_download_24_regular.svg" svgClass="thick" />
+        <svg-icon
+          src="assets/icons/fluent-icons/ic_fluent_arrow_download_24_regular.svg"
+          svgClass="thick"
+        />
         <p>{{ container.pull_count }} pulls</p>
       </div>
       <div class="stars">
-        <svg-icon src="assets/icons/fluent-icons/ic_fluent_star_24_regular.svg" svgClass="thick" />
+        <svg-icon
+          src="assets/icons/fluent-icons/ic_fluent_star_24_regular.svg"
+          svgClass="thick"
+        />
         <p>{{ container.star_count }} stars</p>
       </div>
       <div class="last-updated">
-        <svg-icon src="assets/icons/fluent-icons/ic_fluent_history_24_regular.svg" svgClass="thick" />
+        <svg-icon
+          src="assets/icons/fluent-icons/ic_fluent_history_24_regular.svg"
+          svgClass="thick"
+        />
         <p>Last updated {{ container.last_updated | date }}</p>
       </div>
     </div>
     <div class="features">
       <div>
-        <svg-icon src="assets/icons/fluent-icons/ic_fluent_task_list_square_24_regular_ltr.svg" />
+        <svg-icon
+          src="assets/icons/fluent-icons/ic_fluent_task_list_square_24_regular_ltr.svg"
+        />
         <p>Features</p>
       </div>
       <div>
         @if (containerMetadata?.gui) {
           <span class="chip compatible">
             GUI
-            <svg-icon src="assets/icons/fluent-icons/ic_fluent_checkmark_circle_12_filled.svg" />
+            <svg-icon
+              src="assets/icons/fluent-icons/ic_fluent_checkmark_circle_12_filled.svg"
+            />
           </span>
         }
-        @for (programs of [{ type: 'Podman', status: containerMetadata?.podman }, { type: 'Singularity', status: containerMetadata?.singularity }]; track programs.type) {
-          @if (programs.status === 'tested') {
+        @for (
+          programs of [
+            { type: "Podman", status: containerMetadata?.podman },
+            { type: "Singularity", status: containerMetadata?.singularity },
+          ];
+          track programs.type
+        ) {
+          @if (programs.status === "tested") {
             <span class="chip compatible">
               {{ programs.type }}
-              <svg-icon src="assets/icons/fluent-icons/ic_fluent_checkmark_circle_12_filled.svg" />
+              <svg-icon
+                src="assets/icons/fluent-icons/ic_fluent_checkmark_circle_12_filled.svg"
+              />
             </span>
           }
         }
       </div>
     </div>
-    @if (selectedTab() !== 'tags') {
-      <div class="install"
-           [class.unusable]="containerMetadata?.status === 'Unusable'"
-           [class.not-recommended]="containerMetadata?.status === 'Not_recommended'">
-        <svg-icon src="assets/icons/fluent-icons/ic_fluent_window_console_20_filled.svg" />
+    @if (selectedTab() !== "tags") {
+      <div
+        class="install"
+        [class.unusable]="containerMetadata?.status === 'Unusable'"
+        [class.not-recommended]="
+          containerMetadata?.status === 'Not_recommended'
+        "
+      >
+        <svg-icon
+          src="assets/icons/fluent-icons/ic_fluent_window_console_20_filled.svg"
+        />
         <p>Install from the command line</p>
         <code>
-          {{ buildDockerPullCommand(container, getLatestRecommendedTag(containerMetadata)) }}
-          <app-clipboard-button [text]="buildDockerPullCommand(container, getLatestRecommendedTag(containerMetadata))" />
+          {{
+            buildDockerPullCommand(
+              container,
+              getLatestRecommendedTag(containerMetadata)
+            )
+          }}
+          <app-clipboard-button
+            [text]="
+              buildDockerPullCommand(
+                container,
+                getLatestRecommendedTag(containerMetadata)
+              )
+            "
+          />
         </code>
       </div>
     }
     <div class="links">
-      <a href="https://hub.docker.com/r/{{ container.namespace }}/{{ container.name }}" target="_blank">
+      <a
+        href="https://hub.docker.com/r/{{ container.namespace }}/{{
+          container.name
+        }}"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
         <svg-icon src="assets/icons/logos/docker-mark-blue.svg" />
         DockerHub
-        <svg-icon src="assets/icons/fluent-icons/ic_fluent_arrow_up_right_12_regular.svg" svgClass="thick" />
+        <svg-icon
+          src="assets/icons/fluent-icons/ic_fluent_arrow_up_right_12_regular.svg"
+          svgClass="thick"
+        />
       </a>
-      <a [href]="containerMetadata?.manual_url" target="_blank">
-        <svg-icon src="assets/icons/fluent-icons/ic_fluent_book_20_filled.svg" />
+      <a
+        [href]="containerMetadata?.manual_url"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <svg-icon
+          src="assets/icons/fluent-icons/ic_fluent_book_20_filled.svg"
+        />
         Manual
-        <svg-icon src="assets/icons/fluent-icons/ic_fluent_arrow_up_right_12_regular.svg" svgClass="thick" />
+        <svg-icon
+          src="assets/icons/fluent-icons/ic_fluent_arrow_up_right_12_regular.svg"
+          svgClass="thick"
+        />
       </a>
 
-      <a href="https://bio-protocol.org/en/searchlist?{{ containerMetadata?.custom_searches?.bioprotocol ?? ('content=' + container.name) }}" target="_blank">
+      <a
+        href="https://bio-protocol.org/en/searchlist?{{
+          containerMetadata?.custom_searches?.bioprotocol ??
+            'content=' + encodeUriComponent(container.name)
+        }}"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
         <svg-icon src="assets/icons/logos/bio-protocol.svg" />
         Bio-Protocol
-        <svg-icon src="assets/icons/fluent-icons/ic_fluent_arrow_up_right_12_regular.svg" svgClass="thick" />
+        <svg-icon
+          src="assets/icons/fluent-icons/ic_fluent_arrow_up_right_12_regular.svg"
+          svgClass="thick"
+        />
       </a>
-      <a href="https://bio-protocol.org/exchange/searchlist?{{ containerMetadata?.custom_searches?.bioprotocol_exchange ?? ('content=' + container.name) }}" target="_blank">
+      <a
+        href="https://bio-protocol.org/exchange/searchlist?{{
+          containerMetadata?.custom_searches?.bioprotocol_exchange ??
+            'content=' + encodeUriComponent(container.name)
+        }}"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
         <svg-icon src="assets/icons/logos/bio-protocol.svg" />
         Bio-Protocol Exchange
-        <svg-icon src="assets/icons/fluent-icons/ic_fluent_arrow_up_right_12_regular.svg" svgClass="thick" />
+        <svg-icon
+          src="assets/icons/fluent-icons/ic_fluent_arrow_up_right_12_regular.svg"
+          svgClass="thick"
+        />
       </a>
-      <a href="https://pubmed.ncbi.nlm.nih.gov/?{{ containerMetadata?.custom_searches?.pubmed ?? ('term=' + container.name) }}" target="_blank">
+      <a
+        href="https://pubmed.ncbi.nlm.nih.gov/?{{
+          containerMetadata?.custom_searches?.pubmed ??
+            'term=' + encodeUriComponent(container.name)
+        }}"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
         <svg-icon src="assets/icons/logos/PubMed.svg" />
         PubMed
-        <svg-icon src="assets/icons/fluent-icons/ic_fluent_arrow_up_right_12_regular.svg" svgClass="thick" />
+        <svg-icon
+          src="assets/icons/fluent-icons/ic_fluent_arrow_up_right_12_regular.svg"
+          svgClass="thick"
+        />
       </a>
-      <a href="https://scholar.google.es/scholar?{{ containerMetadata?.custom_searches?.scholar ?? ('q=' + container.name) }}" target="_blank">
+      <a
+        href="https://scholar.google.es/scholar?{{
+          containerMetadata?.custom_searches?.scholar ??
+            'q=' + encodeUriComponent(container.name)
+        }}"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
         <svg-icon src="assets/icons/logos/google-scholar.svg" />
         Google Scholar
-        <svg-icon src="assets/icons/fluent-icons/ic_fluent_arrow_up_right_12_regular.svg" svgClass="thick" />
+        <svg-icon
+          src="assets/icons/fluent-icons/ic_fluent_arrow_up_right_12_regular.svg"
+          svgClass="thick"
+        />
       </a>
     </div>
   </div>
   <div class="details-container">
     <div class="tabs-and-dropdown">
-      <app-tabs (activeTab)="onTabSelectedGettingStarted($event)" [tabs]="hasRelatedSoftware()
-      ? [
-        { id: TabName.README, label: 'README', active: selectedTab() === TabName.README },
-        { id: TabName.TAGS, label: TabName.TAGS, active: selectedTab() === TabName.TAGS },
-        { id: TabName.TESTING, label: 'Testing', active: selectedTab() === TabName.TESTING },
-        { id: TabName.DOCKERFILE, label: 'Dockerfile', active: selectedTab() === TabName.DOCKERFILE },
-        { id: TabName.RELATED_SOFTWARE, label: 'Related software', active: selectedTab() === TabName.RELATED_SOFTWARE }
-        ]
-      : [
-        { id: TabName.README, label: 'README', active: selectedTab() === TabName.README },
-        { id: TabName.TAGS, label: TabName.TAGS, active: selectedTab() === TabName.TAGS },
-        { id: TabName.TESTING, label: 'Testing', active: selectedTab() === TabName.TESTING },
-        { id: TabName.DOCKERFILE, label: 'Dockerfile', active: selectedTab() === TabName.DOCKERFILE }
-      ]" />
+      <app-tabs
+        (activeTab)="onTabSelectedGettingStarted($event)"
+        [tabs]="detailTabs()"
+      />
       @if (selectedTab() === TabName.TESTING) {
-        <app-dropdown [items]="containerPlatforms" [(selected)]="selectedContainerPlatform"/>
+        <app-dropdown
+          [items]="containerPlatforms"
+          [(selected)]="selectedContainerPlatform"
+        />
       }
       @if (selectedTab() === TabName.DOCKERFILE && showDockerfileDropdown()) {
-        <app-dropdown [items]="dockerfileVariants()" [(selected)]="selectedDockerfileVariant"/>
+        <app-dropdown
+          [items]="dockerfileVariants()"
+          [(selected)]="selectedDockerfileVariant"
+        />
       }
     </div>
-    @if (selectedTab() === 'readme') {
+    @if (selectedTab() === "readme") {
       <markdown
         clipboard
         [clipboardButtonComponent]="clipboardButton"
         class="markdown-body"
-        [data]="removeReadmeOwnershipHeader(container.full_description)" />
-    } @else if (selectedTab() === 'tags' && containerTags() != undefined) {
-      <ng-container *ngTemplateOutlet="tags; context: { containerTags: containerTags(), containerMetadata: containerMetadata }"></ng-container>
-    } @else if (selectedTab() === 'testing') {
-      <ng-container *ngTemplateOutlet="testing; context: { containerMetadata: containerMetadata }"></ng-container>
-    } @else if (selectedTab() === 'dockerfile') {
+        [data]="removeReadmeOwnershipHeader(container.full_description)"
+      />
+    } @else if (selectedTab() === "tags" && containerTags() != undefined) {
+      <ng-container
+        *ngTemplateOutlet="
+          tags;
+          context: {
+            containerTags: containerTags(),
+            containerMetadata: containerMetadata,
+          }
+        "
+      ></ng-container>
+    } @else if (selectedTab() === "testing") {
+      <ng-container
+        *ngTemplateOutlet="
+          testing;
+          context: { containerMetadata: containerMetadata }
+        "
+      ></ng-container>
+    } @else if (selectedTab() === "dockerfile") {
       <ng-container *ngTemplateOutlet="dockerfile"></ng-container>
-    } @else if (selectedTab() === 'related-software') {
+    } @else if (selectedTab() === "related-software") {
       <ng-container *ngTemplateOutlet="relatedSoftware"></ng-container>
     }
   </div>
-} @else if (status === Status.LOADING) {
+} @else if (status() === Status.LOADING) {
   <app-loading />
-} @else if (status === Status.ERROR_NOT_FOUND) {
+} @else if (status() === Status.ERROR_NOT_FOUND) {
   <h2>Container not found</h2>
 }
 
 <ng-template #tags let-containerMetadata="containerMetadata">
   <div class="tags">
     @for (tag of containerTags(); track $index) {
-      @let versionStatus = containerMetadata ? getVersionStatus(tag, containerMetadata) : undefined;
-      <div class="tag"
-           [class.recommended]="versionStatus === VersionStatus.RECOMMENDED"
-           [class.bug-found]="versionStatus === VersionStatus.BUG_FOUND || versionStatus === VersionStatus.NOT_RECOMMENDED"
-           [class.not-working]="versionStatus === VersionStatus.NOT_WORKING || versionStatus === VersionStatus.UNUSABLE">
+      @let versionStatus =
+        containerMetadata
+          ? getVersionStatus(tag, containerMetadata)
+          : undefined;
+      <div
+        class="tag"
+        [class.recommended]="versionStatus === VersionStatus.RECOMMENDED"
+        [class.bug-found]="
+          versionStatus === VersionStatus.BUG_FOUND ||
+          versionStatus === VersionStatus.NOT_RECOMMENDED
+        "
+        [class.not-working]="
+          versionStatus === VersionStatus.NOT_WORKING ||
+          versionStatus === VersionStatus.UNUSABLE
+        "
+      >
         <div class="version">
           <h3>{{ tag.name }}</h3>
           @switch (versionStatus) {
@@ -184,18 +308,20 @@
         </div>
         <p class="last-pushed">Last pushed {{ tag.tag_last_pushed | date }}</p>
         <code class="command">
-          {{ buildDockerPullCommand(container!, tag.name) }}
-          <app-clipboard-button [text]="buildDockerPullCommand(container!, tag.name)" />
+          {{ buildDockerPullCommand(container()!, tag.name) }}
+          <app-clipboard-button
+            [text]="buildDockerPullCommand(container()!, tag.name)"
+          />
         </code>
         <div>
           <table>
             <thead>
-            <tr>
-              <th>Digest</th>
-              <th>OS</th>
-              <th>Architecture</th>
-              <th>Size</th>
-            </tr>
+              <tr>
+                <th>Digest</th>
+                <th>OS</th>
+                <th>Architecture</th>
+                <th>Size</th>
+              </tr>
             </thead>
             <tbody>
               @for (image of tag.images; track $index) {
@@ -219,31 +345,50 @@
     @if (containerMetadata.gui) {
       @if (containerMetadata.gui_command.length > 0) {
         <!-- If GUI and has command -->
-        <ng-container *ngTemplateOutlet="testingGUI; context: { containerMetadata: containerMetadata }"></ng-container>
+        <ng-container
+          *ngTemplateOutlet="
+            testingGUI;
+            context: { containerMetadata: containerMetadata }
+          "
+        ></ng-container>
       } @else {
         <!-- If GUI and no command -->
-        <ng-container *ngTemplateOutlet="testingMissingInstructions; context: { section: 'GUI' }"></ng-container>
+        <ng-container
+          *ngTemplateOutlet="
+            testingMissingInstructions;
+            context: { section: 'GUI' }
+          "
+        ></ng-container>
       }
     }
-    @if (containerMetadata.test_invocation_specific.length > 0 && containerMetadata.test_data_url.length > 0) {
+    @if (
+      containerMetadata.test_invocation_specific.length > 0 &&
+      containerMetadata.test_data_url.length > 0
+    ) {
       <!-- Has CLI command -->
-      <ng-container *ngTemplateOutlet="testingCLI; context: { containerMetadata: containerMetadata }"></ng-container>
+      <ng-container
+        *ngTemplateOutlet="
+          testingCLI;
+          context: { containerMetadata: containerMetadata }
+        "
+      ></ng-container>
     } @else if (!containerMetadata.gui) {
       <!-- No GUI and no CLI command -->
-      <ng-container *ngTemplateOutlet="testingMissingInstructions; context: { section: 'CLI' }"></ng-container>
+      <ng-container
+        *ngTemplateOutlet="
+          testingMissingInstructions;
+          context: { section: 'CLI' }
+        "
+      ></ng-container>
     }
   }
 </ng-template>
 
 <ng-template #testingMissingInstructions let-section="section">
-  <markdown
-    class="markdown-body"
-    ngPreserveWhitespaces>
-
+  <markdown class="markdown-body" ngPreserveWhitespaces>
     # {{ section }}
 
     This image does not provide testing instructions yet.
-
   </markdown>
 </ng-template>
 
@@ -252,7 +397,8 @@
     clipboard
     [clipboardButtonComponent]="clipboardButton"
     class="markdown-body"
-    [data]="getCliMarkdown(containerMetadata)"/>
+    [data]="getCliMarkdown(containerMetadata)"
+  />
 </ng-template>
 
 <ng-template #testingGUI let-containerMetadata="containerMetadata">
@@ -260,7 +406,8 @@
     clipboard
     [clipboardButtonComponent]="clipboardButton"
     class="markdown-body"
-    [data]="getGuiMarkdown(containerMetadata)"/>
+    [data]="getGuiMarkdown(containerMetadata)"
+  />
 </ng-template>
 
 <ng-template #dockerfile>
@@ -269,31 +416,49 @@
     [clipboardButtonComponent]="clipboardButton"
     class="markdown-body"
     ngPreserveWhitespaces
-    [data]="'```dockerfile\n' + dockerfileContent() + '\n```'">
+    [data]="'```dockerfile\n' + dockerfileContent() + '\n```'"
+  >
   </markdown>
 </ng-template>
 
 <ng-template #relatedSoftware>
   <div class="related-software">
     <div class="related-software-header">
-      <h3>Software that co-occurs with {{ container!.name }} in Bio-Protocol articles</h3>
-      <p>This list shows software tools that appear together with {{ container!.name }} in scientific protocols from Bio-Protocol. Software available in BDIP is highlighted and linked for easy access.</p>
+      <h3>
+        Software that co-occurs with {{ container!.name }} in Bio-Protocol
+        articles
+      </h3>
+      <p>
+        This list shows software tools that appear together with
+        {{ container!.name }} in scientific protocols from Bio-Protocol.
+        Software available in BDIP is highlighted and linked for easy access.
+      </p>
     </div>
     <div class="related-software-list">
-      @for (software of getSortedRelatedSoftware(); track software.name) {
+      @for (software of sortedRelatedSoftware(); track software.name) {
         <details class="software-item">
           <summary class="software-info">
             <div class="software-name-wrapper">
               @if (software.inBdip) {
-                <a [routerLink]="['/container', software.name]" class="software-name bdip-link" (click)="$event.stopPropagation()">
+                <a
+                  [routerLink]="['/container', software.name]"
+                  class="software-name bdip-link"
+                  (click)="$event.stopPropagation()"
+                >
                   {{ software.name }}
                 </a>
               } @else {
                 <span class="software-name">{{ software.name }}</span>
               }
-              <span class="cooccurrence-count">{{ software.count }} {{ software.count === 1 ? 'article' : 'articles' }}</span>
+              <span class="cooccurrence-count"
+                >{{ software.count }}
+                {{ software.count === 1 ? "article" : "articles" }}</span
+              >
             </div>
-            <svg-icon src="assets/icons/fluent-icons/ic_fluent_chevron_down_24_regular.svg" svgClass="chevron-icon" />
+            <svg-icon
+              src="assets/icons/fluent-icons/ic_fluent_chevron_down_24_regular.svg"
+              svgClass="chevron-icon"
+            />
           </summary>
           <!-- Show the different display names (if more than one) when the details are opened -->
           @if (software.displayNames && software.displayNames.length > 1) {
@@ -307,8 +472,16 @@
             </div>
           }
           <div class="article-links">
-            @for (articleId of getCooccurringArticles(software.name); track articleId) {
-              <a [href]="getBioProtocolArticleUrl(articleId)" target="_blank" class="article-link">
+            @for (
+              articleId of getCooccurringArticles(software.name);
+              track articleId
+            ) {
+              <a
+                [href]="getBioProtocolArticleUrl(articleId)"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="article-link"
+              >
                 {{ getBioProtocolArticleTitle(articleId) }}
               </a>
             }

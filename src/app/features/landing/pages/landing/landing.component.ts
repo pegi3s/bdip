@@ -1,47 +1,51 @@
-import { ChangeDetectionStrategy, Component, computed, ElementRef, inject, Signal, viewChild } from "@angular/core";
-import { AsyncPipe } from "@angular/common";
+import { Component, computed, DestroyRef, ElementRef, inject, signal, Signal, viewChild } from "@angular/core";
+import { toSignal } from "@angular/core/rxjs-interop";
 import { ContributorCardComponent } from "../../components/contributor-card/contributor-card.component";
 import { ContributorService } from "../../../../services/contributor.service";
-import { Contributor } from "../../models/contributor.model";
-import { LogoMarqueeComponent } from "../../../../shared/components/logo-marquee/logo-marquee.component";
+import { LogoMarqueeComponent, Logo } from "../../../../shared/components/logo-marquee/logo-marquee.component";
 import { Router, RouterLink } from "@angular/router";
 import { ThemeService } from "../../../../services/theme.service";
 import { ClipboardButtonComponent } from "../../../../shared/components/clipboard-button/clipboard-button.component";
 import { ReasonCardComponent } from "../../../../shared/components/reason-card/reason-card.component";
 import { SvgIconComponent } from "angular-svg-icon";
-import { map, Observable } from "rxjs";
+import { map } from "rxjs";
 import { StackedCardCarouselComponent } from "../../components/stacked-card-carousel/stacked-card-carousel.component";
 import { ContainerService } from "../../../../services/container.service";
 
+/** Delay before navigating to /search, giving the halo expand animation time to play. */
+const SEARCH_NAVIGATION_DELAY_MS = 600;
+
+const CONTACT_EMAIL = 'pegi3sdocker@gmail.com';
+
 @Component({
-    selector: 'app-landing',
-    templateUrl: './landing.component.html',
-    styleUrl: './landing.component.css',
-    host: { '[class.dark]': 'isDarkTheme()' },
-    imports: [ContributorCardComponent, LogoMarqueeComponent, ClipboardButtonComponent, RouterLink, ReasonCardComponent, SvgIconComponent, AsyncPipe, StackedCardCarouselComponent],
-    changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'app-landing',
+  templateUrl: './landing.component.html',
+  styleUrl: './landing.component.css',
+  host: { '[class.dark]': 'isDarkTheme()' },
+  imports: [ContributorCardComponent, LogoMarqueeComponent, ClipboardButtonComponent, RouterLink, ReasonCardComponent, SvgIconComponent, StackedCardCarouselComponent],
 })
 export class LandingComponent {
   /* Services */
-  private readonly router: Router = inject(Router);
-  private readonly themeService: ThemeService = inject(ThemeService);
-  readonly isDarkTheme: Signal<boolean>;
-  private readonly containerService: ContainerService = inject(ContainerService);
-  private readonly contributorService: ContributorService = inject(ContributorService);
+  private readonly router = inject(Router);
+  private readonly themeService = inject(ThemeService);
+  protected readonly isDarkTheme: Signal<boolean> = this.themeService.isDarkTheme;
+  private readonly containerService = inject(ContainerService);
+  private readonly contributorService = inject(ContributorService);
+  private readonly destroyRef = inject(DestroyRef);
 
   /* HTML Elements */
-  citingQuoteElem = viewChild<ElementRef>('citingQuote');
+  protected readonly citingQuoteElem = viewChild<ElementRef>('citingQuote');
 
   /* Data */
-  supporters: string[] = [
-    'assets/images/supporters/logo-cresc_algarve_2020.png',
-    'assets/images/supporters/logo-lisboa_2020.webp',
-    'assets/images/supporters/logo-norte_2020.png',
-    'assets/images/supporters/logo-portugal_2020.png',
-    'assets/images/supporters/logo-uniao_europeia_fundos_europeus.png',
-    'assets/images/supporters/logo-fct.png',
+  protected readonly supporters: Logo[] = [
+    { url: 'assets/images/supporters/logo-cresc_algarve_2020.png', name: 'CRESC Algarve 2020' },
+    { url: 'assets/images/supporters/logo-lisboa_2020.webp', name: 'Lisboa 2020' },
+    { url: 'assets/images/supporters/logo-norte_2020.png', name: 'Norte 2020' },
+    { url: 'assets/images/supporters/logo-portugal_2020.png', name: 'Portugal 2020' },
+    { url: 'assets/images/supporters/logo-uniao_europeia_fundos_europeus.png', name: 'União Europeia - Fundos Europeus' },
+    { url: 'assets/images/supporters/logo-fct.png', name: 'Fundação para a Ciência e a Tecnologia (FCT)' },
   ];
-  features = [
+  protected readonly features = [
     {
       icon: 'assets/icons/fluent-icons/ic_fluent_play_circle_24_filled.svg',
       title: 'Effortless Deployment and Ready-to-Run',
@@ -67,9 +71,14 @@ export class LandingComponent {
       color: 300,
     }
   ];
-  readonly containerMetadata = this.containerService.getAllContainersMetadataRes().value;
-  readonly containersInfo = this.containerService.getAllContainersInfoRes().value;
-  readonly mostRecentImages = computed(() => {
+
+  /** CSS classes for the six floating decorative icons around the search halo — see .svg1-.svg6
+   *  in the stylesheet for their individual position/rotation/delay. */
+  protected readonly floatingIconClasses = ['svg1', 'svg2', 'svg3', 'svg4', 'svg5', 'svg6'];
+
+  private readonly containerMetadata = this.containerService.getAllContainersMetadataRes().value;
+  private readonly containersInfo = this.containerService.getAllContainersInfoRes().value;
+  protected readonly mostRecentImages = computed(() => {
     const numberOfImages = 5;
     const containerMetadata = this.containerMetadata();
     const containersInfo = this.containersInfo();
@@ -77,6 +86,7 @@ export class LandingComponent {
     if (!containerMetadata || !containersInfo) return [];
 
     return [...containersInfo.values()]
+      .filter(image => containerMetadata.has(image.name))
       .sort((a, b) => {
         const lastUpdatedA = Date.parse(a.last_updated);
         const lastUpdatedB = Date.parse(b.last_updated);
@@ -85,7 +95,6 @@ export class LandingComponent {
         // Compare the most recent of either last_updated or creation_date
         return Math.max(lastUpdatedB, creationDateB) - Math.max(lastUpdatedA, creationDateA);
       })
-      .filter(image => containerMetadata.has(image.name))
       .slice(0, numberOfImages)
       .map(image => {
         const lastUpdatedDate = Date.parse(image.last_updated);
@@ -109,24 +118,38 @@ export class LandingComponent {
   });
 
   /* State */
-  searchClicked: boolean = false;
+  protected readonly searchClicked = signal(false);
+  protected readonly authors = toSignal(this.contributorService.getAuthors(), {
+    initialValue: [],
+  });
+  protected readonly contributors = toSignal(this.contributorService.getContributors(), {
+    initialValue: [],
+  });
+
+  private pendingSearchNavigation: ReturnType<typeof setTimeout> | undefined;
 
   constructor() {
-    this.isDarkTheme = this.themeService.isDarkTheme();
+    this.destroyRef.onDestroy(() => clearTimeout(this.pendingSearchNavigation));
   }
 
-  onSearchClick() {
-    this.searchClicked = true;
-    setTimeout(() => {
-      this.router.navigate(['/search']);
-    }, 600);
+  protected onSearchClick(): void {
+    this.searchClicked.set(true);
+    this.pendingSearchNavigation = setTimeout(() => {
+      void this.router.navigate(['/search']);
+    }, SEARCH_NAVIGATION_DELAY_MS);
   }
 
-  getAuthors(): Observable<Contributor[]> {
-    return this.contributorService.getAuthors();
-  }
-
-  getContributors(): Observable<Contributor[]> {
-    return this.contributorService.getContributors();
+  /**
+   * Builds a mailto: link from the contact form fields and navigates to it. Submitting a form
+   * directly to a mailto: action (the previous approach) isn't reliably supported by modern
+   * browsers, so this constructs the link client-side instead — the working equivalent of what
+   * that was trying to do.
+   */
+  protected onContactFormSubmit(subject: string, body: string): void {
+    const params = new URLSearchParams();
+    if (subject) params.set('subject', subject);
+    if (body) params.set('body', body);
+    const query = params.toString();
+    window.location.href = `mailto:${CONTACT_EMAIL}${query ? '?' + query : ''}`;
   }
 }

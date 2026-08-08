@@ -32,7 +32,7 @@
     <h3>Video tutorials</h3>
     <div class="tutorials">
       @for (videoTutorial of videoTutorials(); track $index) {
-        <a [href]="[videoTutorial.url]">
+        <a [href]="videoTutorial.url" target="_blank" rel="noopener noreferrer">
           <div class="image" [style.--image-url]="'url(' + videoTutorial.thumbnail + ')'"></div>
           <h4>{{ videoTutorial.name }}</h4>
           <p>{{ videoTutorial.description }}</p>

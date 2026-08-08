@@ -1,12 +1,10 @@
-import { Injectable, Resource, Signal } from "@angular/core";
+import { Resource, Service, Signal } from "@angular/core";
 import { githubInfo } from "../core/constants/github-info";
 import { httpResource } from "@angular/common/http";
 import { GitTree, GitTreeItem } from "../models/git-tree";
 import { ImageMetadata } from "../models/image-metadata";
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class DockerfileService {
   private readonly repositoryTreeURL = `https://api.github.com/repos/${githubInfo.owner}/${githubInfo.repository}/git/trees/${githubInfo.branch}?recursive=1`;
 
@@ -49,12 +47,20 @@ export class DockerfileService {
       return path.startsWith(`${lowerContainerName}/`) && path.endsWith('/dockerfile');
     });
 
-    return matches?.[matches.length - 1];
+    return matches[matches.length - 1];
   }
 
   getContainerDockerfileContent(containerName: Signal<string>, metadata?: Signal<ImageMetadata | undefined>): Resource<string | undefined> {
     return httpResource.text(() => {
-      const path = this.getContainerDockerfilePath(containerName(), metadata?.())?.path;
+      let nameStr: string | undefined;
+      try {
+        nameStr = containerName();
+      } catch {
+        return undefined;
+      }
+      if (!nameStr) return undefined;
+
+      const path = this.getContainerDockerfilePath(nameStr, metadata?.())?.path;
       if (!path) {
         return undefined;
       } else {
@@ -64,6 +70,6 @@ export class DockerfileService {
   }
 
   getDockerfileFromUrl(url: Signal<string>): Resource<string | undefined> {
-    return httpResource.text(() => url()).asReadonly();
+    return httpResource.text(() => url() || undefined).asReadonly();
   }
 }
