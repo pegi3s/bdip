@@ -16,6 +16,7 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { ThemeService } from '../../../../services/theme.service';
 import { SvgIconComponent } from 'angular-svg-icon';
+import { categoryHasImages } from '../../../../shared/utils/category-images';
 
 /** Compares two arrays by element equality (not identity) — plain `===` always fails on arrays. */
 function arraysHaveSameElements<T>(a: readonly T[], b: readonly T[]): boolean {
@@ -55,7 +56,9 @@ export class SearchGuidedComponent {
   /** The current categories between which the user can navigate. */
   protected readonly categories = computed(() => {
     const selected = this.selectedCategory();
-    return selected ? selected.getChildren() : this.rootCategories();
+    const candidates = selected ? selected.getChildren() : this.rootCategories();
+    const containersMap = this.containerService.getContainersMapRes().value();
+    return candidates.filter((category) => categoryHasImages(category, containersMap));
   });
   /** The search term that the user has entered. */
   protected readonly searchTerm = signal<string>('');
