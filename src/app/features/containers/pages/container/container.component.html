@@ -1,110 +1,123 @@
 @if (status() === Status.LOADED && container(); as container) {
   @let containerMetadata = metadata();
-  <div class="info">
-    <div class="title">
-      <svg-icon src="assets/icons/octicons/container-24.svg" svgClass="thick" />
-      <h2>{{ container.name }}</h2>
-    </div>
-    <p
-      class="description"
-      [innerHTML]="convertPlainTextToLink(container.description)"
-    ></p>
-    <div class="ontology-hierarchy">
-      @for (hierarchy of ontologyCategories(); track $index) {
-        <div>
-          @for (category of hierarchy; track $index) {
-            <a
-              [routerLink]="['/search']"
-              [queryParams]="{ c: getIdHierarchy(category).join() }"
-            >
-              {{ category.name }}
-            </a>
-            @if (!$last) {
-              <span> > </span>
+  <div class="info-card">
+    <div class="header">
+      <div class="header-icon">
+        <svg-icon src="assets/icons/octicons/container-24.svg" svgClass="thick" />
+      </div>
+      <div class="header-text">
+        <h2>{{ container.name }}</h2>
+        <div class="badges">
+          @if (!containerMetadata?.project_active) {
+            <span class="chip bug-found">Inactive</span>
+          }
+          @switch (containerMetadata?.status) {
+            @case ("Unusable") {
+              <span class="chip not-working">Unusable</span>
+            }
+            @case ("Not_recommended") {
+              <span class="chip bug-found">Usage not recommended</span>
             }
           }
-        </div>
-      }
-    </div>
-    <div class="status">
-      @switch (containerMetadata?.status) {
-        @case ("Unusable") {
-          <span class="chip not-working">Unusable</span>
-        }
-        @case ("Not_recommended") {
-          <span class="chip bug-found">Usage not recommended</span>
-        }
-      }
-    </div>
-    <div class="stats">
-      <div class="pulls">
-        <svg-icon
-          src="assets/icons/fluent-icons/ic_fluent_arrow_download_24_regular.svg"
-          svgClass="thick"
-        />
-        <p>{{ container.pull_count }} pulls</p>
-      </div>
-      <div class="stars">
-        <svg-icon
-          src="assets/icons/fluent-icons/ic_fluent_star_24_regular.svg"
-          svgClass="thick"
-        />
-        <p>{{ container.star_count }} stars</p>
-      </div>
-      <div class="last-updated">
-        <svg-icon
-          src="assets/icons/fluent-icons/ic_fluent_history_24_regular.svg"
-          svgClass="thick"
-        />
-        <p>Last updated {{ container.last_updated | date }}</p>
-      </div>
-    </div>
-    <div class="features">
-      <div>
-        <svg-icon
-          src="assets/icons/fluent-icons/ic_fluent_task_list_square_24_regular_ltr.svg"
-        />
-        <p>Features</p>
-      </div>
-      <div>
-        @if (containerMetadata?.gui) {
-          <span class="chip compatible">
-            GUI
-            <svg-icon
-              src="assets/icons/fluent-icons/ic_fluent_checkmark_circle_12_filled.svg"
-            />
-          </span>
-        }
-        @for (
-          programs of [
-            { type: "Podman", status: containerMetadata?.podman },
-            { type: "Singularity", status: containerMetadata?.singularity },
-          ];
-          track programs.type
-        ) {
-          @if (programs.status === "tested") {
+          @if (containerMetadata?.gui) {
             <span class="chip compatible">
-              {{ programs.type }}
+              GUI
               <svg-icon
                 src="assets/icons/fluent-icons/ic_fluent_checkmark_circle_12_filled.svg"
               />
             </span>
           }
-        }
+          @for (
+            programs of [
+              { type: "Podman", status: containerMetadata?.podman },
+              { type: "Singularity", status: containerMetadata?.singularity },
+            ];
+            track programs.type
+            ) {
+            @if (programs.status === "tested") {
+              <span class="chip compatible">
+                {{ programs.type }}
+                <svg-icon
+                  src="assets/icons/fluent-icons/ic_fluent_checkmark_circle_12_filled.svg"
+                />
+              </span>
+            }
+          }
+        </div>
       </div>
     </div>
+
+    @if (container.description) {
+      <p
+        class="description"
+        [innerHTML]="convertPlainTextToLink(container.description)"
+      ></p>
+    }
+
+    <div class="stat-bar">
+      <div class="stat">
+        <svg-icon
+          src="assets/icons/fluent-icons/ic_fluent_arrow_download_24_regular.svg"
+          svgClass="thick"
+        />
+        <p class="stat-value">{{ container.pull_count }}</p>
+        <p class="stat-label">pulls</p>
+      </div>
+      <div class="stat">
+        <svg-icon
+          src="assets/icons/fluent-icons/ic_fluent_star_24_regular.svg"
+          svgClass="thick"
+        />
+        <p class="stat-value">{{ container.star_count }}</p>
+        <p class="stat-label">stars</p>
+      </div>
+      <div class="stat">
+        <svg-icon
+          src="assets/icons/fluent-icons/ic_fluent_history_24_regular.svg"
+          svgClass="thick"
+        />
+        <p class="stat-value">{{ container.last_updated | date }}</p>
+        <p class="stat-label">updated</p>
+      </div>
+    </div>
+
+    @if (ontologyCategories().length > 0) {
+      <div class="categories">
+        <p class="section-label">Categories</p>
+        <div class="category-list">
+          @for (hierarchy of ontologyCategories(); track $index) {
+            <div class="category-row">
+              @for (category of hierarchy; track $index) {
+                <a
+                  [routerLink]="['/search']"
+                  [queryParams]="{ c: getIdHierarchy(category).join() }"
+                >
+                  {{ category.name }}
+                </a>
+                @if (!$last) {
+                  <span class="category-sep">&gt;</span>
+                }
+              }
+            </div>
+          }
+        </div>
+      </div>
+    }
+
     @if (selectedTab() !== "tags") {
       <div
-        class="install"
+        class="quick-start"
         [class.unusable]="containerMetadata?.status === 'Unusable'"
         [class.not-recommended]="
           containerMetadata?.status === 'Not_recommended'
         "
       >
-        <svg-icon
-          src="assets/icons/fluent-icons/ic_fluent_window_console_20_filled.svg"
-        />
-        <p>Install from the command line</p>
+        <div class="quick-start-header">
+          <svg-icon
+            src="assets/icons/fluent-icons/ic_fluent_window_console_20_filled.svg"
+          />
+          <p class="section-label">Quick start</p>
+        </div>
         <code>
           {{
             buildDockerPullCommand(
@@ -123,96 +136,87 @@
         </code>
       </div>
     }
-    <div class="links">
-      <a
-        href="https://hub.docker.com/r/{{ container.namespace }}/{{
-          container.name
-        }}"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        <svg-icon src="assets/icons/logos/docker-mark-blue.svg" />
-        DockerHub
-        <svg-icon
-          src="assets/icons/fluent-icons/ic_fluent_arrow_up_right_12_regular.svg"
-          svgClass="thick"
-        />
-      </a>
-      <a
-        [href]="containerMetadata?.manual_url"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        <svg-icon
-          src="assets/icons/fluent-icons/ic_fluent_book_20_filled.svg"
-        />
-        Manual
-        <svg-icon
-          src="assets/icons/fluent-icons/ic_fluent_arrow_up_right_12_regular.svg"
-          svgClass="thick"
-        />
-      </a>
 
-      <a
-        href="https://bio-protocol.org/en/searchlist?{{
-          containerMetadata?.custom_searches?.bioprotocol ??
-            'content=' + encodeUriComponent(container.name)
-        }}"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        <svg-icon src="assets/icons/logos/bio-protocol.svg" />
-        Bio-Protocol
-        <svg-icon
-          src="assets/icons/fluent-icons/ic_fluent_arrow_up_right_12_regular.svg"
-          svgClass="thick"
-        />
-      </a>
-      <a
-        href="https://bio-protocol.org/exchange/searchlist?{{
-          containerMetadata?.custom_searches?.bioprotocol_exchange ??
-            'content=' + encodeUriComponent(container.name)
-        }}"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        <svg-icon src="assets/icons/logos/bio-protocol.svg" />
-        Bio-Protocol Exchange
-        <svg-icon
-          src="assets/icons/fluent-icons/ic_fluent_arrow_up_right_12_regular.svg"
-          svgClass="thick"
-        />
-      </a>
-      <a
-        href="https://pubmed.ncbi.nlm.nih.gov/?{{
-          containerMetadata?.custom_searches?.pubmed ??
-            'term=' + encodeUriComponent(container.name)
-        }}"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        <svg-icon src="assets/icons/logos/PubMed.svg" />
-        PubMed
-        <svg-icon
-          src="assets/icons/fluent-icons/ic_fluent_arrow_up_right_12_regular.svg"
-          svgClass="thick"
-        />
-      </a>
-      <a
-        href="https://scholar.google.es/scholar?{{
-          containerMetadata?.custom_searches?.scholar ??
-            'q=' + encodeUriComponent(container.name)
-        }}"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        <svg-icon src="assets/icons/logos/google-scholar.svg" />
-        Google Scholar
-        <svg-icon
-          src="assets/icons/fluent-icons/ic_fluent_arrow_up_right_12_regular.svg"
-          svgClass="thick"
-        />
-      </a>
+    <div class="resource-section">
+      <p class="section-label">Resources</p>
+      <div class="resource-grid">
+        <a
+          class="resource-link"
+          href="https://hub.docker.com/r/{{ container.namespace }}/{{
+            container.name
+          }}"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <svg-icon src="assets/icons/logos/docker-mark-blue.svg" />
+          DockerHub
+        </a>
+        <a
+          class="resource-link"
+          [href]="containerMetadata?.manual_url"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <svg-icon
+            src="assets/icons/fluent-icons/ic_fluent_book_20_filled.svg"
+          />
+          Manual
+        </a>
+      </div>
+    </div>
+
+    <div class="resource-section">
+      <p class="section-label">Search literature</p>
+      <div class="resource-grid">
+        <a
+          class="resource-link"
+          href="https://bio-protocol.org/en/searchlist?{{
+            containerMetadata?.custom_searches?.bioprotocol ??
+              'content=' + encodeUriComponent(container.name)
+          }}"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <svg-icon src="assets/icons/logos/bio-protocol.svg" />
+          Bio-Protocol
+        </a>
+        <a
+          class="resource-link"
+          href="https://bio-protocol.org/exchange/searchlist?{{
+            containerMetadata?.custom_searches?.bioprotocol_exchange ??
+              'content=' + encodeUriComponent(container.name)
+          }}"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <svg-icon src="assets/icons/logos/bio-protocol.svg" />
+          Bio-Protocol Exchange
+        </a>
+        <a
+          class="resource-link"
+          href="https://pubmed.ncbi.nlm.nih.gov/?{{
+            containerMetadata?.custom_searches?.pubmed ??
+              'term=' + encodeUriComponent(container.name)
+          }}"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <svg-icon src="assets/icons/logos/PubMed.svg" />
+          PubMed
+        </a>
+        <a
+          class="resource-link"
+          href="https://scholar.google.es/scholar?{{
+            containerMetadata?.custom_searches?.scholar ??
+              'q=' + encodeUriComponent(container.name)
+          }}"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <svg-icon src="assets/icons/logos/google-scholar.svg" />
+          Google Scholar
+        </a>
+      </div>
     </div>
   </div>
   <div class="details-container">
@@ -221,12 +225,10 @@
         (activeTab)="onTabSelectedGettingStarted($event)"
         [tabs]="detailTabs()"
       />
-      @if (selectedTab() === TabName.TESTING) {
-        <app-dropdown
-          [items]="containerPlatforms"
-          [(selected)]="selectedContainerPlatform"
-        />
-      }
+      <app-dropdown
+        [items]="containerPlatforms"
+        [(selected)]="selectedContainerPlatform"
+      />
       @if (selectedTab() === TabName.DOCKERFILE && showDockerfileDropdown()) {
         <app-dropdown
           [items]="dockerfileVariants()"

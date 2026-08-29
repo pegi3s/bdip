@@ -1,6 +1,7 @@
 export type ImageMetadata = {
   name: string;
   description: string;
+  project_active: boolean;
   status: string;
   recommended: Recommended[];
   latest: string;

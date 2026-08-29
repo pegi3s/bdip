@@ -311,6 +311,15 @@ export class ContainerComponent {
   ];
   selectedContainerPlatform = signal<number>(this.resolveInitialPlatformIndex());
 
+  /**
+   * The currently selected platform's command-line value (e.g. "docker" or "podman").
+   * Single source of truth for every pull command shown across the page (quick start card,
+   * tag list, and the CLI/GUI testing instructions).
+   */
+  readonly selectedPlatformValue = computed(
+    () => this.containerPlatforms[this.selectedContainerPlatform()].value,
+  );
+
   constructor() {
     // Persist selected container platform in local storage
     effect(() => {
@@ -375,7 +384,7 @@ export class ContainerComponent {
     container: DockerHubImage,
     tag?: string | null,
   ): string {
-    return `docker pull ${this.buildImageReference(container, tag)}`;
+    return `${this.selectedPlatformValue()} pull ${this.buildImageReference(container, tag)}`;
   }
 
   convertPlainTextToLink(text: string): string {
