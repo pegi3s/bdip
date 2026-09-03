@@ -86,11 +86,29 @@ export class ContainerService {
 
   /**
    * Retrieves the information stored in Docker Hub for all containers.
+   *
+   * Docker Hub caps pagination for anonymous requests once the offset gets
+   * large enough — past that point every further page returns
+   * {"message": "pagination offset too large for anonymous requests; sign in to page further"}
+   * instead of data. Changing page_size doesn't avoid it, since the cap is on
+   * the cumulative item offset, not the page number.
+   *
+   * `fetchAllPages` already treats that response as "no more pages" and just
+   * returns whatever was collected so far, so this resource silently ends up
+   * with a partial (but not empty) list rather than failing outright.
+   *
+   * Since we can't reliably walk the entire repository list anonymously, we
+   * request `ordering=last_updated` — Docker Hub's ordering param is
+   * descending here, so this is newest-first — meaning the partial set we do
+   * get back is the most recently updated images, which is exactly what this
+   * resource is used for (surfacing image dates), rather than an arbitrary
+   * slice.
+   *
    * @returns A Map where the key is the container's name and the value is its Docker Hub information.
    */
   containersInfo = rxResource({
     stream: () => {
-      const url = new URL(`${this.baseDockerHubEndpoint}?page=1&page_size=100`, this.proxyServerURL).toString();
+      const url = new URL(`${this.baseDockerHubEndpoint}?page=1&page_size=99&ordering=last_updated`, this.proxyServerURL).toString();
       return this.fetchAllPages<DockerHubImage>(url, [], 'DockerHub images').pipe(
         map(allResults => {
           const imageMap = new Map<string, DockerHubImage>();
