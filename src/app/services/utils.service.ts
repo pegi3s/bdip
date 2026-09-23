@@ -8,6 +8,8 @@ export class UtilsService {
     const platform = navigator.platform;
     if (platform.includes('Win')) {
       return 'windows';
+    } else if (platform.includes('Mac')) {
+      return 'macos';
     } else if (platform.includes('Linux')) {
       return 'linux';
     }

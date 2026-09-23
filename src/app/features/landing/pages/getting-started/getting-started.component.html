@@ -7,8 +7,9 @@
   <div>
     <h2>Getting started</h2>
     <app-tabs (activeTab)="onTabSelectedGettingStarted($event)" [tabs]="[
-        { id: OS.WINDOWS, label: OS.WINDOWS, icon: 'assets/icons/logos/Windows11.svg', active: gettingStartedOS === OS.WINDOWS },
-        { id: OS.LINUX, label: OS.LINUX, icon: 'assets/icons/logos/linux.svg', active: gettingStartedOS === OS.LINUX }
+        { id: OS.WINDOWS, label: 'Windows', icon: 'assets/icons/logos/Windows11.svg', active: gettingStartedOS === OS.WINDOWS },
+        { id: OS.LINUX, label: 'Linux', icon: 'assets/icons/logos/linux.svg', active: gettingStartedOS === OS.LINUX },
+        { id: OS.MACOS, label: 'macOS', icon: 'assets/icons/logos/apple.svg', active: gettingStartedOS === OS.MACOS }
       ]" />
     @if (gettingStartedOS === OS.WINDOWS) {
       <p class="lead">
@@ -52,6 +53,61 @@
           </p>
         </li>
       </ol>
+    } @else if (gettingStartedOS === OS.MACOS) {
+      <p class="lead">To install Docker in macOS, please follow the steps below:</p>
+      <div class="note">
+        <strong>Note:</strong> The commands provided for Docker images with a graphical interface will not work on macOS because they
+        rely on Linux-native paths, IPC sockets, and authority files that do not exist or behave differently on macOS, which implies
+        installing XQuartz, but also invoking such Docker commands in a very different way from the one shown for such images.
+        Nevertheless, you can still run the Docker images without a graphical interface by following the steps below.
+      </div>
+      <br />
+      <ol class="steps">
+        <li>
+          <h3>Install Homebrew</h3>
+          <p>
+            In the macOS terminal, run the following command. For more details, see
+            <a href="https://brew.sh/" target="_blank" rel="noopener noreferrer">brew.sh</a>:
+          </p>
+          <pre><code>/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"</code></pre>
+        </li>
+
+        <li>
+          <h3>Install Docker using Homebrew</h3>
+          <p>In the same terminal, run the following command:</p>
+          <pre><code>brew install --cask docker</code></pre>
+        </li>
+
+        <li>
+          <h3>Start the Docker daemon</h3>
+          <p>
+            Open Docker Desktop from your Applications folder. This will make sure that the Docker daemon is running. If not, when
+            attempting to run Docker commands you will get something like:
+          </p>
+          <pre><code>Cannot connect to the Docker daemon at unix:///Users/&lt;user_name&gt;/.docker/run/docker.sock. Is the docker daemon running?</code></pre>
+        </li>
+
+        <li>
+          <h3>Test the Docker installation</h3>
+          <p>Run the following command in your terminal:</p>
+          <pre><code>docker run hello-world</code></pre>
+        </li>
+
+        <li>
+          <h3>Run pegi3s Docker images</h3>
+          <p>
+            Create a folder under Documents named Docker. Then, run the following command in your terminal:
+          </p>
+          <pre><code>cd /Users/&lt;user_name&gt;/Documents/Docker</code></pre>
+          <p>
+            Put the needed input files in the Docker folder, and adapt and run the command that is given in the webpage. This procedure
+            was tested on a MacBook Pro with an M4 processor to successfully run the test data that is given for Docker images such as
+            muscle and fasttree. If the above instructions fail, usually due to chip incompatibilities, you may try the alternatives given
+            at the <a href="https://docs.docker.com/desktop/setup/install/mac-install/" target="_blank" rel="noopener noreferrer">Docker Desktop page</a>.
+          </p>
+        </li>
+      </ol>
+      <p>You are now ready to run any <strong>pegi3s</strong> Docker image without a graphical interface.</p>
     } @else {
       <p class="lead">To install Docker in Linux, please follow the steps below:</p>
       <ol class="steps">

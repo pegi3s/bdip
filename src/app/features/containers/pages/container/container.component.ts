@@ -202,7 +202,7 @@ export class ContainerComponent {
   readonly detailTabs = computed(() => {
     const tabs = [
       { id: TabName.README, label: 'README', active: this.selectedTab() === TabName.README },
-      { id: TabName.TAGS, label: TabName.TAGS, active: this.selectedTab() === TabName.TAGS },
+      { id: TabName.TAGS, label: 'Tags', active: this.selectedTab() === TabName.TAGS },
       { id: TabName.TESTING, label: 'Testing', active: this.selectedTab() === TabName.TESTING },
       { id: TabName.DOCKERFILE, label: 'Dockerfile', active: this.selectedTab() === TabName.DOCKERFILE },
     ];

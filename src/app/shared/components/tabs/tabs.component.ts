@@ -1,4 +1,3 @@
-import { TitleCasePipe } from '@angular/common';
 import {
   Component,
   input,
@@ -10,7 +9,7 @@ let nextGroupId = 0;
 
 @Component({
   selector: 'app-tabs',
-  imports: [TitleCasePipe, SvgIconComponent],
+  imports: [SvgIconComponent],
   templateUrl: './tabs.component.html',
   styleUrl: './tabs.component.css',
 })
